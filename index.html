@@ -1,0 +1,3943 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FASTI REI PUBLICAE — Römischer Republikanischer Kalender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+
+      /* Strukturierte Travertin-, Schiefer- und Marmorflächen (kein flaches Schwarz) */
+      --bg-canvas: #14171c;
+      --bg-surface: #1d222a;
+      --bg-card: #242a34;
+      --bg-card-elevated: #2c3340;
+      --bg-input: #151920;
+
+      /* Logische Funktionsfarben (Kategorien) */
+      --gold: #e2b857;
+      --gold-bright: #fbd97e;
+      --gold-soft: rgba(226, 184, 87, 0.16);
+
+      --porphyry: #8f3954;
+      --porphyry-bright: #d46a89;
+      --porphyry-soft: rgba(143, 57, 84, 0.18);
+
+      --lapis: #4b86c6;
+      --lapis-bright: #7cb6f5;
+      --lapis-soft: rgba(75, 134, 198, 0.16);
+
+      --emerald: #39a87a;
+      --emerald-bright: #6ce0ad;
+      --emerald-soft: rgba(57, 168, 122, 0.16);
+
+      --amber: #d98a3b;
+      --amber-bright: #f5b36b;
+      --amber-soft: rgba(217, 138, 59, 0.16);
+
+      --rubrica: #c94a3f;
+      --rubrica-bright: #f27469;
+      --rubrica-soft: rgba(201, 74, 63, 0.17);
+
+      --amethyst: #9d75cb;
+      --amethyst-bright: #c8a6f0;
+
+      /* Text und Rahmen */
+      --ivory: #f3ece0;
+      --ivory-muted: #c6beaf;
+      --ivory-dim: #8f897d;
+
+      --border-subtle: rgba(226, 184, 87, 0.22);
+      --border-strong: rgba(226, 184, 87, 0.5);
+      --shadow-deep: 0 18px 42px rgba(6, 8, 12, 0.55);
+
+      --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(ellipse 95% 55% at 50% -10%, rgba(226, 184, 87, 0.15), transparent 65%),
+        radial-gradient(ellipse 55% 45% at 10% 25%, rgba(75, 134, 198, 0.12), transparent 60%),
+        radial-gradient(ellipse 55% 45% at 90% 60%, rgba(143, 57, 84, 0.12), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(57, 168, 122, 0.08), transparent 65%),
+        var(--bg-canvas);
+      color: var(--ivory);
+      font-family: var(--font-serif);
+      font-size: 17px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.014) 0px,
+          rgba(255, 255, 255, 0.014) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      z-index: 0;
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* Monumentaler Kopfbereich */
+    .monument-header {
+      text-align: center;
+      padding: 24px 24px 26px;
+      margin-bottom: 16px;
+      background:
+        radial-gradient(circle at top center, rgba(226, 184, 87, 0.14), transparent 65%),
+        linear-gradient(180deg, #272d38 0%, #1c2129 100%);
+      border: 1px solid var(--border-strong);
+      border-top: 4px solid var(--gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-deep);
+      position: relative;
+    }
+
+    .spqr-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .spqr-badge .laurel {
+      color: var(--rubrica-bright);
+      font-size: 0.95rem;
+      letter-spacing: 0;
+    }
+
+    .monument-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.85rem, 3.5vw, 3rem);
+      letter-spacing: 0.09em;
+      color: var(--ivory);
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+    }
+
+    .monument-subtitle {
+      margin: 8px auto 0;
+      max-width: 900px;
+      font-style: italic;
+      font-size: 1.07rem;
+      color: var(--ivory-muted);
+    }
+
+    /* Schnellnavigation und Statusleiste */
+    .quick-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      background: rgba(29, 34, 42, 0.92);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 10px;
+      z-index: 40;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    }
+
+    .quick-nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 0.69rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.18s ease;
+    }
+
+    .nav-pill:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+      transform: translateY(-1px);
+    }
+
+    .nav-pill.accent-gold { border-left: 3px solid var(--gold); }
+    .nav-pill.accent-lapis { border-left: 3px solid var(--lapis-bright); }
+    .nav-pill.accent-porphyry { border-left: 3px solid var(--porphyry-bright); }
+    .nav-pill.accent-emerald { border-left: 3px solid var(--emerald-bright); }
+
+    .quick-status-summary {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--ivory-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .quick-status-summary strong {
+      color: var(--gold-bright);
+    }
+
+    /* Live Hero Plaque (Porphyr und Kaiser-Gold) */
+    .hero-plaque {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 20px;
+      margin-bottom: 22px;
+      padding: 22px 26px;
+      background:
+        radial-gradient(circle at top right, rgba(226, 184, 87, 0.18), transparent 55%),
+        radial-gradient(circle at bottom left, rgba(143, 57, 84, 0.22), transparent 55%),
+        linear-gradient(135deg, #27222b 0%, #1d222c 100%);
+      border: 1px solid rgba(226, 184, 87, 0.55);
+      border-left: 5px solid var(--gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-deep);
+    }
+
+    @media (max-width: 1020px) {
+      .hero-plaque {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-label {
+      font-family: var(--font-display);
+      font-size: 0.74rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(251, 217, 126, 0.16);
+      border: 1px solid rgba(251, 217, 126, 0.55);
+      color: var(--gold-bright);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+    }
+
+    .pill-live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold-bright);
+      box-shadow: 0 0 8px var(--gold-bright);
+    }
+
+    .hero-rep-main {
+      font-family: var(--font-display);
+      font-size: clamp(1.45rem, 2.5vw, 2.25rem);
+      font-weight: 700;
+      color: var(--gold-bright);
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .hero-latin-long {
+      font-size: 1.24rem;
+      font-style: italic;
+      color: var(--ivory);
+      margin-bottom: 4px;
+    }
+
+    .hero-latin-abbr {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--gold-bright);
+      background: rgba(15, 18, 24, 0.55);
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      margin-top: 4px;
+    }
+
+    .hero-grammar-note {
+      margin-top: 10px;
+      padding: 9px 13px;
+      background: rgba(75, 134, 198, 0.12);
+      border-left: 3px solid var(--lapis-bright);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.94rem;
+      color: var(--ivory-muted);
+    }
+
+    .hero-grammar-note strong {
+      color: var(--ivory);
+    }
+
+    .hero-consuls-banner {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--porphyry-bright);
+      background: var(--porphyry-soft);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .hero-consuls-title {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      color: var(--porphyry-bright);
+      text-transform: uppercase;
+    }
+
+    .hero-consuls-names {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ivory);
+    }
+
+    .hero-year-progress {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: rgba(15, 18, 24, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--ivory-muted);
+      margin-bottom: 6px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .progress-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--lapis-bright), var(--gold-bright));
+      transition: width 0.3s ease;
+    }
+
+    .hero-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+
+    .meta-chip {
+      background: rgba(20, 24, 31, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-top: 2px solid rgba(226, 184, 87, 0.45);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+
+    .meta-chip.chip-lapis { border-top-color: var(--lapis-bright); }
+    .meta-chip.chip-emerald { border-top-color: var(--emerald-bright); }
+    .meta-chip.chip-porphyry { border-top-color: var(--porphyry-bright); }
+    .meta-chip.chip-amber { border-top-color: var(--amber-bright); }
+
+    .meta-chip-label {
+      font-family: var(--font-display);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ivory-dim);
+      margin-bottom: 3px;
+    }
+
+    .meta-chip-val {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--ivory);
+      word-break: break-word;
+    }
+
+    .meta-chip-val.highlight {
+      color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    /* Sektions-Panels mit logischer Farbcodierung */
+    .panel {
+      background: linear-gradient(180deg, rgba(34, 40, 50, 0.96) 0%, rgba(25, 30, 38, 0.98) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-deep);
+    }
+
+    .panel-anchor-era {
+      border-top: 4px solid var(--amber);
+    }
+
+    .panel-norm-rep {
+      border-top: 4px solid var(--lapis-bright);
+    }
+
+    .panel-rep-norm {
+      border-top: 4px solid var(--gold);
+    }
+
+    .panel-pontifex {
+      border-top: 4px solid var(--porphyry-bright);
+    }
+
+    .panel-fasti {
+      border-top: 4px solid var(--emerald);
+    }
+
+    .panel-docs {
+      border-top: 4px solid var(--amethyst);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-norm-rep .panel-title { color: var(--lapis-bright); }
+    .panel-pontifex .panel-title { color: var(--porphyry-bright); }
+    .panel-fasti .panel-title { color: var(--emerald-bright); }
+    .panel-docs .panel-title { color: var(--amethyst-bright); }
+
+    .panel-subtitle {
+      font-size: 0.95rem;
+      color: var(--ivory-muted);
+      font-style: italic;
+    }
+
+    /* Formularfelder und Buttons */
+    .config-split {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1060px) {
+      .config-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sub-box {
+      background: rgba(20, 24, 31, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+    }
+
+    .sub-box-title {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--amber-bright);
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .anchor-row {
+      display: grid;
+      grid-template-columns: 0.7fr 1.25fr 0.9fr 0.9fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .anchor-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .field-hint {
+      font-size: 0.87rem;
+      color: var(--ivory-muted);
+      line-height: 1.4;
+    }
+
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      background: var(--bg-input);
+      color: var(--ivory);
+      border: 1px solid rgba(226, 184, 87, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 0 2px rgba(251, 217, 126, 0.22);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(226, 184, 87, 0.45);
+      background: linear-gradient(180deg, #323947 0%, #242934 100%);
+      color: var(--gold-bright);
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: linear-gradient(180deg, #3e4758 0%, #2d3442 100%);
+      border-color: var(--gold-bright);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #c99a35 0%, #9b731d 100%);
+      color: #130e04;
+      border-color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(180deg, #e0b14b 0%, #b38626 100%);
+      color: #0e0a02;
+    }
+
+    .btn-lapis {
+      background: linear-gradient(180deg, #386ca6 0%, #254b75 100%);
+      border-color: var(--lapis-bright);
+      color: #f4f8ff;
+    }
+
+    .btn-lapis:hover:not(:disabled) {
+      background: linear-gradient(180deg, #4882c2 0%, #305d8f 100%);
+    }
+
+    .btn-emerald {
+      background: linear-gradient(180deg, #2b825d 0%, #1d5c41 100%);
+      border-color: var(--emerald-bright);
+      color: #effcf5;
+    }
+
+    .btn-emerald:hover:not(:disabled) {
+      background: linear-gradient(180deg, #349c70 0%, #247050 100%);
+    }
+
+    .btn-rubrica {
+      background: linear-gradient(180deg, #a6342c 0%, #75211b 100%);
+      border-color: var(--rubrica-bright);
+      color: var(--ivory);
+    }
+
+    .btn-rubrica:hover:not(:disabled) {
+      background: linear-gradient(180deg, #c23f36 0%, #8c2922 100%);
+    }
+
+    .btn-sm {
+      padding: 6px 11px;
+      font-size: 0.67rem;
+    }
+
+    /* Konverter-Bereich */
+    .converters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 1080px) {
+      .converters-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .converters-grid .panel {
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row-3 {
+      display: grid;
+      grid-template-columns: 0.75fr 1.25fr 1.25fr;
+      gap: 10px;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 0.85fr 1.4fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 580px) {
+      .row-3, .row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .conv-result {
+      margin-top: 14px;
+      padding: 15px 16px;
+      background: rgba(16, 20, 26, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: var(--radius-md);
+      flex: 1;
+    }
+
+    .conv-result-head {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin-bottom: 4px;
+    }
+
+    .conv-result-sub {
+      font-style: italic;
+      font-size: 1.04rem;
+      color: var(--ivory);
+      margin-bottom: 8px;
+    }
+
+    .conv-kv {
+      display: grid;
+      grid-template-columns: 165px 1fr;
+      gap: 5px 12px;
+      font-size: 0.92rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .conv-kv {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .conv-k {
+      color: var(--ivory-dim);
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      align-self: center;
+    }
+
+    .conv-v {
+      font-family: var(--font-mono);
+      font-size: 0.83rem;
+      color: var(--ivory);
+    }
+
+    /* Pontifex Maximus mit semantischer Farbcodierung */
+    .pontifex-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(18, 22, 29, 0.78);
+      border: 1px solid rgba(212, 106, 137, 0.28);
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+    }
+
+    .pontifex-stats {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--ivory-muted);
+    }
+
+    .stat-pill {
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-pill.pos strong { color: var(--emerald-bright); }
+    .stat-pill.neg strong { color: var(--rubrica-bright); }
+    .stat-pill.gold strong { color: var(--gold-bright); }
+
+    .pontifex-legend-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .p-swatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      border: 1px solid transparent;
+    }
+
+    .p-swatch.std-355 { background: rgba(140, 155, 175, 0.14); border-color: rgba(140, 155, 175, 0.35); color: #cfd8e3; }
+    .p-swatch.std-377 { background: var(--amber-soft); border-color: rgba(245, 179, 107, 0.45); color: var(--amber-bright); }
+    .p-swatch.std-378 { background: var(--gold-soft); border-color: rgba(251, 217, 126, 0.5); color: var(--gold-bright); }
+    .p-swatch.mod-longer { background: var(--emerald-soft); border-color: var(--emerald-bright); color: var(--emerald-bright); }
+    .p-swatch.mod-shorter { background: var(--rubrica-soft); border-color: var(--rubrica-bright); color: var(--rubrica-bright); }
+    .p-swatch.active-yr { background: rgba(251, 217, 126, 0.12); border-color: var(--gold-bright); color: var(--gold-bright); box-shadow: 0 0 8px rgba(251, 217, 126, 0.3); }
+
+    .pontifex-export-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pontifex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+      gap: 11px;
+      max-height: 450px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .pontifex-card {
+      background: rgba(24, 29, 37, 0.94);
+      border: 1px solid rgba(140, 155, 175, 0.28);
+      border-left: 4px solid #6b7a8f;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .pontifex-card.type-377 {
+      border-left-color: var(--amber-bright);
+      background: linear-gradient(135deg, rgba(217, 138, 59, 0.1) 0%, rgba(24, 29, 37, 0.95) 70%);
+    }
+
+    .pontifex-card.type-378 {
+      border-left-color: var(--gold-bright);
+      background: linear-gradient(135deg, rgba(226, 184, 87, 0.13) 0%, rgba(24, 29, 37, 0.95) 70%);
+    }
+
+    .pontifex-card.mod-longer {
+      border-color: var(--emerald-bright);
+      border-left-width: 5px;
+      background: linear-gradient(135deg, rgba(57, 168, 122, 0.22) 0%, rgba(21, 31, 29, 0.96) 80%);
+    }
+
+    .pontifex-card.mod-shorter {
+      border-color: var(--rubrica-bright);
+      border-left-width: 5px;
+      background: linear-gradient(135deg, rgba(201, 74, 63, 0.22) 0%, rgba(33, 22, 24, 0.96) 80%);
+    }
+
+    .pontifex-card.current-year {
+      box-shadow: 0 0 0 2px var(--gold-bright), 0 0 18px rgba(251, 217, 126, 0.28);
+    }
+
+    .pontifex-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      color: var(--gold-bright);
+    }
+
+    .diff-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .diff-badge.pos { background: rgba(108, 224, 173, 0.2); color: var(--emerald-bright); border: 1px solid var(--emerald-bright); }
+    .diff-badge.neg { background: rgba(242, 116, 105, 0.2); color: var(--rubrica-bright); border: 1px solid var(--rubrica-bright); }
+    .diff-badge.std { background: rgba(255, 255, 255, 0.08); color: var(--ivory-muted); }
+
+    .pontifex-card-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ivory-muted);
+      margin-bottom: 8px;
+      min-height: 2.3em;
+      line-height: 1.35;
+    }
+
+    /* Fasti-Jahrestafeln */
+    .tablets-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      background: rgba(18, 22, 29, 0.84);
+      border: 1px solid rgba(57, 168, 122, 0.35);
+      border-radius: var(--radius-md);
+    }
+
+    .tablets-filterbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 10px 14px;
+      background: rgba(20, 25, 32, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-md);
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--bg-card);
+      color: var(--ivory-muted);
+      font-family: var(--font-display);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--emerald-bright);
+      color: var(--ivory);
+    }
+
+    .filter-chip.active {
+      background: var(--emerald-soft);
+      border-color: var(--emerald-bright);
+      color: var(--emerald-bright);
+      font-weight: 700;
+    }
+
+    .year-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .year-summary {
+      text-align: center;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .year-summary-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      letter-spacing: 0.07em;
+    }
+
+    .year-summary-sub {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--ivory-muted);
+      margin-top: 3px;
+    }
+
+    .tablets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(355px, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 420px) {
+      .tablets-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .fasti-tablet {
+      background: linear-gradient(180deg, #272e3a 0%, #1d222b 100%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .fasti-tablet.is-maior .tablet-head {
+      background: linear-gradient(180deg, #35302a 0%, #272420 100%);
+      border-bottom-color: rgba(226, 184, 87, 0.45);
+    }
+
+    .fasti-tablet.is-minor .tablet-head {
+      background: linear-gradient(180deg, #273241 0%, #1f2733 100%);
+      border-bottom-color: rgba(124, 182, 245, 0.38);
+    }
+
+    .fasti-tablet.is-feb .tablet-head {
+      background: linear-gradient(180deg, #2b2739 0%, #201e2b 100%);
+      border-bottom-color: rgba(157, 117, 203, 0.42);
+    }
+
+    .fasti-tablet.is-intercalary {
+      border-color: rgba(242, 116, 105, 0.65);
+    }
+
+    .fasti-tablet.is-intercalary .tablet-head {
+      background: linear-gradient(180deg, #472529 0%, #301a1d 100%);
+      border-bottom-color: rgba(242, 116, 105, 0.55);
+    }
+
+    .fasti-tablet.has-active-day {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 28px rgba(251, 217, 126, 0.24), 0 12px 30px rgba(0, 0, 0, 0.55);
+    }
+
+    .tablet-head {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tablet-month-num {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      color: var(--gold-bright);
+    }
+
+    .tablet-month-name {
+      font-family: var(--font-display);
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      color: var(--ivory);
+      text-transform: uppercase;
+    }
+
+    .tablet-month-sub {
+      font-size: 0.83rem;
+      font-style: italic;
+      color: var(--ivory-muted);
+    }
+
+    .tablet-days-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(12, 15, 20, 0.48);
+      color: var(--gold-bright);
+      white-space: nowrap;
+    }
+
+    .tablet-rows {
+      padding: 6px 0;
+    }
+
+    .fasti-row {
+      display: grid;
+      grid-template-columns: 26px 20px 44px 1fr 98px;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+
+    .fasti-row:last-child {
+      border-bottom: none;
+    }
+
+    .fasti-row:hover {
+      background: rgba(226, 184, 87, 0.13);
+    }
+
+    .fasti-row.is-dimmed {
+      opacity: 0.24;
+    }
+
+    .fasti-row.is-marker {
+      background: rgba(226, 184, 87, 0.09);
+    }
+
+    .fasti-row.is-active {
+      background: linear-gradient(90deg, rgba(251, 217, 126, 0.34), rgba(226, 184, 87, 0.2), rgba(251, 217, 126, 0.34));
+      box-shadow: inset 3px 0 0 var(--gold-bright), inset -3px 0 0 var(--gold-bright), 0 0 18px rgba(251, 217, 126, 0.35);
+      position: relative;
+      z-index: 2;
+      animation: glowPulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        box-shadow: inset 3px 0 0 var(--gold-bright), inset -3px 0 0 var(--gold-bright), 0 0 12px rgba(251, 217, 126, 0.3);
+      }
+      50% {
+        box-shadow: inset 3px 0 0 #fff3c4, inset -3px 0 0 #fff3c4, 0 0 24px rgba(251, 217, 126, 0.62);
+      }
+    }
+
+    .col-daynum {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--ivory-dim);
+      text-align: right;
+    }
+
+    .fasti-row.is-active .col-daynum {
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .col-nund {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-align: center;
+      color: var(--ivory-muted);
+    }
+
+    .col-nund.is-nundinae-a {
+      color: var(--rubrica-bright);
+      text-shadow: 0 0 8px rgba(242, 116, 105, 0.4);
+    }
+
+    .col-char {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .char-F { color: #7ae5b1; background: rgba(57, 168, 122, 0.16); border-color: rgba(122, 229, 177, 0.38); }
+    .char-C { color: #8ec5fc; background: rgba(75, 134, 198, 0.18); border-color: rgba(142, 197, 252, 0.4); }
+    .char-N { color: #f69b93; background: rgba(201, 74, 63, 0.18); border-color: rgba(246, 155, 147, 0.4); }
+    .char-NP { color: #fbd97e; background: rgba(226, 184, 87, 0.18); border-color: rgba(251, 217, 126, 0.46); }
+    .char-EN { color: #d6b6fb; background: rgba(157, 117, 203, 0.18); border-color: rgba(214, 182, 251, 0.4); }
+    .char-QRCF, .char-QSDF, .char-FP { color: #f8be7d; background: rgba(217, 138, 59, 0.2); border-color: rgba(248, 190, 125, 0.45); }
+
+    .col-abbr {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--ivory);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fasti-row.is-marker .col-abbr {
+      color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .col-abbr .feast-tag {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.78rem;
+      color: var(--rubrica-bright);
+      margin-left: 5px;
+      font-weight: 600;
+    }
+
+    .col-greg {
+      font-family: var(--font-mono);
+      font-size: 0.71rem;
+      color: var(--ivory-muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .fasti-row.is-active .col-greg,
+    .fasti-row.is-active .col-abbr {
+      color: #fff7dc;
+      font-weight: 600;
+    }
+
+    /* Referenz- und Legendenbereich */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .legend-box {
+      background: rgba(18, 22, 29, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius-md);
+      padding: 15px 17px;
+    }
+
+    .legend-box.lb-lapis { border-left-color: var(--lapis-bright); }
+    .legend-box.lb-emerald { border-left-color: var(--emerald-bright); }
+    .legend-box.lb-porphyry { border-left-color: var(--porphyry-bright); }
+
+    .legend-box h4 {
+      margin: 0 0 8px;
+      font-family: var(--font-display);
+      font-size: 0.84rem;
+      letter-spacing: 0.12em;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+    }
+
+    .legend-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 0.94rem;
+      color: var(--ivory-muted);
+    }
+
+    .legend-list li {
+      margin-bottom: 5px;
+    }
+
+    .legend-list strong {
+      color: var(--ivory);
+    }
+
+    .inline-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(226, 184, 87, 0.16);
+      color: var(--gold-bright);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .status-note {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.89rem;
+      background: rgba(75, 134, 198, 0.13);
+      border: 1px solid rgba(124, 182, 245, 0.35);
+      color: var(--ivory);
+    }
+
+    .status-note.ok {
+      background: var(--emerald-soft);
+      border-color: rgba(108, 224, 173, 0.45);
+      color: #d6faea;
+    }
+
+    .status-note.warn {
+      background: var(--rubrica-soft);
+      border-color: rgba(242, 116, 105, 0.55);
+      color: #ffd7d3;
+    }
+
+    /* Bestätigungs-Modal für Pontifex-Reset */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(8, 10, 14, 0.76);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-dialog {
+      max-width: 520px;
+      width: 100%;
+      background: linear-gradient(180deg, #2b2328 0%, #1e232c 100%);
+      border: 1px solid var(--rubrica-bright);
+      border-top: 5px solid var(--rubrica-bright);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-title {
+      margin: 0 0 8px;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: var(--rubrica-bright);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      color: var(--ivory);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    ::-webkit-scrollbar {
+      width: 9px;
+      height: 9px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #14181f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3d4656;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #57647a;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+
+    <!-- MONUMENTALER HEADER -->
+    <header class="monument-header">
+      <div class="spqr-badge">
+        <span class="laurel">❦</span>
+        <span>SENATVS POPVLVSQVE ROMANVS · FASTI ANTIATES</span>
+        <span class="laurel">❦</span>
+      </div>
+      <h1 class="monument-title">RÖMISCHER REPUBLIKANISCHER KALENDER</h1>
+      <p class="monument-subtitle">
+        Präjulianisches Kalendersystem (355, 377 oder 378 Tage im 24-Jahres-Zyklus) mit Kalenden, Nonen und Iden,
+        Marktwoche A–H, Tagescharakteren, Konsulatsären (200–1 v. Chr.), frei definierbarem Startanker und Pontifex-Maximus-Schaltkontrolle.
+      </p>
+    </header>
+
+    <!-- SCHNELLNAVIGATION UND LIVE-STATUS -->
+    <nav class="quick-nav" aria-label="Schnellnavigation">
+      <div class="quick-nav-links">
+        <a class="nav-pill accent-gold" href="#heroSection">Aktiver Stichtag</a>
+        <a class="nav-pill accent-gold" href="#configSection">Startanker und Ära</a>
+        <a class="nav-pill accent-lapis" href="#convertersSection">Konverter</a>
+        <a class="nav-pill accent-porphyry" href="#pontifexSection">Pontifex Maximus</a>
+        <a class="nav-pill accent-emerald" href="#fastiSection">Jahrestafeln</a>
+        <a class="nav-pill" href="#docsSection">Regeln und Legende</a>
+      </div>
+      <div class="quick-status-summary" id="quickStatusSummary">—</div>
+    </nav>
+
+    <!-- HERO LIVE / AKTIVER STICHTAG -->
+    <section class="hero-plaque" id="heroSection" aria-label="Aktuelles republikanisches Datum">
+      <div>
+        <div class="hero-label">
+          <span class="pill-live" id="heroModeBadge">AKTIVER STICHTAG</span>
+          <span id="heroWeekdayGreg">—</span>
+        </div>
+        <div class="hero-rep-main" id="heroRepMain">—</div>
+        <div class="hero-latin-long" id="heroLatinLong">—</div>
+        <div class="hero-latin-abbr" id="heroLatinAbbr">—</div>
+
+        <div class="hero-grammar-note" id="heroGrammarNote">—</div>
+
+        <div class="hero-consuls-banner hidden" id="heroConsulsBanner">
+          <div class="hero-consuls-title" id="heroConsulsTitle">AMTIERENDE KONSULN</div>
+          <div class="hero-consuls-names" id="heroConsulsNames">—</div>
+        </div>
+
+        <div class="hero-year-progress">
+          <div class="progress-header">
+            <span id="heroProgressText">—</span>
+            <span id="heroProgressRemain">—</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="heroProgressFill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-meta-grid">
+        <div class="meta-chip">
+          <div class="meta-chip-label">Gewählte Jahresära</div>
+          <div class="meta-chip-val highlight" id="heroEraValue">—</div>
+        </div>
+        <div class="meta-chip chip-porphyry">
+          <div class="meta-chip-label">Marktwoche und Charakter</div>
+          <div class="meta-chip-val highlight" id="heroNundChar">—</div>
+        </div>
+        <div class="meta-chip chip-lapis">
+          <div class="meta-chip-label">Gregorianisches Datum</div>
+          <div class="meta-chip-val" id="heroGregDate">—</div>
+        </div>
+        <div class="meta-chip chip-lapis">
+          <div class="meta-chip-label">Julianisches Datum</div>
+          <div class="meta-chip-val" id="heroJulDate">—</div>
+        </div>
+        <div class="meta-chip chip-emerald">
+          <div class="meta-chip-label">Ab Urbe Condita und Zyklus</div>
+          <div class="meta-chip-val" id="heroAucCycle">—</div>
+        </div>
+        <div class="meta-chip chip-amber">
+          <div class="meta-chip-label">Diokletian und Eigene Ära</div>
+          <div class="meta-chip-val" id="heroDiocCustom">—</div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-sm" id="btnJumpToday">Auf Heute setzen</button>
+          <button class="btn btn-emerald btn-sm" id="btnScrollGlow">Zum leuchtenden Tag in den Tafeln</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARAMETER: FREIER STARTANKER UND JAHRESÄRA -->
+    <section class="panel panel-anchor-era" id="configSection" aria-label="Startanker und Jahresära">
+      <div class="panel-header">
+        <h2 class="panel-title">⚙ Startanker, Jahresära und Eingabekalender</h2>
+        <span class="panel-subtitle">Definieren Sie Startdatum, Zählweise und Bezugskalender vollständig selbst</span>
+      </div>
+
+      <div class="config-split">
+        <!-- Linke Box: Freier Startanker -->
+        <div class="sub-box">
+          <h3 class="sub-box-title">
+            <span>1. Eigener Startanker (1. Principius des Jahres 1 = Marktbuchstabe A)</span>
+            <button class="btn btn-sm" id="btnAnchorTodayMarch">1. März dieses Jahres laden</button>
+          </h3>
+
+          <div class="anchor-row">
+            <div class="field">
+              <label for="anchorDay">Tag (TT)</label>
+              <input type="number" id="anchorDay" min="1" max="31" value="1" />
+            </div>
+            <div class="field">
+              <label for="anchorMonth">Monat (MM)</label>
+              <select id="anchorMonth">
+                <option value="1">01 · Januar</option>
+                <option value="2">02 · Februar</option>
+                <option value="3" selected>03 · März</option>
+                <option value="4">04 · April</option>
+                <option value="5">05 · Mai</option>
+                <option value="6">06 · Juni</option>
+                <option value="7">07 · Juli</option>
+                <option value="8">08 · August</option>
+                <option value="9">09 · September</option>
+                <option value="10">10 · Oktober</option>
+                <option value="11">11 · November</option>
+                <option value="12">12 · Dezember</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="anchorYear">Jahr (JJJJ)</label>
+              <input type="number" id="anchorYear" min="1" max="9999" value="2023" />
+            </div>
+            <div class="field">
+              <label for="anchorBcAd">Zeitrechnung</label>
+              <select id="anchorBcAd">
+                <option value="AD" selected>n. Chr.</option>
+                <option value="BC">v. Chr.</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row-2" style="margin-bottom:10px; align-items:end;">
+            <div class="field">
+              <label for="anchorCalType">Kalendersystem dieses Ankerdatums</label>
+              <select id="anchorCalType">
+                <option value="gregorian" selected>Gregorianischer Kalender (proleptisch vor 1583)</option>
+                <option value="julian">Julianischer Kalender (historischer Standard vor 1583)</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn btn-primary" id="btnApplyAnchor" style="width:100%;">Startanker übernehmen</button>
+            </div>
+          </div>
+
+          <div class="status-note" id="anchorStatusNote">—</div>
+          <p class="field-hint" style="margin:8px 0 0;">
+            <strong>Warum Gregorianisch oder Julianisch?</strong> Vor der gregorianischen Kalenderreform im Oktober 1582 (bzw. je nach Region später) waren Daten historisch julianisch notiert. Wenn Sie dennoch ein Datum vor 1583 im proleptisch-gregorianischen System angeben möchten, wählen Sie dies hier eindeutig aus, damit keine Verwechslung durch die Verschiebung der Schalttage entsteht.
+          </p>
+        </div>
+
+        <!-- Rechte Box: Jahresära und Eingabekalender -->
+        <div class="sub-box">
+          <h3 class="sub-box-title"><span>2. Jahresära und Normal-Eingabesystem</span></h3>
+
+          <div class="field" style="margin-bottom:12px;">
+            <label for="paramEra">Angezeigte und konvertierbare Jahresära</label>
+            <select id="paramEra">
+              <option value="consuls">Konsul-Jahreszählung (200–1 v. Chr. entsprechen 1900–2099)</option>
+              <option value="auc">Ab Urbe Condita (a.u.c. · Gründung Roms 753 v. Chr.)</option>
+              <option value="diocletian">Diokletianische Ära (Start 284 n. Chr. · Wechsel am 1. Iustitius)</option>
+              <option value="christian">Christliche Ära (v. Chr. oder n. Chr.)</option>
+              <option value="custom">Selbstdefinierte Ära (beliebiges Jahr als Jahr 1, mit Jahr 0 davor)</option>
+            </select>
+            <span class="field-hint" id="eraHint"></span>
+          </div>
+
+          <!-- Eingabefeld für selbstdefinierte Ära -->
+          <div class="sub-box hidden" id="customEraConfigBox" style="padding:12px; margin-bottom:12px; border-color:rgba(251,217,126,0.45); background:rgba(226,184,87,0.08);">
+            <div class="field" style="margin-bottom:8px;">
+              <label for="customEraYearInput">Welches christliche Jahr soll als Jahr 1 dieser Ära gelten?</label>
+              <div style="display:flex; gap:8px;">
+                <input type="number" id="customEraYearInput" min="1" max="9999" value="2023" />
+                <select id="customEraBcAd" style="width:105px; flex-shrink:0;">
+                  <option value="AD" selected>n. Chr.</option>
+                  <option value="BC">v. Chr.</option>
+                </select>
+                <button class="btn btn-primary btn-sm" id="btnApplyCustomEra">Setzen</button>
+              </div>
+            </div>
+            <span class="field-hint" id="customEraNote">
+              Direkt vor <strong>Jahr 1</strong> liegt in dieser Ära automatisch das <strong>Jahr 0</strong>, davor Jahr −1, Jahr −2 usw.
+            </span>
+          </div>
+
+          <div class="field">
+            <label for="paramNormalCal">Eingabe-Kalendersystem im Konverter „Normal zu Republikanisch“</label>
+            <select id="paramNormalCal">
+              <option value="gregorian">Gregorianischer Kalender (Standard heute)</option>
+              <option value="julian">Julianischer Kalender (Antike bzw. Ostkirchen-Versatz)</option>
+            </select>
+            <span class="field-hint">
+              Bestimmt, ob Ihre Eingabe im linken Konverter als gregorianisches oder julianisches Datum interpretiert wird. In den Ergebnissen werden stets beide Systeme parallel ausgegeben.
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZWEI-WEGE-DATUMSKONVERTER -->
+    <div class="converters-grid" id="convertersSection">
+      <!-- Normal -> Republikanisch -->
+      <section class="panel panel-norm-rep" aria-label="Konverter Normal zu Republikanisch">
+        <div class="panel-header">
+          <h2 class="panel-title">⇄ Normal zu Republikanisch</h2>
+          <button class="btn btn-lapis btn-sm" id="btnNormToday">Heute laden</button>
+        </div>
+
+        <div class="row-3">
+          <div class="field">
+            <label for="normDay">Tag</label>
+            <input type="number" id="normDay" min="1" max="31" value="17" />
+          </div>
+          <div class="field">
+            <label for="normMonth">Monat</label>
+            <select id="normMonth">
+              <option value="1">1 · Januar</option>
+              <option value="2">2 · Februar</option>
+              <option value="3">3 · März</option>
+              <option value="4">4 · April</option>
+              <option value="5">5 · Mai</option>
+              <option value="6">6 · Juni</option>
+              <option value="7">7 · Juli</option>
+              <option value="8">8 · August</option>
+              <option value="9">9 · September</option>
+              <option value="10">10 · Oktober</option>
+              <option value="11" selected>11 · November</option>
+              <option value="12">12 · Dezember</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="normYear">Jahr (<span id="normCalLabel">Greg.</span>)</label>
+            <div style="display:flex; gap:6px;">
+              <input type="number" id="normYear" min="1" max="9999" value="2026" />
+              <select id="normBcAd" style="width:94px; flex-shrink:0;">
+                <option value="AD" selected>n. Chr.</option>
+                <option value="BC">v. Chr.</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="normInputWarn" class="status-note warn hidden"></div>
+
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-lapis" id="btnConvertNormToRep">In Republikanisch umrechnen und anzeigen</button>
+        </div>
+
+        <div class="conv-result" id="normToRepResult"></div>
+      </section>
+
+      <!-- Republikanisch -> Normal -->
+      <section class="panel panel-rep-norm" aria-label="Konverter Republikanisch zu Normal">
+        <div class="panel-header">
+          <h2 class="panel-title">⇄ Republikanisch zu Normal</h2>
+          <button class="btn btn-sm" id="btnRepSyncCurrent">Aktiven Tag laden</button>
+        </div>
+
+        <div class="row-2" style="margin-bottom:10px;">
+          <div class="field">
+            <label for="repDay">Republikanischer Tag</label>
+            <input type="number" id="repDay" min="1" max="31" value="1" />
+          </div>
+          <div class="field">
+            <label for="repMonth">Republikanischer Monat</label>
+            <select id="repMonth"></select>
+          </div>
+        </div>
+
+        <div class="field" id="repYearNumericWrap">
+          <label for="repYearInput" id="repYearLabel">Jahr (gemäß gewählter Ära)</label>
+          <div style="display:flex; gap:6px;">
+            <input type="number" id="repYearInput" value="2026" />
+            <select id="repYearBcAd" class="hidden" style="width:94px; flex-shrink:0;">
+              <option value="AD" selected>n. Chr.</option>
+              <option value="BC">v. Chr.</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field hidden" id="repConsulWrap">
+          <label for="repConsulSelect">Konsulpaar wählen (200–1 v. Chr. entsprechen 1900–2099)</label>
+          <select id="repConsulSelect"></select>
+          <span class="field-hint hidden" id="repConsulOutOfRangeHint" style="color:var(--amber-bright);">
+            Der aktive Stichtag liegt außerhalb der Spanne 1900–2099. Wählen Sie hier ein Konsulpaar aus dem Bereich 200–1 v. Chr. für eine Rückrechnung.
+          </span>
+        </div>
+
+        <div id="repInputWarn" class="status-note warn hidden"></div>
+
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="btnConvertRepToNorm">In Normales Datum umrechnen und anzeigen</button>
+        </div>
+
+        <div class="conv-result" id="repToNormResult"></div>
+      </section>
+    </div>
+
+    <!-- PONTIFEX MAXIMUS SCHALTKONTROLLE -->
+    <section class="panel panel-pontifex" id="pontifexSection" aria-label="Pontifex Maximus Schaltjahr-Kontrolle">
+      <div class="panel-header">
+        <h2 class="panel-title">👑 Pontifex Maximus · Schaltjahre selbst festlegen</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-sm" id="btnPontifexWindowPrev">◀ 24 Jahre früher</button>
+          <button class="btn btn-sm" id="btnPontifexWindowCur">Um aktuelles Jahr</button>
+          <button class="btn btn-sm" id="btnPontifexWindowNext">24 Jahre später ▶</button>
+          <button class="btn btn-rubrica btn-sm" id="btnPontifexReset">Alle Abweichungen zurücksetzen</button>
+        </div>
+      </div>
+
+      <div class="pontifex-toolbar">
+        <div class="pontifex-stats" id="pontifexStats"></div>
+
+        <div class="pontifex-legend-row">
+          <span class="p-swatch std-355">Gemeinjahr (355 T.)</span>
+          <span class="p-swatch std-377">Kl. Schaltjahr (377 T.)</span>
+          <span class="p-swatch std-378">Gr. Schaltjahr (378 T.)</span>
+          <span class="p-swatch mod-longer">Pontifex: Verlängert (+ Tage)</span>
+          <span class="p-swatch mod-shorter">Pontifex: Verkürzt (− Tage)</span>
+          <span class="p-swatch active-yr">Aktives Stichtag-Jahr</span>
+        </div>
+
+        <span class="field-hint">
+          Als <strong>Pontifex Maximus</strong> dürfen Sie jedes Jahr <strong>ab Beginn des Startankers (Jahr 1 und alle Folgejahre)</strong> beliebig vom 24-Jahres-Standardzyklus abweichend als Gemeinjahr (355 Tage), kleines Schaltjahr (377 Tage) oder großes Schaltjahr (378 Tage) festlegen. Jahre vor dem Startanker bleiben historisch unveränderbar.
+        </span>
+
+        <div class="pontifex-export-bar">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-emerald btn-sm" id="btnExportPontifexJson">Anpassungen als JSON exportieren</button>
+            <button class="btn btn-sm" id="btnExportPontifexCsv">Als CSV-Tabelle exportieren</button>
+            <button class="btn btn-sm" id="btnCopyPontifexSummary">Zusammenfassung kopieren</button>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <input type="file" id="importPontifexFile" accept=".json,application/json" class="hidden" />
+            <button class="btn btn-lapis btn-sm" id="btnImportPontifexJson">JSON-Anpassung importieren</button>
+          </div>
+        </div>
+        <div id="pontifexExportStatus" class="status-note ok hidden"></div>
+      </div>
+
+      <div class="pontifex-grid" id="pontifexGrid"></div>
+    </section>
+
+    <!-- 12 / 13 FASTI-TAFELN -->
+    <section class="panel panel-fasti" id="fastiSection" aria-label="Tafeln des republikanischen Jahres">
+      <div class="panel-header">
+        <h2 class="panel-title">🏛 Fasti Rei Publicae · Jahrestafeln</h2>
+        <span class="panel-subtitle">Klicken Sie auf einen beliebigen Tag in einer der Tafeln, um ihn zu inspizieren und als Stichtag zu laden</span>
+      </div>
+
+      <div class="tablets-toolbar">
+        <div class="year-nav">
+          <button class="btn btn-sm" id="btnPrevRepYear">◀ Vorheriges Jahr</button>
+          <button class="btn btn-sm" id="btnNextRepYear">Nächstes Jahr ▶</button>
+        </div>
+
+        <div class="year-summary">
+          <div class="year-summary-title" id="tabletsYearTitle">—</div>
+          <div class="year-summary-sub" id="tabletsYearSub">—</div>
+        </div>
+
+        <div class="year-nav">
+          <button class="btn btn-primary btn-sm" id="btnTabletsToday">Aktuelles Jahr und Tag</button>
+          <button class="btn btn-emerald btn-sm" id="btnExportYearCsv">Jahr als CSV exportieren</button>
+        </div>
+      </div>
+
+      <div class="tablets-filterbar">
+        <div class="filter-chips" id="tabletFilterChips">
+          <button class="filter-chip active" data-filter="all">Alle Tage</button>
+          <button class="filter-chip" data-filter="nundinae">Markttage (Nundinae A)</button>
+          <button class="filter-chip" data-filter="feasts">Nur Festtage (Feriae)</button>
+          <button class="filter-chip" data-filter="markers">Kalenden, Nonen und Iden</button>
+          <button class="filter-chip" data-filter="legal">Gerichts- und Versammlungstage (F und C)</button>
+        </div>
+        <span class="field-hint" id="tabletFilterCount">Alle Tage hervorgehoben</span>
+      </div>
+
+      <div class="tablets-grid" id="tabletsGrid"></div>
+    </section>
+
+    <!-- DOKUMENTATION UND LEGENDE -->
+    <section class="panel panel-docs" id="docsSection" aria-label="Dokumentation und Legende">
+      <div class="panel-header">
+        <h2 class="panel-title">📜 Aufbau, Grammatik und Historische Regeln</h2>
+        <span class="panel-subtitle">Präjulianisches System · 24-Jahres-Zyklus · Tagescharaktere · Jahresären</span>
+      </div>
+
+      <div class="legend-grid">
+        <div class="legend-box">
+          <h4>1. Monate und Monatslängen</h4>
+          <ul class="legend-list">
+            <li><strong>1. Principius</strong> (Martius): 31 Tage (Nonen 7., Iden 15.)</li>
+            <li><strong>2. Iuventius</strong> (Aprilis): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>3. Veccelius</strong> (Maius): 31 Tage (Nonen 7., Iden 15.)</li>
+            <li><strong>4. Solstitius</strong> (Iunius): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>5. Communius</strong> (Quinctilis): 31 Tage (Nonen 7., Iden 15.)</li>
+            <li><strong>6. Imperius</strong> (Sextilis): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>7. Iustitius</strong> (September): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>8. Novarius</strong> (October): 31 Tage (Nonen 7., Iden 15.)</li>
+            <li><strong>9. Virtutius</strong> (November): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>10. Dominicus</strong> (December): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>11. Undecimber</strong> (Ianuarius): 29 Tage (Nonen 5., Iden 13.)</li>
+            <li><strong>12. Terminalius</strong> (Februarius): 28 Tage (<strong>23 Tage</strong> im Schaltjahr)</li>
+            <li><strong>13. Mensis Intercalaris</strong>: <strong>27</strong> oder <strong>28</strong> Tage (nur im Schaltjahr nach dem 23. Terminalius)</li>
+          </ul>
+        </div>
+
+        <div class="legend-box lb-lapis">
+          <h4>2. Der 24-Jahres-Schaltzyklus</h4>
+          <ul class="legend-list">
+            <li><strong>Jahre 1–16:</strong> Strenger 4-Jahres-Takt <span class="inline-badge">355 · 377 · 355 · 378</span> (4 mal 1.465 = 5.860 Tage).</li>
+            <li><strong>Jahre 17–24:</strong> Nur noch kleine Schaltjahre (377) in Jahr 18, 20 und 22; die <strong>allerletzte Schaltung im 24. Jahr entfällt</strong> (<span class="inline-badge">355 · 377 · 355 · 377 · 355 · 377 · 355 · 355</span> = 2.906 Tage).</li>
+            <li><strong>Gesamtsumme:</strong> 5.860 plus 2.906 = <strong>8.766 Tage</strong> in 24 Jahren, also exakt <strong>365,25 Tage pro Jahr</strong> (identisch mit dem julianischen Mittel).</li>
+            <li>Innerhalb der ersten 16 Jahre eilt der Kalender bis zu +16 Tage voraus und holt diese Differenz in den Jahren 17–24 wieder exakt auf.</li>
+            <li><strong>Pontifex Maximus:</strong> Abweichende Schaltungen dürfen ausschließlich für Jahre ab dem gewählten Startanker (Jahr 1 und Folgejahre) vorgenommen werden.</li>
+          </ul>
+        </div>
+
+        <div class="legend-box lb-emerald">
+          <h4>3. Marktwoche (A–H) und Tagescharaktere</h4>
+          <ul class="legend-list">
+            <li><strong>Marktwoche (Nundinae):</strong> Fortlaufender 8-Tage-Zyklus <strong>A–H</strong> ohne jede Unterbrechung, beginnend mit <strong>A</strong> am 1. Principius des Startjahres 1.</li>
+            <li><span class="inline-badge">F</span> <strong>Dies Fastus:</strong> Gerichtstage (Rechtsprechung des Prätors erlaubt).</li>
+            <li><span class="inline-badge">C</span> <strong>Dies Comitialis:</strong> Volksversammlungen und Rechtsprechung erlaubt.</li>
+            <li><span class="inline-badge">N</span> <strong>Dies Nefastus:</strong> Keine Amtshandlungen und keine Gerichte (religiös gebunden).</li>
+            <li><span class="inline-badge">NP</span> <strong>Nefastus Parte oder Feriae:</strong> Hohe Staats- und Opferfeste (alle Iden tragen das Zeichen NP).</li>
+            <li><span class="inline-badge">EN</span> <strong>Endotercisus:</strong> Morgens und abends nefastus, nur mittags nach dem Opfer fastus.</li>
+            <li><span class="inline-badge">FP</span> <strong>Fastus Principio:</strong> Am Vormittag fastus (z. B. 19. Imperius).</li>
+            <li><span class="inline-badge">QRCF / QSDF</span> <strong>Spezialtage:</strong> 24. Principius und 24. Veccelius (<em>Quando Rex Comitiavit Fas</em>) sowie 15. Solstitius (<em>Quando Stercus Delatum Fas</em>).</li>
+          </ul>
+        </div>
+
+        <div class="legend-box lb-porphyry">
+          <h4>4. Offizielle Schreibung und Jahresären</h4>
+          <ul class="legend-list">
+            <li><strong>Inklusivzählung:</strong> Römische Daten zählen rückwärts bis zu den nächsten <em>Kalendae</em> (1.), <em>Nonae</em> (5. bzw. 7.) oder <em>Idus</em> (13. bzw. 15.) inklusive Ausgangs- und Zieltag (<em>ante diem tertium ...</em> = 2 Tage vorher; <em>pridie ...</em> = 1 Tag vorher).</li>
+            <li><strong>Konsul-Jahreszählung (200–1 v. Chr.):</strong> Für die Jahre 1900–2099 erscheinen alle 200 ordentlichen Konsulpaare der Jahre <strong>200–1 v. Chr.</strong> im klassischen Ablativus absolutus (<em>coss.</em> bzw. <em>cos.</em> bei Alleinkonsulat).</li>
+            <li><strong>Ab Urbe Condita (a.u.c.):</strong> Römische Jahreszählung seit der traditionellen Gründung Roms 753 v. Chr.</li>
+            <li><strong>Diokletianische Ära:</strong> Historisch ab 29. August 284 n. Chr.; der Jahreswechsel liegt im republikanischen Kalender an den Kalenden des nächstgelegenen Monats: <strong>1. Iustitius</strong> (7. Monat).</li>
+            <li><strong>Christliche und Selbstdefinierte Ära:</strong> Klassische Zählung (v. Chr. bzw. n. Chr. ohne Jahr 0) oder eine frei gewählte Ära, in der ein beliebiges Jahr als <strong>Jahr 1</strong> gilt und direkt davor das <strong>Jahr 0</strong> liegt.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- WARNDIALOG ZUM ZURÜCKSETZEN DER PONTIFEX-SCHALTUNGEN -->
+  <div class="modal-backdrop hidden" id="resetModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="modal-dialog">
+      <h3 class="modal-title" id="resetModalTitle">⚠ Schaltjahres-Anpassungen zurücksetzen?</h3>
+      <div class="modal-body" id="resetModalBody"></div>
+      <div class="modal-actions">
+        <button class="btn btn-sm" id="btnCancelResetModal">Abbrechen</button>
+        <button class="btn btn-rubrica btn-sm" id="btnConfirmResetModal">Ja, alle Abweichungen verwerfen</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* =========================================================================
+       * 1. MONATSDEFINITIONEN, LATEINISCHE DEKLINATIONEN UND TAGESCHARAKTERE
+       * ========================================================================= */
+      const MONTHS = [
+        {
+          index: 0,
+          numRoman: "I",
+          name: "Principius",
+          histName: "Martius",
+          abbr: "Princ.",
+          ablPl: "Principiis",
+          accPl: "Principias",
+          lengthCommon: 31,
+          lengthInterc: 31,
+          nones: 7,
+          ides: 15,
+          chars: [
+            "NP","F","F","F","F","F","F","F","C","C","C","C","EN","NP","NP",
+            "F","NP","C","NP","C","C","N","NP","QRCF","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            1: "Feriae Marti",
+            14: "Equirria",
+            15: "Anna Perenna",
+            17: "Liberalia",
+            19: "Quinquatrus",
+            23: "Tubilustrium"
+          }
+        },
+        {
+          index: 1,
+          numRoman: "II",
+          name: "Iuventius",
+          histName: "Aprilis",
+          abbr: "Iuv.",
+          ablPl: "Iuventiis",
+          accPl: "Iuventias",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "N","C","C","C","N","N","N","N","N","N","N","N","NP","N","NP",
+            "N","N","N","NP","N","NP","N","NP","C","NP","C","C","C","C"
+          ],
+          feasts: {
+            1: "Veneralia",
+            5: "Megalesia",
+            15: "Fordicidia",
+            19: "Cerialia",
+            21: "Parilia",
+            23: "Vinalia Priora",
+            25: "Robigalia"
+          }
+        },
+        {
+          index: 2,
+          numRoman: "III",
+          name: "Veccelius",
+          histName: "Maius",
+          abbr: "Vecc.",
+          ablPl: "Vecceliis",
+          accPl: "Veccelias",
+          lengthCommon: 31,
+          lengthInterc: 31,
+          nones: 7,
+          ides: 15,
+          chars: [
+            "N","F","C","C","C","C","N","F","N","C","N","NP","N","C","NP",
+            "F","C","C","C","C","NP","N","NP","QRCF","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            9: "Lemuria",
+            11: "Lemuria",
+            13: "Lemuria",
+            15: "Mercuralia",
+            21: "Agonalia",
+            23: "Tubilustrium"
+          }
+        },
+        {
+          index: 3,
+          numRoman: "IV",
+          name: "Solstitius",
+          histName: "Iunius",
+          abbr: "Solst.",
+          ablPl: "Solstitiis",
+          accPl: "Solstitias",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "N","F","C","C","N","N","N","N","N","N","NP","N","NP","N","QSDF",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            1: "Kal. Fabariae",
+            9: "Vestalia",
+            11: "Matralia",
+            24: "Fors Fortuna"
+          }
+        },
+        {
+          index: 4,
+          numRoman: "V",
+          name: "Communius",
+          histName: "Quinctilis",
+          abbr: "Comm.",
+          ablPl: "Communiis",
+          accPl: "Communias",
+          lengthCommon: 31,
+          lengthInterc: 31,
+          nones: 7,
+          ides: 15,
+          chars: [
+            "N","N","N","N","NP","N","N","N","C","C","C","C","C","C","NP",
+            "F","F","F","NP","C","NP","C","NP","N","NP","C","C","C","C","C","C"
+          ],
+          feasts: {
+            5: "Poplifugia",
+            7: "Nonae Caprotinae",
+            19: "Lucaria",
+            21: "Lucaria",
+            23: "Neptunalia",
+            25: "Furrinalia"
+          }
+        },
+        {
+          index: 5,
+          numRoman: "VI",
+          name: "Imperius",
+          histName: "Sextilis",
+          abbr: "Imp.",
+          ablPl: "Imperiis",
+          accPl: "Imperias",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "F","F","C","C","F","F","F","F","NP","C","C","C","NP","F","C",
+            "C","NP","C","FP","C","NP","EN","NP","C","NP","C","NP","C","C"
+          ],
+          feasts: {
+            13: "Vertumnalia",
+            17: "Portunalia",
+            19: "Vinalia Rustica",
+            21: "Consualia",
+            23: "Volcanalia",
+            25: "Opiconsivia",
+            27: "Volturnalia"
+          }
+        },
+        {
+          index: 6,
+          numRoman: "VII",
+          name: "Iustitius",
+          histName: "September",
+          abbr: "Iust.",
+          ablPl: "Iustitiis",
+          accPl: "Iustitias",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "F","F","C","C","F","C","C","C","C","C","C","C","NP","F","N",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            1: "Kal. Diocletiani",
+            13: "Epulum Iovis"
+          }
+        },
+        {
+          index: 7,
+          numRoman: "VIII",
+          name: "Novarius",
+          histName: "October",
+          abbr: "Nov.",
+          ablPl: "Novariis",
+          accPl: "Novarias",
+          lengthCommon: 31,
+          lengthInterc: 31,
+          nones: 7,
+          ides: 15,
+          chars: [
+            "N","F","F","F","C","C","F","C","C","C","NP","C","NP","EN","NP",
+            "F","F","F","NP","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            11: "Meditrinalia",
+            13: "Fontinalia",
+            15: "Equus October",
+            19: "Armilustrium"
+          }
+        },
+        {
+          index: 8,
+          numRoman: "IX",
+          name: "Virtutius",
+          histName: "November",
+          abbr: "Virt.",
+          ablPl: "Virtutiis",
+          accPl: "Virtutias",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "F","F","F","F","F","C","C","C","C","C","C","C","NP","F","C",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            13: "Epulum Iovis"
+          }
+        },
+        {
+          index: 9,
+          numRoman: "X",
+          name: "Dominicus",
+          histName: "December",
+          abbr: "Dom.",
+          ablPl: "Dominicis",
+          accPl: "Dominicas",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "N","C","C","C","F","C","C","C","C","C","NP","EN","NP","F","NP",
+            "C","NP","C","NP","C","NP","C","NP","C","C","C","C","C","C"
+          ],
+          feasts: {
+            11: "Agonalia",
+            15: "Consualia",
+            17: "Saturnalia",
+            19: "Opalia",
+            21: "Divalia",
+            23: "Larentalia"
+          }
+        },
+        {
+          index: 10,
+          numRoman: "XI",
+          name: "Undecimber",
+          histName: "Ianuarius",
+          abbr: "Undec.",
+          ablPl: "Undecembribus",
+          accPl: "Undecembres",
+          lengthCommon: 29,
+          lengthInterc: 29,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "F","F","C","C","F","F","F","F","NP","EN","NP","C","NP","EN","NP",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          feasts: {
+            9: "Agonalia",
+            11: "Carmentalia",
+            15: "Carmentalia"
+          }
+        },
+        {
+          index: 11,
+          numRoman: "XII",
+          name: "Terminalius",
+          histName: "Februarius",
+          abbr: "Term.",
+          ablPl: "Terminaliis",
+          accPl: "Terminalias",
+          lengthCommon: 28,
+          lengthInterc: 23,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "N","N","N","N","N","N","N","N","N","N","N","N","NP","N","NP",
+            "EN","NP","C","C","C","F","C","NP","N","C","C","NP","C"
+          ],
+          feasts: {
+            13: "Parentalia",
+            15: "Lupercalia",
+            17: "Quirinalia",
+            21: "Feralia",
+            22: "Caristia",
+            23: "Terminalia",
+            24: "Regifugium",
+            27: "Equirria"
+          }
+        },
+        {
+          index: 12,
+          numRoman: "XIII",
+          name: "Mensis Intercalaris",
+          histName: "Mercedonius (Schaltmonat)",
+          abbr: "Interc.",
+          ablPl: "Intercalaribus",
+          accPl: "Intercalares",
+          lengthCommon: 0,
+          lengthInterc: 27,
+          nones: 5,
+          ides: 13,
+          chars: [
+            "N","C","C","C","F","C","C","C","C","C","C","C","NP","C","C",
+            "C","C","C","C","C","C","C","N","C","C","NP","C","C"
+          ],
+          feasts: {
+            13: "Idus Interc.",
+            23: "Regifugium",
+            26: "Equirria"
+          }
+        }
+      ];
+
+      const CHAR_MEANINGS = {
+        "F": "Dies Fastus (Gerichte und Rechtsgeschäfte erlaubt)",
+        "C": "Dies Comitialis (Volksversammlung und Gerichte erlaubt)",
+        "N": "Dies Nefastus (keine Gerichte und keine Amtshandlungen, religiös gebunden)",
+        "NP": "Dies Nefastus Parte bzw. Feriae Publicae (hoher Staats- und Opferfesttag)",
+        "EN": "Endotercisus (morgens und abends nefastus, mittags nach dem Opfer fastus)",
+        "QRCF": "Quando Rex Comitiavit Fas (fastus nach dem Opfer des Rex Sacrorum)",
+        "QSDF": "Quando Stercus Delatum Fas (fastus nach Reinigung des Vestatempels)",
+        "FP": "Fastus Principio (Vormittag fastus)"
+      };
+
+      const LATIN_ORDINALS_ACC = {
+        3: "tertium",
+        4: "quartum",
+        5: "quintum",
+        6: "sextum",
+        7: "septimum",
+        8: "octavum",
+        9: "nonum",
+        10: "decimum",
+        11: "undecimum",
+        12: "duodecimum",
+        13: "tertium decimum",
+        14: "quartum decimum",
+        15: "quintum decimum",
+        16: "sextum decimum",
+        17: "septimum decimum",
+        18: "duodevicesimum",
+        19: "undevicesimum"
+      };
+
+      const ROMAN_NUMERALS = {
+        3: "III", 4: "IV", 5: "V", 6: "VI", 7: "VII", 8: "VIII",
+        9: "IX", 10: "X", 11: "XI", 12: "XII", 13: "XIII",
+        14: "XIV", 15: "XV", 16: "XVI", 17: "XVII", 18: "XVIII", 19: "XIX"
+      };
+
+      const NUNDINAL_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+      const WEEKDAYS_DE = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+      const GREG_MONTHS_DE = [
+        "Januar", "Februar", "März", "April", "Mai", "Juni",
+        "Juli", "August", "September", "Oktober", "November", "Dezember"
+      ];
+
+      /* =========================================================================
+       * 2. ALLE 200 OFFIZIELLEN RÖMISCHEN KONSULPAARE 200–1 v. Chr. (1900–2099)
+       * ========================================================================= */
+      const CONSULS_RAW = [
+        [200, "P. Sulpicius Galba Maximus II", "C. Aurelius Cotta", "P. Sulpicio Galba II et C. Aurelio Cotta coss."],
+        [199, "L. Cornelius Lentulus", "P. Villius Tappulus", "L. Cornelio Lentulo et P. Villio Tappulo coss."],
+        [198, "Sex. Aelius Paetus Catus", "T. Quinctius Flamininus", "Sex. Aelio Paeto et T. Quinctio Flaminino coss."],
+        [197, "C. Cornelius Cethegus", "Q. Minucius Rufus", "C. Cornelio Cethego et Q. Minucio Rufo coss."],
+        [196, "L. Furius Purpureo", "M. Claudius Marcellus", "L. Furio Purpureone et M. Claudio Marcello coss."],
+        [195, "L. Valerius Flaccus", "M. Porcius Cato", "L. Valerio Flacco et M. Porcio Catone coss."],
+        [194, "P. Cornelius Scipio Africanus II", "Ti. Sempronius Longus", "P. Cornelio Scipione II et Ti. Sempronio Longo coss."],
+        [193, "L. Cornelius Merula", "Q. Minucius Thermus", "L. Cornelio Merula et Q. Minucio Thermo coss."],
+        [192, "L. Quinctius Flamininus", "Cn. Domitius Ahenobarbus", "L. Quinctio Flaminino et Cn. Domitio Ahenobarbo coss."],
+        [191, "P. Cornelius Scipio Nasica", "M'. Acilius Glabrio", "P. Cornelio Scipione Nasica et M'. Acilio Glabrione coss."],
+        [190, "L. Cornelius Scipio Asiaticus", "C. Laelius", "L. Cornelio Scipione et C. Laelio coss."],
+        [189, "M. Fulvius Nobilior", "Cn. Manlius Vulso", "M. Fulvio Nobiliore et Cn. Manlio Vulsone coss."],
+        [188, "M. Valerius Messalla", "C. Livius Salinator", "M. Valerio Messalla et C. Livio Salinatore coss."],
+        [187, "M. Aemilius Lepidus", "C. Flaminius", "M. Aemilio Lepido et C. Flaminio coss."],
+        [186, "Sp. Postumius Albinus", "Q. Marcius Philippus", "Sp. Postumio Albino et Q. Marcio Philippo coss."],
+        [185, "Ap. Claudius Pulcher", "M. Sempronius Tuditanus", "Ap. Claudio Pulchro et M. Sempronio Tuditano coss."],
+        [184, "P. Claudius Pulcher", "L. Porcius Licinus", "P. Claudio Pulchro et L. Porcio Licino coss."],
+        [183, "M. Claudius Marcellus", "Q. Fabius Labeo", "M. Claudio Marcello et Q. Fabio Labeone coss."],
+        [182, "Cn. Baebius Tamphilus", "L. Aemilius Paullus", "Cn. Baebio Tamphilo et L. Aemilio Paullo coss."],
+        [181, "P. Cornelius Cethegus", "M. Baebius Tamphilus", "P. Cornelio Cethego et M. Baebio Tamphilo coss."],
+        [180, "A. Postumius Albinus Luscus", "C. Calpurnius Piso", "A. Postumio Albino et C. Calpurnio Pisone coss."],
+        [179, "Q. Fulvius Flaccus", "L. Manlius Acidinus Fulvianus", "Q. Fulvio Flacco et L. Manlio Acidino coss."],
+        [178, "M. Iunius Brutus", "A. Manlius Vulso", "M. Iunio Bruto et A. Manlio Vulsone coss."],
+        [177, "C. Claudius Pulcher", "Ti. Sempronius Gracchus", "C. Claudio Pulchro et Ti. Sempronio Graccho coss."],
+        [176, "Cn. Cornelius Scipio Hispallus", "Q. Petillius Spurinus", "Cn. Cornelio Scipione et Q. Petillio Spurino coss."],
+        [175, "P. Mucius Scaevola", "M. Aemilius Lepidus II", "P. Mucio Scaevola et M. Aemilio Lepido II coss."],
+        [174, "Sp. Postumius Albinus Paullulus", "Q. Mucius Scaevola", "Sp. Postumio Albino et Q. Mucio Scaevola coss."],
+        [173, "L. Postumius Albinus", "M. Popillius Laenas", "L. Postumio Albino et M. Popillio Laenate coss."],
+        [172, "C. Popillius Laenas", "P. Aelius Ligus", "C. Popillio Laenate et P. Aelio Ligure coss."],
+        [171, "P. Licinius Crassus", "C. Cassius Longinus", "P. Licinio Crasso et C. Cassio Longino coss."],
+        [170, "A. Hostilius Mancinus", "A. Atilius Serranus", "A. Hostilio Mancino et A. Atilio Serrano coss."],
+        [169, "Q. Marcius Philippus II", "Cn. Servilius Caepio", "Q. Marcio Philippo II et Cn. Servilio Caepione coss."],
+        [168, "L. Aemilius Paullus Macedonicus II", "C. Licinius Crassus", "L. Aemilio Paullo II et C. Licinio Crasso coss."],
+        [167, "Q. Aelius Paetus", "M. Iunius Pennus", "Q. Aelio Paeto et M. Iunio Penno coss."],
+        [166, "M. Claudius Marcellus", "C. Sulpicius Galus", "M. Claudio Marcello et C. Sulpicio Galo coss."],
+        [165, "T. Manlius Torquatus", "Cn. Octavius", "T. Manlio Torquato et Cn. Octavio coss."],
+        [164, "A. Manlius Torquatus", "Q. Cassius Longinus", "A. Manlio Torquato et Q. Cassio Longino coss."],
+        [163, "Ti. Sempronius Gracchus II", "M'. Iuventius Thalna", "Ti. Sempronio Graccho II et M'. Iuventio Thalna coss."],
+        [162, "P. Cornelius Scipio Nasica Corculum", "C. Marcius Figulus", "P. Cornelio Scipione Nasica et C. Marcio Figulo coss."],
+        [161, "M. Valerius Messalla", "C. Fannius Strabo", "M. Valerio Messalla et C. Fannio Strabone coss."],
+        [160, "L. Anicius Gallus", "M. Cornelius Cethegus", "L. Anicio Gallo et M. Cornelio Cethego coss."],
+        [159, "Cn. Cornelius Dolabella", "M. Fulvius Nobilior", "Cn. Cornelio Dolabella et M. Fulvio Nobiliore coss."],
+        [158, "M. Aemilius Lepidus", "C. Popillius Laenas II", "M. Aemilio Lepido et C. Popillio Laenate II coss."],
+        [157, "Sex. Iulius Caesar", "L. Aurelius Orestes", "Sex. Iulio Caesare et L. Aurelio Oreste coss."],
+        [156, "L. Cornelius Lentulus Lupus", "C. Marcius Figulus II", "L. Cornelio Lentulo Lupo et C. Marcio Figulo II coss."],
+        [155, "P. Cornelius Scipio Nasica Corculum II", "M. Claudius Marcellus II", "P. Cornelio Scipione II et M. Claudio Marcello II coss."],
+        [154, "Q. Opimius", "L. Postumius Albinus", "Q. Opimio et L. Postumio Albino coss."],
+        [153, "Q. Fulvius Nobilior", "T. Annius Luscus", "Q. Fulvio Nobiliore et T. Annio Lusco coss."],
+        [152, "M. Claudius Marcellus III", "L. Valerius Flaccus", "M. Claudio Marcello III et L. Valerio Flacco coss."],
+        [151, "L. Licinius Lucullus", "A. Postumius Albinus", "L. Licinio Lucullo et A. Postumio Albino coss."],
+        [150, "T. Quinctius Flamininus", "M'. Acilius Balbus", "T. Quinctio Flaminino et M'. Acilio Balbo coss."],
+        [149, "L. Marcius Censorinus", "M'. Manilius", "L. Marcio Censorino et M'. Manilio coss."],
+        [148, "Sp. Postumius Albinus Magnus", "L. Calpurnius Piso Caesoninus", "Sp. Postumio Albino et L. Calpurnio Pisone coss."],
+        [147, "P. Cornelius Scipio Aemilianus Africanus", "C. Livius Drusus", "P. Cornelio Scipione Aemiliano et C. Livio Druso coss."],
+        [146, "Cn. Cornelius Lentulus", "L. Mummius Achaicus", "Cn. Cornelio Lentulo et L. Mummio coss."],
+        [145, "Q. Fabius Maximus Aemilianus", "L. Hostilius Mancinus", "Q. Fabio Maximo et L. Hostilio Mancino coss."],
+        [144, "Ser. Sulpicius Galba", "L. Aurelius Cotta", "Ser. Sulpicio Galba et L. Aurelio Cotta coss."],
+        [143, "Ap. Claudius Pulcher", "Q. Caecilius Metellus Macedonicus", "Ap. Claudio Pulchro et Q. Caecilio Metello coss."],
+        [142, "L. Caecilius Metellus Calvus", "Q. Fabius Maximus Servilianus", "L. Caecilio Metello et Q. Fabio Maximo coss."],
+        [141, "Cn. Servilius Caepio", "Q. Pompeius", "Cn. Servilio Caepione et Q. Pompeio coss."],
+        [140, "C. Laelius Sapiens", "Q. Servilius Caepio", "C. Laelio et Q. Servilio Caepione coss."],
+        [139, "Cn. Calpurnius Piso", "M. Popillius Laenas", "Cn. Calpurnio Pisone et M. Popillio Laenate coss."],
+        [138, "P. Cornelius Scipio Nasica Serapio", "D. Iunius Brutus Callaicus", "P. Cornelio Scipione Nasica et D. Iunio Bruto coss."],
+        [137, "M. Aemilius Lepidus Porcina", "C. Hostilius Mancinus", "M. Aemilio Lepido et C. Hostilio Mancino coss."],
+        [136, "L. Furius Philus", "Sex. Atilius Serranus", "L. Furio Philo et Sex. Atilio Serrano coss."],
+        [135, "Ser. Fulvius Flaccus", "Q. Calpurnius Piso", "Ser. Fulvio Flacco et Q. Calpurnio Pisone coss."],
+        [134, "P. Cornelius Scipio Aemilianus Africanus II", "C. Fulvius Flaccus", "P. Cornelio Scipione Aemiliano II et C. Fulvio Flacco coss."],
+        [133, "P. Mucius Scaevola", "L. Calpurnius Piso Frugi", "P. Mucio Scaevola et L. Calpurnio Pisone coss."],
+        [132, "P. Popillius Laenas", "P. Rupilius", "P. Popillio Laenate et P. Rupilio coss."],
+        [131, "P. Licinius Crassus Dives Mucianus", "L. Valerius Flaccus", "P. Licinio Crasso et L. Valerio Flacco coss."],
+        [130, "L. Cornelius Lentulus", "M. Perperna", "L. Cornelio Lentulo et M. Perperna coss."],
+        [129, "C. Sempronius Tuditanus", "M'. Aquillius", "C. Sempronio Tuditano et M'. Aquillio coss."],
+        [128, "Cn. Octavius", "T. Annius Rufus", "Cn. Octavio et T. Annio Rufo coss."],
+        [127, "L. Cassius Longinus Ravilla", "L. Cornelius Cinna", "L. Cassio Longino et L. Cornelio Cinna coss."],
+        [126, "M. Aemilius Lepidus", "L. Aurelius Orestes", "M. Aemilio Lepido et L. Aurelio Oreste coss."],
+        [125, "M. Plautius Hypsaeus", "M. Fulvius Flaccus", "M. Plautio Hypsaeo et M. Fulvio Flacco coss."],
+        [124, "C. Cassius Longinus", "C. Sextius Calvinus", "C. Cassio Longino et C. Sextio Calvino coss."],
+        [123, "Q. Caecilius Metellus Balearicus", "T. Quinctius Flamininus", "Q. Caecilio Metello et T. Quinctio Flaminino coss."],
+        [122, "Cn. Domitius Ahenobarbus", "C. Fannius", "Cn. Domitio Ahenobarbo et C. Fannio coss."],
+        [121, "L. Opimius", "Q. Fabius Maximus Allobrogicus", "L. Opimio et Q. Fabio Maximo coss."],
+        [120, "P. Manilius", "C. Papirius Carbo", "P. Manilio et C. Papirio Carbone coss."],
+        [119, "L. Caecilius Metellus Dalmaticus", "L. Aurelius Cotta", "L. Caecilio Metello et L. Aurelio Cotta coss."],
+        [118, "M. Porcius Cato", "Q. Marcius Rex", "M. Porcio Catone et Q. Marcio Rege coss."],
+        [117, "L. Caecilius Metellus Diadematus", "Q. Mucius Scaevola Augur", "L. Caecilio Metello et Q. Mucio Scaevola coss."],
+        [116, "C. Licinius Geta", "Q. Fabius Maximus Eburnus", "C. Licinio Geta et Q. Fabio Maximo coss."],
+        [115, "M. Aemilius Scaurus", "M. Caecilius Metellus", "M. Aemilio Scauro et M. Caecilio Metello coss."],
+        [114, "M'. Acilius Balbus", "C. Porcius Cato", "M'. Acilio Balbo et C. Porcio Catone coss."],
+        [113, "C. Caecilius Metellus Caprarius", "Cn. Papirius Carbo", "C. Caecilio Metello et Cn. Papirio Carbone coss."],
+        [112, "M. Livius Drusus", "L. Calpurnius Piso Caesoninus", "M. Livio Druso et L. Calpurnio Pisone coss."],
+        [111, "P. Cornelius Scipio Nasica Serapio", "L. Calpurnius Bestia", "P. Cornelio Scipione Nasica et L. Calpurnio Bestia coss."],
+        [110, "M. Minucius Rufus", "Sp. Postumius Albinus", "M. Minucio Rufo et Sp. Postumio Albino coss."],
+        [109, "Q. Caecilius Metellus Numidicus", "M. Iunius Silanus", "Q. Caecilio Metello et M. Iunio Silano coss."],
+        [108, "Ser. Sulpicius Galba", "Q. (oder L.) Hortensius", "Ser. Sulpicio Galba et Q. Hortensio coss."],
+        [107, "L. Cassius Longinus Ravilla", "C. Marius", "L. Cassio Longino et C. Mario coss."],
+        [106, "Q. Servilius Caepio", "C. Atilius Serranus", "Q. Servilio Caepione et C. Atilio Serrano coss."],
+        [105, "P. Rutilius Rufus", "Cn. Mallius Maximus", "P. Rutilio Rufo et Cn. Mallio Maximo coss."],
+        [104, "C. Marius II", "C. Flavius Fimbria", "C. Mario II et C. Flavio Fimbria coss."],
+        [103, "C. Marius III", "L. Aurelius Orestes", "C. Mario III et L. Aurelio Oreste coss."],
+        [102, "C. Marius IV", "Q. Lutatius Catulus", "C. Mario IV et Q. Lutatio Catulo coss."],
+        [101, "C. Marius V", "M'. Aquillius", "C. Mario V et M'. Aquillio coss."],
+        [100, "C. Marius VI", "L. Valerius Flaccus", "C. Mario VI et L. Valerio Flacco coss."],
+        [99,  "M. Antonius", "A. Postumius Albinus", "M. Antonio et A. Postumio Albino coss."],
+        [98,  "Q. Caecilius Metellus Nepos", "T. Didius", "Q. Caecilio Metello et T. Didio coss."],
+        [97,  "Cn. Cornelius Lentulus", "P. Licinius Crassus", "Cn. Cornelio Lentulo et P. Licinio Crasso coss."],
+        [96,  "Cn. Domitius Ahenobarbus", "C. Cassius Longinus", "Cn. Domitio Ahenobarbo et C. Cassio Longino coss."],
+        [95,  "L. Licinius Crassus", "Q. Mucius Scaevola", "L. Licinio Crasso et Q. Mucio Scaevola coss."],
+        [94,  "C. Coelius Caldus", "L. Domitius Ahenobarbus", "C. Coelio Caldo et L. Domitio Ahenobarbo coss."],
+        [93,  "C. Valerius Flaccus", "M. Herennius", "C. Valerio Flacco et M. Herennio coss."],
+        [92,  "C. Claudius Pulcher", "M. Perperna", "C. Claudio Pulchro et M. Perperna coss."],
+        [91,  "L. Marcius Philippus", "Sex. Iulius Caesar", "L. Marcio Philippo et Sex. Iulio Caesare coss."],
+        [90,  "L. Iulius Caesar", "P. Rutilius Lupus", "L. Iulio Caesare et P. Rutilio Lupo coss."],
+        [89,  "Cn. Pompeius Strabo", "L. Porcius Cato", "Cn. Pompeio Strabone et L. Porcio Catone coss."],
+        [88,  "L. Cornelius Sulla Felix", "Q. Pompeius Rufus", "L. Cornelio Sulla et Q. Pompeio Rufo coss."],
+        [87,  "Cn. Octavius", "L. Cornelius Cinna", "Cn. Octavio et L. Cornelio Cinna coss."],
+        [86,  "L. Cornelius Cinna II", "C. Marius VII", "L. Cornelio Cinna II et C. Mario VII coss."],
+        [85,  "L. Cornelius Cinna III", "Cn. Papirius Carbo", "L. Cornelio Cinna III et Cn. Papirio Carbone coss."],
+        [84,  "Cn. Papirius Carbo II", "L. Cornelius Cinna IV", "Cn. Papirio Carbone II et L. Cornelio Cinna IV coss."],
+        [83,  "L. Cornelius Scipio Asiagenus", "C. Norbanus", "L. Cornelio Scipione et C. Norbano coss."],
+        [82,  "C. Marius (minor)", "Cn. Papirius Carbo III", "C. Mario et Cn. Papirio Carbone III coss."],
+        [81,  "M. Tullius Decula", "Cn. Cornelius Dolabella", "M. Tullio Decula et Cn. Cornelio Dolabella coss."],
+        [80,  "L. Cornelius Sulla Felix II", "Q. Caecilius Metellus Pius", "L. Cornelio Sulla II et Q. Caecilio Metello Pio coss."],
+        [79,  "P. Servilius Vatia Isauricus", "Ap. Claudius Pulcher", "P. Servilio Vatia et Ap. Claudio Pulchro coss."],
+        [78,  "M. Aemilius Lepidus", "Q. Lutatius Catulus", "M. Aemilio Lepido et Q. Lutatio Catulo coss."],
+        [77,  "D. Iunius Brutus", "Mam. Aemilius Lepidus Livianus", "D. Iunio Bruto et Mam. Aemilio Lepido coss."],
+        [76,  "Cn. Octavius", "C. Scribonius Curio", "Cn. Octavio et C. Scribonio Curione coss."],
+        [75,  "L. Octavius", "C. Aurelius Cotta", "L. Octavio et C. Aurelio Cotta coss."],
+        [74,  "L. Licinius Lucullus", "M. Aurelius Cotta", "L. Licinio Lucullo et M. Aurelio Cotta coss."],
+        [73,  "M. Terentius Varro Lucullus", "C. Cassius Longinus", "M. Terentio Varrone et C. Cassio Longino coss."],
+        [72,  "L. Gellius Publicola", "Cn. Cornelius Lentulus Clodianus", "L. Gellio Publicola et Cn. Cornelio Lentulo coss."],
+        [71,  "P. Cornelius Lentulus Sura", "Cn. Aufidius Orestes", "P. Cornelio Lentulo et Cn. Aufidio Oreste coss."],
+        [70,  "Cn. Pompeius Magnus", "M. Licinius Crassus", "Cn. Pompeio Magno et M. Licinio Crasso coss."],
+        [69,  "Q. Hortensius Hortalus", "Q. Caecilius Metellus Creticus", "Q. Hortensio et Q. Caecilio Metello coss."],
+        [68,  "L. Caecilius Metellus", "Q. Marcius Rex", "L. Caecilio Metello et Q. Marcio Rege coss."],
+        [67,  "C. Calpurnius Piso", "M'. Acilius Glabrio", "C. Calpurnio Pisone et M'. Acilio Glabrione coss."],
+        [66,  "M'. Aemilius Lepidus", "L. Volcacius Tullus", "M'. Aemilio Lepido et L. Volcacio Tullo coss."],
+        [65,  "L. Aurelius Cotta", "L. Manlius Torquatus", "L. Aurelio Cotta et L. Manlio Torquato coss."],
+        [64,  "L. Iulius Caesar", "C. Marcius Figulus", "L. Iulio Caesare et C. Marcio Figulo coss."],
+        [63,  "M. Tullius Cicero", "C. Antonius Hybrida", "M. Tullio Cicerone et C. Antonio coss."],
+        [62,  "D. Iunius Silanus", "L. Licinius Murena", "D. Iunio Silano et L. Licinio Murena coss."],
+        [61,  "M. Pupius Piso Frugi Calpurnianus", "M. Valerius Messalla Niger", "M. Pupio Pisone et M. Valerio Messalla coss."],
+        [60,  "Q. Caecilius Metellus Celer", "L. Afranius", "Q. Caecilio Metello Celere et L. Afranio coss."],
+        [59,  "C. Iulius Caesar", "M. Calpurnius Bibulus", "C. Iulio Caesare et M. Calpurnio Bibulo coss."],
+        [58,  "L. Calpurnius Piso Caesoninus", "A. Gabinius", "L. Calpurnio Pisone et A. Gabinio coss."],
+        [57,  "P. Cornelius Lentulus Spinther", "Q. Caecilius Metellus Nepos", "P. Cornelio Lentulo et Q. Caecilio Metello coss."],
+        [56,  "Cn. Cornelius Lentulus Marcellinus", "L. Marcius Philippus", "Cn. Cornelio Lentulo et L. Marcio Philippo coss."],
+        [55,  "Cn. Pompeius Magnus II", "M. Licinius Crassus II", "Cn. Pompeio Magno II et M. Licinio Crasso II coss."],
+        [54,  "L. Domitius Ahenobarbus", "Ap. Claudius Pulcher", "L. Domitio Ahenobarbo et Ap. Claudio Pulchro coss."],
+        [53,  "Cn. Domitius Calvinus", "M. Valerius Messalla Rufus", "Cn. Domitio Calvino et M. Valerio Messalla coss."],
+        [52,  "Cn. Pompeius Magnus III", "Q. Caecilius Metellus Pius Scipio (ab Sept.)", "Cn. Pompeio Magno III et Q. Caecilio Metello Scipione coss."],
+        [51,  "Ser. Sulpicius Rufus", "M. Claudius Marcellus", "Ser. Sulpicio Rufo et M. Claudio Marcello coss."],
+        [50,  "L. Aemilius Lepidus Paullus", "C. Claudius Marcellus", "L. Aemilio Paullo et C. Claudio Marcello coss."],
+        [49,  "C. Claudius Marcellus", "L. Cornelius Lentulus Crus", "C. Claudio Marcello et L. Cornelio Lentulo coss."],
+        [48,  "C. Iulius Caesar II", "P. Servilius Isauricus", "C. Iulio Caesare II et P. Servilio Isaurico coss."],
+        [47,  "Q. Fufius Calenus", "P. Vatinius", "Q. Fufio Caleno et P. Vatinio coss."],
+        [46,  "C. Iulius Caesar III", "M. Aemilius Lepidus", "C. Iulio Caesare III et M. Aemilio Lepido coss."],
+        [45,  "C. Iulius Caesar IV (sine collega)", "suff. Q. Fabius et C. Trebonius", "C. Iulio Caesare IV cos."],
+        [44,  "C. Iulius Caesar V", "M. Antonius", "C. Iulio Caesare V et M. Antonio coss."],
+        [43,  "C. Vibius Pansa Caetronianus", "A. Hirtius", "C. Vibio Pansa et A. Hirtio coss."],
+        [42,  "M. Aemilius Lepidus II", "L. Munatius Plancus", "M. Aemilio Lepido II et L. Munatio Planco coss."],
+        [41,  "L. Antonius Pietas", "P. Servilius Isauricus II", "L. Antonio et P. Servilio Isaurico II coss."],
+        [40,  "Cn. Domitius Calvinus II", "C. Asinius Pollio", "Cn. Domitio Calvino II et C. Asinio Pollione coss."],
+        [39,  "L. Marcius Censorinus", "C. Calvisius Sabinus", "L. Marcio Censorino et C. Calvisio Sabino coss."],
+        [38,  "Ap. Claudius Pulcher", "C. Norbanus Flaccus", "Ap. Claudio Pulchro et C. Norbano Flacco coss."],
+        [37,  "M. Vipsanius Agrippa", "L. Caninius Gallus", "M. Vipsanio Agrippa et L. Caninio Gallo coss."],
+        [36,  "L. Gellius Publicola", "M. Cocceius Nerva", "L. Gellio Publicola et M. Cocceio Nerva coss."],
+        [35,  "Sex. Pompeius", "L. Cornificius", "Sex. Pompeio et L. Cornificio coss."],
+        [34,  "M. Antonius II", "L. Scribonius Libo", "M. Antonio II et L. Scribonio Libone coss."],
+        [33,  "Imp. Caesar (Octavianus) II", "L. Volcacius Tullus", "Imp. Caesare II et L. Volcacio Tullo coss."],
+        [32,  "Cn. Domitius Ahenobarbus", "C. Sosius", "Cn. Domitio Ahenobarbo et C. Sosio coss."],
+        [31,  "M. Antonius III", "Imp. Caesar (Octavianus) III", "M. Antonio III et Imp. Caesare III coss."],
+        [30,  "Imp. Caesar (Octavianus) IV", "M. Licinius Crassus", "Imp. Caesare IV et M. Licinio Crasso coss."],
+        [29,  "Imp. Caesar (Octavianus) V", "Sex. Appuleius", "Imp. Caesare V et Sex. Appuleio coss."],
+        [28,  "Imp. Caesar (Octavianus) VI", "M. Vipsanius Agrippa II", "Imp. Caesare VI et M. Vipsanio Agrippa II coss."],
+        [27,  "Imp. Caesar Augustus VII", "M. Vipsanius Agrippa III", "Imp. Caesare Augusto VII et M. Agrippa III coss."],
+        [26,  "Imp. Caesar Augustus VIII", "T. Statilius Taurus II", "Imp. Caesare Augusto VIII et T. Statilio Tauro II coss."],
+        [25,  "Imp. Caesar Augustus IX", "M. Iunius Silanus", "Imp. Caesare Augusto IX et M. Iunio Silano coss."],
+        [24,  "Imp. Caesar Augustus X", "C. Norbanus Flaccus", "Imp. Caesare Augusto X et C. Norbano Flacco coss."],
+        [23,  "Imp. Caesar Augustus XI", "A. Terentius Varro Murena", "Imp. Caesare Augusto XI et A. Terentio Varrone coss."],
+        [22,  "M. Claudius Marcellus Aeserninus", "L. Arruntius", "M. Claudio Marcello et L. Arruntio coss."],
+        [21,  "M. Lollius", "Q. Aemilius Lepidus", "M. Lollio et Q. Aemilio Lepido coss."],
+        [20,  "M. Appuleius", "P. Silius Nerva", "M. Appuleio et P. Silio Nerva coss."],
+        [19,  "C. Sentius Saturninus", "Q. Lucretius Vespillo", "C. Sentio Saturnino et Q. Lucretio Vespillone coss."],
+        [18,  "P. Cornelius Lentulus Marcellinus", "Cn. Cornelius Lentulus", "P. Cornelio Lentulo et Cn. Cornelio Lentulo coss."],
+        [17,  "C. Furnius", "C. Iunius Silanus", "C. Furnio et C. Iunio Silano coss."],
+        [16,  "L. Domitius Ahenobarbus", "P. Cornelius Scipio", "L. Domitio Ahenobarbo et P. Cornelio Scipione coss."],
+        [15,  "M. Livius Drusus Libo", "L. Calpurnius Piso Pontifex", "M. Livio Druso Libone et L. Calpurnio Pisone coss."],
+        [14,  "M. Licinius Crassus Frugi", "Cn. Cornelius Lentulus Augur", "M. Licinio Crasso et Cn. Cornelio Lentulo coss."],
+        [13,  "Ti. Claudius Nero", "P. Quinctilius Varus", "Ti. Claudio Nerone et P. Quinctilio Varo coss."],
+        [12,  "M. Valerius Messalla Barbatus Appianus", "P. Sulpicius Quirinius", "M. Valerio Messalla et P. Sulpicio Quirino coss."],
+        [11,  "Q. Aelius Tubero", "Paullus Fabius Maximus", "Q. Aelio Tuberone et Paullo Fabio Maximo coss."],
+        [10,  "Africanus Fabius Maximus", "Iullus Antonius", "Africano Fabio Maximo et Iullo Antonio coss."],
+        [9,   "Nero Claudius Drusus", "T. Quinctius Crispinus Sulpicianus", "Nerone Claudio Druso et T. Quinctio Crispino coss."],
+        [8,   "C. Marcius Censorinus", "C. Asinius Gallus", "C. Marcio Censorino et C. Asinio Gallo coss."],
+        [7,   "Ti. Claudius Nero II", "Cn. Calpurnius Piso", "Ti. Claudio Nerone II et Cn. Calpurnio Pisone coss."],
+        [6,   "D. Laelius Balbus", "C. Antistius Vetus", "D. Laelio Balbo et C. Antistio Vetere coss."],
+        [5,   "Imp. Caesar Augustus XII", "L. Cornelius Sulla", "Imp. Caesare Augusto XII et L. Cornelio Sulla coss."],
+        [4,   "C. Calvisius Sabinus", "L. Passienus Rufus", "C. Calvisio Sabino et L. Passieno Rufo coss."],
+        [3,   "L. Cornelius Lentulus", "M. Valerius Messalla Messallinus", "L. Cornelio Lentulo et M. Valerio Messalla Messallino coss."],
+        [2,   "Imp. Caesar Augustus XIII", "M. Plautius Silvanus", "Imp. Caesare Augusto XIII et M. Plautio Silvano coss."],
+        [1,   "Cossus Cornelius Lentulus", "L. Calpurnius Piso Augur", "Cosso Cornelio Lentulo et L. Calpurnio Pisone coss."]
+      ];
+
+      function getConsulForNominalYear(astroYear) {
+        if (astroYear < 1900 || astroYear > 2099) return null;
+        const idx = astroYear - 1900;
+        const entry = CONSULS_RAW[idx];
+        return {
+          gregYear: astroYear,
+          bcYear: entry[0],
+          c1: entry[1],
+          c2: entry[2],
+          latinAbl: entry[3],
+          displayPair: `${entry[1]} et ${entry[2]}`
+        };
+      }
+
+      function shortenConsulName(fullName) {
+        const cleaned = fullName
+          .replace(/\([^)]*\)/g, "")
+          .replace(/^suff\.\s*/i, "")
+          .replace(/\s+[IVXLCDM]+$/g, "")
+          .trim();
+        const parts = cleaned.split(/\s+/);
+        return parts[parts.length - 1] || fullName;
+      }
+
+      /* =========================================================================
+       * 3. JDN-MATHEMATIK UND DATUMSVALIDIERUNG (GREGORIANISCH UND JULIANISCH)
+       * ========================================================================= */
+      function isGregorianLeapYear(astroY) {
+        return (astroY % 4 === 0 && astroY % 100 !== 0) || (astroY % 400 === 0);
+      }
+
+      function isJulianLeapYear(astroY) {
+        return ((astroY % 4) + 4) % 4 === 0;
+      }
+
+      function getDaysInNormalMonth(astroY, month, calType) {
+        if (month === 2) {
+          const leap = calType === "gregorian" ? isGregorianLeapYear(astroY) : isJulianLeapYear(astroY);
+          return leap ? 29 : 28;
+        }
+        if (month === 4 || month === 6 || month === 9 || month === 11) {
+          return 30;
+        }
+        return 31;
+      }
+
+      function gregorianToJdn(y, m, d) {
+        const a = Math.floor((14 - m) / 12);
+        const y2 = y + 4800 - a;
+        const m2 = m + 12 * a - 3;
+        return d + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - Math.floor(y2 / 100) + Math.floor(y2 / 400) - 32045;
+      }
+
+      function jdnToGregorian(jdn) {
+        const f = jdn + 1401 + Math.floor((Math.floor((4 * jdn + 274277) / 146097) * 3) / 4) - 38;
+        const e = 4 * f + 3;
+        const g = Math.floor((e % 1461) / 4);
+        const h = 5 * g + 2;
+        const day = Math.floor((h % 153) / 5) + 1;
+        const month = ((Math.floor(h / 153) + 2) % 12) + 1;
+        const year = Math.floor(e / 1461) - 4716 + Math.floor((14 - month) / 12);
+        return { year, month, day };
+      }
+
+      function julianToJdn(y, m, d) {
+        const a = Math.floor((14 - m) / 12);
+        const y2 = y + 4800 - a;
+        const m2 = m + 12 * a - 3;
+        return d + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - 32083;
+      }
+
+      function jdnToJulian(jdn) {
+        const c = jdn + 32082;
+        const d = Math.floor((4 * c + 3) / 1461);
+        const e = c - Math.floor((1461 * d) / 4);
+        const m = Math.floor((5 * e + 2) / 153);
+        const day = e - Math.floor((153 * m + 2) / 5) + 1;
+        const month = m + 3 - 12 * Math.floor(m / 10);
+        const year = d - 4800 + Math.floor(m / 10);
+        return { year, month, day };
+      }
+
+      function formatAstroYearDe(astroYear) {
+        if (astroYear > 0) return `${astroYear} n. Chr.`;
+        return `${1 - astroYear} v. Chr.`;
+      }
+
+      function formatShortDate(dObj) {
+        const dd = String(dObj.day).padStart(2, "0");
+        const mm = String(dObj.month).padStart(2, "0");
+        const yr = dObj.year > 0 ? String(dObj.year) : `${1 - dObj.year} v.`;
+        return `${dd}.${mm}.${yr}`;
+      }
+
+      function formatLongDateDe(dObj) {
+        const yr = dObj.year > 0 ? `${dObj.year} n. Chr.` : `${1 - dObj.year} v. Chr.`;
+        return `${dObj.day}. ${GREG_MONTHS_DE[dObj.month - 1]} ${yr}`;
+      }
+
+      function getWeekdayFromJdn(jdn) {
+        const idx = ((jdn % 7) + 7) % 7;
+        return WEEKDAYS_DE[idx];
+      }
+
+      /* =========================================================================
+       * 4. ANWENDUNGSZUSTAND (MIT FREIEM ANKER UND FREIER EIGENER ÄRA)
+       * ========================================================================= */
+      const now = new Date();
+      const TODAY_JDN = gregorianToJdn(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+      const state = {
+        anchor: {
+          day: 1,
+          month: 3,
+          yearRaw: now.getFullYear(),
+          bcAd: "AD",
+          calType: "gregorian",
+          astroYear: now.getFullYear(),
+          jdn: gregorianToJdn(now.getFullYear(), 3, 1)
+        },
+        eraKey: "consuls",
+        customEraYear1Astro: now.getFullYear(),
+        normalCal: "gregorian",
+        overrides: {}, // Nur Schlüssel >= 1 (ab Beginn des Startankers!)
+        activeJdn: TODAY_JDN,
+        viewedRepYear: null,
+        pontifexWindowStart: 1,
+        tabletFilter: "all"
+      };
+
+      /* =========================================================================
+       * 5. REPUBLIKANISCHE ZYKLUS-ENGINE (24-JAHRES-ZYKLUS UND PONTIFEX-EINGRIFFE)
+       * ========================================================================= */
+      function getStandardYearLength(repYear) {
+        const pos = ((repYear - 1) % 24 + 24) % 24;
+        if (pos < 16) {
+          const mod4 = pos % 4;
+          if (mod4 === 1) return 377;
+          if (mod4 === 3) return 378;
+          return 355;
+        }
+        if (pos === 17 || pos === 19 || pos === 21) return 377;
+        return 355;
+      }
+
+      function getYearLength(repYear) {
+        if (repYear >= 1 && Object.prototype.hasOwnProperty.call(state.overrides, repYear)) {
+          return state.overrides[repYear];
+        }
+        return getStandardYearLength(repYear);
+      }
+
+      function getCyclePosition(repYear) {
+        return (((repYear - 1) % 24) + 24) % 24 + 1;
+      }
+
+      const STD_CYCLE_PREFIX = (function () {
+        const arr = [0];
+        for (let i = 1; i <= 24; i++) {
+          arr.push(arr[i - 1] + getStandardYearLength(i));
+        }
+        return arr;
+      })();
+
+      function getStartJdnOfRepYear(repYear) {
+        const k = repYear - 1;
+        const cycles = Math.floor(k / 24);
+        const rem = ((k % 24) + 24) % 24;
+        let days = cycles * 8766 + STD_CYCLE_PREFIX[rem];
+
+        if (repYear > 1) {
+          for (const [oyStr, customLen] of Object.entries(state.overrides)) {
+            const oy = Number(oyStr);
+            if (oy >= 1 && oy < repYear) {
+              days += (customLen - getStandardYearLength(oy));
+            }
+          }
+        }
+        return state.anchor.jdn + days;
+      }
+
+      function getNominalAstroYear(repYear) {
+        return state.anchor.astroYear + (repYear - 1);
+      }
+
+      function getRepYearFromNominalAstroYear(astroYear) {
+        return astroYear - state.anchor.astroYear + 1;
+      }
+
+      function getMonthsForRepYear(repYear) {
+        const yLen = getYearLength(repYear);
+        const isInterc = yLen > 355;
+        const list = [];
+        for (let i = 0; i < 12; i++) {
+          const m = MONTHS[i];
+          const len = isInterc ? m.lengthInterc : m.lengthCommon;
+          list.push({ ...m, length: len });
+        }
+        if (isInterc) {
+          const m13 = MONTHS[12];
+          const len13 = yLen === 378 ? 28 : 27;
+          list.push({ ...m13, length: len13 });
+        }
+        return list;
+      }
+
+      function jdnToRepublican(jdn) {
+        let repYear = 1 + Math.floor((jdn - state.anchor.jdn) / 365.25);
+
+        while (getStartJdnOfRepYear(repYear) > jdn) {
+          repYear--;
+        }
+        while (getStartJdnOfRepYear(repYear + 1) <= jdn) {
+          repYear++;
+        }
+
+        const yearStartJdn = getStartJdnOfRepYear(repYear);
+        const yearLength = getYearLength(repYear);
+        const dayOfYear = jdn - yearStartJdn;
+        const months = getMonthsForRepYear(repYear);
+
+        let rem = dayOfYear;
+        let monthObj = months[0];
+        for (let i = 0; i < months.length; i++) {
+          if (rem < months[i].length) {
+            monthObj = months[i];
+            break;
+          }
+          rem -= months[i].length;
+        }
+        const day = rem + 1;
+        const nextMonthObj = months[(monthObj.index + 1) % months.length];
+
+        const nundIdx = (((jdn - state.anchor.jdn) % 8) + 8) % 8;
+        const nundinal = NUNDINAL_LETTERS[nundIdx];
+        const dayChar = monthObj.chars[day - 1] || "C";
+        const feast = (monthObj.feasts && monthObj.feasts[day]) || null;
+
+        const latin = formatRomanDateGrammar(day, monthObj, nextMonthObj);
+        const nominalAstroYear = getNominalAstroYear(repYear);
+        const eras = computeEras(repYear, nominalAstroYear, monthObj.index);
+
+        return {
+          jdn,
+          repYear,
+          cyclePos: getCyclePosition(repYear),
+          yearLength,
+          isIntercalary: yearLength > 355,
+          isOverridden: repYear >= 1 && Object.prototype.hasOwnProperty.call(state.overrides, repYear),
+          monthIndex: monthObj.index,
+          monthObj,
+          nextMonthObj,
+          day,
+          dayOfYear: dayOfYear + 1,
+          nundinal,
+          dayChar,
+          feast,
+          latinLong: latin.long,
+          latinAbbr: latin.abbr,
+          grammarExplain: latin.explain,
+          isMarker: latin.isMarker,
+          nominalAstroYear,
+          eras
+        };
+      }
+
+      function republicanToJdn(repYear, monthIndex, day) {
+        const months = getMonthsForRepYear(repYear);
+        if (monthIndex < 0 || monthIndex >= months.length) return null;
+        const m = months[monthIndex];
+        if (day < 1 || day > m.length) return null;
+        let offset = 0;
+        for (let i = 0; i < monthIndex; i++) {
+          offset += months[i].length;
+        }
+        return getStartJdnOfRepYear(repYear) + offset + (day - 1);
+      }
+
+      /* =========================================================================
+       * 6. OFFIZIELLE RÖMISCHE GRAMMATIK, ABKÜRZUNGEN UND ERKLÄRUNG
+       * ========================================================================= */
+      function formatRomanDateGrammar(day, monthObj, nextMonthObj) {
+        const non = monthObj.nones;
+        const id = monthObj.ides;
+        const len = monthObj.length;
+
+        if (day === 1) {
+          return {
+            long: `Kalendis ${monthObj.ablPl}`,
+            abbr: `Kal. ${monthObj.abbr}`,
+            explain: `Direkter Stichtag: Die Kalenden (1. Tag) des Monats ${monthObj.name}.`,
+            isMarker: true
+          };
+        }
+        if (day < non) {
+          const diff = non - day + 1;
+          if (diff === 2) {
+            return {
+              long: `pridie Nonas ${monthObj.accPl}`,
+              abbr: `prid. Non. ${monthObj.abbr}`,
+              explain: `1 Tag vor den Nonen (${non}. ${monthObj.name}).`,
+              isMarker: false
+            };
+          }
+          return {
+            long: `ante diem ${LATIN_ORDINALS_ACC[diff]} Nonas ${monthObj.accPl}`,
+            abbr: `a.d. ${ROMAN_NUMERALS[diff]} Non. ${monthObj.abbr}`,
+            explain: `Inklusivzählung: ${diff - 1} Tage vor den Nonen (${non}. ${monthObj.name}) ergibt inklusiv den ${diff}. Tag (${LATIN_ORDINALS_ACC[diff]}).`,
+            isMarker: false
+          };
+        }
+        if (day === non) {
+          return {
+            long: `Nonis ${monthObj.ablPl}`,
+            abbr: `Non. ${monthObj.abbr}`,
+            explain: `Direkter Stichtag: Die Nonen (${non}. Tag) des Monats ${monthObj.name}.`,
+            isMarker: true
+          };
+        }
+        if (day < id) {
+          const diff = id - day + 1;
+          if (diff === 2) {
+            return {
+              long: `pridie Idus ${monthObj.accPl}`,
+              abbr: `prid. Id. ${monthObj.abbr}`,
+              explain: `1 Tag vor den Iden (${id}. ${monthObj.name}).`,
+              isMarker: false
+            };
+          }
+          return {
+            long: `ante diem ${LATIN_ORDINALS_ACC[diff]} Idus ${monthObj.accPl}`,
+            abbr: `a.d. ${ROMAN_NUMERALS[diff]} Id. ${monthObj.abbr}`,
+            explain: `Inklusivzählung: ${diff - 1} Tage vor den Iden (${id}. ${monthObj.name}) ergibt inklusiv den ${diff}. Tag (${LATIN_ORDINALS_ACC[diff]}).`,
+            isMarker: false
+          };
+        }
+        if (day === id) {
+          return {
+            long: `Idibus ${monthObj.ablPl}`,
+            abbr: `Id. ${monthObj.abbr}`,
+            explain: `Direkter Stichtag: Die Iden (${id}. Tag) des Monats ${monthObj.name}.`,
+            isMarker: true
+          };
+        }
+
+        const diff = len - day + 2;
+        if (diff === 2) {
+          return {
+            long: `pridie Kalendas ${nextMonthObj.accPl}`,
+            abbr: `prid. Kal. ${nextMonthObj.abbr}`,
+            explain: `Letzter Tag des Monats ${monthObj.name} (${len}. Tag), also 1 Tag vor den Kalenden des ${nextMonthObj.name}.`,
+            isMarker: false
+          };
+        }
+        return {
+          long: `ante diem ${LATIN_ORDINALS_ACC[diff]} Kalendas ${nextMonthObj.accPl}`,
+          abbr: `a.d. ${ROMAN_NUMERALS[diff]} Kal. ${nextMonthObj.abbr}`,
+          explain: `Inklusivzählung: ${diff - 1} Tage vor dem 1. ${nextMonthObj.name} ergibt inklusiv den ${diff}. Tag (${LATIN_ORDINALS_ACC[diff]}).`,
+          isMarker: false
+        };
+      }
+
+      /* =========================================================================
+       * 7. JAHRESÄREN (AUC, KONSULN 200–1 v. Chr., DIOKLETIAN, CHRISTUS, EIGENE ÄRA)
+       * ========================================================================= */
+      function computeEras(repYear, nominalAstroYear, monthIndex) {
+        const christian = formatAstroYearDe(nominalAstroYear);
+        const auc = nominalAstroYear + 753;
+        const diocletian = monthIndex >= 6 ? nominalAstroYear - 283 : nominalAstroYear - 284;
+
+        // Selbstdefinierte Ära: Jahr 1 = customEraYear1Astro; direkt davor Jahr 0, dann -1, -2...
+        const customYear = nominalAstroYear - state.customEraYear1Astro + 1;
+        const consuls = getConsulForNominalYear(nominalAstroYear);
+
+        return {
+          repYear,
+          nominalAstroYear,
+          christian,
+          auc,
+          diocletian,
+          customYear,
+          consuls
+        };
+      }
+
+      function formatSelectedEraDisplay(eras) {
+        switch (state.eraKey) {
+          case "consuls":
+            if (eras.consuls) {
+              return `${eras.consuls.displayPair} (${eras.consuls.bcYear} v. Chr., entspricht ${eras.nominalAstroYear})`;
+            }
+            return `Jahr ${eras.christian} (außerhalb 1900–2099)`;
+          case "auc":
+            return `${eras.auc} a.u.c.`;
+          case "diocletian":
+            return `Jahr ${eras.diocletian} Diokl. (ab 1. Iustitius)`;
+          case "christian":
+            return eras.christian;
+          case "custom":
+            return `Jahr ${eras.customYear} (Eigene Ära, Jahr 1 = ${formatAstroYearDe(state.customEraYear1Astro)})`;
+          default:
+            return eras.christian;
+        }
+      }
+
+      function formatEraSuffixLatin(eras) {
+        if (state.eraKey === "consuls" && eras.consuls) {
+          return eras.consuls.latinAbl;
+        }
+        if (state.eraKey === "auc") {
+          return `a.u.c. ${eras.auc}`;
+        }
+        if (state.eraKey === "diocletian") {
+          return `anno Diocletiani ${eras.diocletian}`;
+        }
+        if (state.eraKey === "custom") {
+          return `anno aerae propriae ${eras.customYear}`;
+        }
+        return `anno ${eras.christian}`;
+      }
+
+      function resolveRepYearFromEraInput(eraYearNum, bcAd, monthIndex) {
+        let nominalAstroYear;
+        switch (state.eraKey) {
+          case "consuls":
+            nominalAstroYear = eraYearNum;
+            break;
+          case "auc":
+            nominalAstroYear = eraYearNum - 753;
+            break;
+          case "diocletian":
+            nominalAstroYear = monthIndex >= 6 ? eraYearNum + 283 : eraYearNum + 284;
+            break;
+          case "christian":
+            nominalAstroYear = bcAd === "BC" ? 1 - eraYearNum : eraYearNum;
+            break;
+          case "custom":
+            // Jahr 1 => customEraYear1Astro; Jahr 0 => customEraYear1Astro - 1
+            nominalAstroYear = state.customEraYear1Astro + (eraYearNum - 1);
+            break;
+          default:
+            nominalAstroYear = eraYearNum;
+        }
+        return getRepYearFromNominalAstroYear(nominalAstroYear);
+      }
+
+      function getEraYearInputForRepDate(repDate) {
+        const eras = repDate.eras;
+        switch (state.eraKey) {
+          case "consuls":
+            return {
+              value: eras.consuls ? eras.nominalAstroYear : null,
+              bcAd: "AD"
+            };
+          case "auc":
+            return { value: eras.auc, bcAd: "AD" };
+          case "diocletian":
+            return { value: eras.diocletian, bcAd: "AD" };
+          case "christian":
+            if (eras.nominalAstroYear > 0) return { value: eras.nominalAstroYear, bcAd: "AD" };
+            return { value: 1 - eras.nominalAstroYear, bcAd: "BC" };
+          case "custom":
+            return { value: eras.customYear, bcAd: "AD" };
+          default:
+            return { value: eras.nominalAstroYear, bcAd: "AD" };
+        }
+      }
+
+      /* =========================================================================
+       * 8. DOM-REFERENZEN UND INITIALE AUSWAHLLISTEN
+       * ========================================================================= */
+      const el = {
+        quickStatusSummary: document.getElementById("quickStatusSummary"),
+
+        anchorDay: document.getElementById("anchorDay"),
+        anchorMonth: document.getElementById("anchorMonth"),
+        anchorYear: document.getElementById("anchorYear"),
+        anchorBcAd: document.getElementById("anchorBcAd"),
+        anchorCalType: document.getElementById("anchorCalType"),
+        anchorStatusNote: document.getElementById("anchorStatusNote"),
+
+        paramEra: document.getElementById("paramEra"),
+        eraHint: document.getElementById("eraHint"),
+        customEraConfigBox: document.getElementById("customEraConfigBox"),
+        customEraYearInput: document.getElementById("customEraYearInput"),
+        customEraBcAd: document.getElementById("customEraBcAd"),
+        customEraNote: document.getElementById("customEraNote"),
+        paramNormalCal: document.getElementById("paramNormalCal"),
+
+        heroModeBadge: document.getElementById("heroModeBadge"),
+        heroWeekdayGreg: document.getElementById("heroWeekdayGreg"),
+        heroRepMain: document.getElementById("heroRepMain"),
+        heroLatinLong: document.getElementById("heroLatinLong"),
+        heroLatinAbbr: document.getElementById("heroLatinAbbr"),
+        heroGrammarNote: document.getElementById("heroGrammarNote"),
+        heroConsulsBanner: document.getElementById("heroConsulsBanner"),
+        heroConsulsTitle: document.getElementById("heroConsulsTitle"),
+        heroConsulsNames: document.getElementById("heroConsulsNames"),
+        heroProgressText: document.getElementById("heroProgressText"),
+        heroProgressRemain: document.getElementById("heroProgressRemain"),
+        heroProgressFill: document.getElementById("heroProgressFill"),
+        heroEraValue: document.getElementById("heroEraValue"),
+        heroNundChar: document.getElementById("heroNundChar"),
+        heroGregDate: document.getElementById("heroGregDate"),
+        heroJulDate: document.getElementById("heroJulDate"),
+        heroAucCycle: document.getElementById("heroAucCycle"),
+        heroDiocCustom: document.getElementById("heroDiocCustom"),
+
+        normDay: document.getElementById("normDay"),
+        normMonth: document.getElementById("normMonth"),
+        normYear: document.getElementById("normYear"),
+        normBcAd: document.getElementById("normBcAd"),
+        normCalLabel: document.getElementById("normCalLabel"),
+        normInputWarn: document.getElementById("normInputWarn"),
+        normToRepResult: document.getElementById("normToRepResult"),
+
+        repDay: document.getElementById("repDay"),
+        repMonth: document.getElementById("repMonth"),
+        repYearNumericWrap: document.getElementById("repYearNumericWrap"),
+        repYearLabel: document.getElementById("repYearLabel"),
+        repYearInput: document.getElementById("repYearInput"),
+        repYearBcAd: document.getElementById("repYearBcAd"),
+        repConsulWrap: document.getElementById("repConsulWrap"),
+        repConsulSelect: document.getElementById("repConsulSelect"),
+        repConsulOutOfRangeHint: document.getElementById("repConsulOutOfRangeHint"),
+        repInputWarn: document.getElementById("repInputWarn"),
+        repToNormResult: document.getElementById("repToNormResult"),
+
+        btnPontifexWindowPrev: document.getElementById("btnPontifexWindowPrev"),
+        pontifexStats: document.getElementById("pontifexStats"),
+        pontifexExportStatus: document.getElementById("pontifexExportStatus"),
+        pontifexGrid: document.getElementById("pontifexGrid"),
+        importPontifexFile: document.getElementById("importPontifexFile"),
+
+        tabletsYearTitle: document.getElementById("tabletsYearTitle"),
+        tabletsYearSub: document.getElementById("tabletsYearSub"),
+        tabletFilterChips: document.getElementById("tabletFilterChips"),
+        tabletFilterCount: document.getElementById("tabletFilterCount"),
+        tabletsGrid: document.getElementById("tabletsGrid"),
+
+        resetModalBackdrop: document.getElementById("resetModalBackdrop"),
+        resetModalBody: document.getElementById("resetModalBody")
+      };
+
+      function populateRepMonthSelect() {
+        el.repMonth.innerHTML = "";
+        MONTHS.forEach((m) => {
+          const opt = document.createElement("option");
+          opt.value = String(m.index);
+          opt.textContent = `${m.index + 1}. ${m.name} (${m.histName})`;
+          el.repMonth.appendChild(opt);
+        });
+      }
+
+      function populateConsulsSelect() {
+        el.repConsulSelect.innerHTML = "";
+        const emptyOpt = document.createElement("option");
+        emptyOpt.value = "";
+        emptyOpt.textContent = "— Stichtag liegt außerhalb von 1900–2099 (Konsulpaar wählen) —";
+        el.repConsulSelect.appendChild(emptyOpt);
+
+        CONSULS_RAW.forEach((entry, idx) => {
+          const gregY = 1900 + idx;
+          const opt = document.createElement("option");
+          opt.value = String(gregY);
+          opt.textContent = `${gregY} (entspricht ${entry[0]} v. Chr.) · ${entry[1]} et ${entry[2]}`;
+          el.repConsulSelect.appendChild(opt);
+        });
+      }
+
+      /* =========================================================================
+       * 9. ANKER-VERWALTUNG UND PARAMETER-RENDERING
+       * ========================================================================= */
+      function renderAnchorStatus(errorMessage) {
+        if (errorMessage) {
+          el.anchorStatusNote.className = "status-note warn";
+          el.anchorStatusNote.textContent = errorMessage;
+          return;
+        }
+        const a = state.anchor;
+        const greg = jdnToGregorian(a.jdn);
+        const jul = jdnToJulian(a.jdn);
+        const diff = gregorianToJdn(jul.year, jul.month, jul.day) - a.jdn;
+
+        el.anchorStatusNote.className = "status-note ok";
+        if (a.calType === "gregorian") {
+          el.anchorStatusNote.innerHTML =
+            `Aktiver Startanker (1. Principius Jahr 1): <strong>${formatLongDateDe(greg)} (Gregorianisch)</strong> · ` +
+            `entspricht <strong>${formatLongDateDe(jul)} (Julianisch)</strong> · ` +
+            `Gregorianisch-Julianischer Versatz an diesem Tag: ${gregorianToJdn(jul.year, jul.month, jul.day) === a.jdn ? "0 Tage" : (gregorianToJdn(greg.year, greg.month, greg.day) - julianToJdn(greg.year, greg.month, greg.day)) + " Tage"}.`;
+        } else {
+          el.anchorStatusNote.innerHTML =
+            `Aktiver Startanker (1. Principius Jahr 1): <strong>${formatLongDateDe(jul)} (Julianisch)</strong> · ` +
+            `entspricht <strong>${formatLongDateDe(greg)} (Gregorianisch)</strong> · ` +
+            `Versatz zwischen beiden Systemen: ${diff === 0 ? "0" : (diff > 0 ? "+" + diff : diff)} Tage.`;
+        }
+      }
+
+      function applyAnchorFromInputs() {
+        const d = parseInt(el.anchorDay.value, 10);
+        const m = parseInt(el.anchorMonth.value, 10);
+        const yRaw = parseInt(el.anchorYear.value, 10);
+        const bcAd = el.anchorBcAd.value;
+        const calType = el.anchorCalType.value;
+
+        if (Number.isNaN(yRaw) || yRaw < 1 || yRaw > 9999) {
+          renderAnchorStatus("Ungültiges Ankerjahr: Bitte geben Sie eine Jahreszahl zwischen 1 und 9999 ein.");
+          return false;
+        }
+        if (Number.isNaN(m) || m < 1 || m > 12) {
+          renderAnchorStatus("Ungültiger Ankermonat.");
+          return false;
+        }
+
+        const astroY = bcAd === "BC" ? 1 - yRaw : yRaw;
+        const maxDays = getDaysInNormalMonth(astroY, m, calType);
+        if (Number.isNaN(d) || d < 1 || d > maxDays) {
+          const calName = calType === "gregorian" ? "Gregorianischen" : "Julianischen";
+          renderAnchorStatus(`Ungültiges Ankerdatum: Der ${GREG_MONTHS_DE[m - 1]} ${formatAstroYearDe(astroY)} hat im ${calName} Kalender nur ${maxDays} Tage.`);
+          return false;
+        }
+
+        const jdn = calType === "gregorian"
+          ? gregorianToJdn(astroY, m, d)
+          : julianToJdn(astroY, m, d);
+
+        state.anchor = {
+          day: d,
+          month: m,
+          yearRaw: yRaw,
+          bcAd,
+          calType,
+          astroYear: astroY,
+          jdn
+        };
+
+        // Sicherstellen, dass keine Pontifex-Eingriffe unterhalb Jahr 1 existieren
+        for (const k of Object.keys(state.overrides)) {
+          if (Number(k) < 1) delete state.overrides[k];
+        }
+
+        state.pontifexWindowStart = 1;
+        renderAnchorStatus(null);
+        refreshAllViews(true);
+        return true;
+      }
+
+      function renderParameterHints() {
+        const eraHints = {
+          consuls: "Zeigt für die Jahre 1900–2099 authentisch alle 200 ordentlichen Konsulpaare der Jahre 200–1 v. Chr. und erlaubt direkte Auswahl per Konsulpaar.",
+          auc: "Ab Urbe Condita: Römische Jahreszählung seit der traditionellen Gründung Roms 753 v. Chr. (z. B. 2026 n. Chr. = 2779 a.u.c.).",
+          diocletian: "Diokletianische Ära (Start 284 n. Chr.): Der Jahreswechsel erfolgt an den Kalenden des nächstgelegenen Monats am 1. Iustitius.",
+          christian: "Klassische christliche Jahreszählung (v. Chr. bzw. n. Chr. ohne Jahr 0), verknüpft mit Ihrem selbstgesetzten Startanker.",
+          custom: "Sie legen ein beliebiges Jahr als Jahr 1 fest. Unmittelbar davor liegt in dieser Zählung das Jahr 0 (entspricht 1 Jahr vor Jahr 1)."
+        };
+        el.eraHint.textContent = eraHints[state.eraKey] || "";
+        el.normCalLabel.textContent = state.normalCal === "gregorian" ? "Greg." : "Jul.";
+
+        const isCustom = state.eraKey === "custom";
+        el.customEraConfigBox.classList.toggle("hidden", !isCustom);
+        if (isCustom) {
+          el.customEraNote.innerHTML =
+            `Aktuell gilt <strong>${formatAstroYearDe(state.customEraYear1Astro)}</strong> als <strong>Jahr 1</strong>. ` +
+            `Unmittelbar davor liegt <strong>Jahr 0</strong> (= ${formatAstroYearDe(state.customEraYear1Astro - 1)}), davor Jahr −1 (= ${formatAstroYearDe(state.customEraYear1Astro - 2)}).`;
+        }
+      }
+
+      function renderQuickStatus() {
+        const anchorDisp = state.anchor.calType === "gregorian"
+          ? `${formatShortDate(jdnToGregorian(state.anchor.jdn))} Greg.`
+          : `${formatShortDate(jdnToJulian(state.anchor.jdn))} Jul.`;
+        const overrideCount = Object.keys(state.overrides).length;
+        const eraNames = {
+          consuls: "Konsuln (200–1 v. Chr.)",
+          auc: "Ab Urbe Condita",
+          diocletian: "Diokletianisch",
+          christian: "Christlich",
+          custom: `Eigene Ära (Jahr 1 = ${formatAstroYearDe(state.customEraYear1Astro)})`
+        };
+
+        el.quickStatusSummary.innerHTML =
+          `<span>Anker: <strong>${anchorDisp}</strong></span>` +
+          `<span>Ära: <strong>${eraNames[state.eraKey]}</strong></span>` +
+          `<span>Pontifex-Eingriffe: <strong>${overrideCount}</strong></span>`;
+      }
+
+      /* =========================================================================
+       * 10. HERO-BEREICH UND KONVERTER-AUSGABEN
+       * ========================================================================= */
+      function renderHero() {
+        const jdn = state.activeJdn;
+        const rep = jdnToRepublican(jdn);
+        const greg = jdnToGregorian(jdn);
+        const jul = jdnToJulian(jdn);
+        const weekday = getWeekdayFromJdn(jdn);
+
+        const isToday = jdn === TODAY_JDN;
+        el.heroModeBadge.textContent = isToday ? "HEUTIGES DATUM" : "GEWÄHLTES DATUM";
+        el.heroWeekdayGreg.textContent = `${weekday}, ${formatLongDateDe(greg)} (Greg.)`;
+
+        const eraDisplay = formatSelectedEraDisplay(rep.eras);
+        el.heroRepMain.textContent = `${rep.day}. ${rep.monthObj.name} · ${eraDisplay}`;
+        el.heroLatinLong.textContent = `${rep.latinLong}, ${formatEraSuffixLatin(rep.eras)}`;
+        el.heroLatinAbbr.textContent = `${rep.latinAbbr} · ${formatEraSuffixLatin(rep.eras)}`;
+
+        el.heroGrammarNote.innerHTML =
+          `<strong>Inklusivzählung und Charakter:</strong> ${rep.grammarExplain} ` +
+          `Tagescharakter <strong>${rep.dayChar}</strong>: ${CHAR_MEANINGS[rep.dayChar] || ""}` +
+          (rep.feast ? ` · Festtag: <strong>${rep.feast}</strong>` : "");
+
+        if (rep.eras.consuls) {
+          el.heroConsulsBanner.classList.remove("hidden");
+          el.heroConsulsTitle.textContent = `RÖMISCHE KONSULN (${rep.eras.consuls.bcYear} v. Chr., entspricht ${rep.eras.consuls.gregYear})`;
+          el.heroConsulsNames.textContent = `${rep.eras.consuls.displayPair} (${rep.eras.consuls.latinAbl})`;
+        } else {
+          el.heroConsulsBanner.classList.add("hidden");
+        }
+
+        const pct = Math.min(100, Math.max(0, (rep.dayOfYear / rep.yearLength) * 100));
+        const remaining = rep.yearLength - rep.dayOfYear;
+        el.heroProgressText.textContent = `Jahresfortschritt: Tag ${rep.dayOfYear} von ${rep.yearLength} (Republikanisches Jahr ${rep.repYear})`;
+        el.heroProgressRemain.textContent = remaining === 0 ? "Letzter Tag des Jahres" : `Noch ${remaining} Tage bis zum 1. Principius`;
+        el.heroProgressFill.style.width = `${pct.toFixed(1)}%`;
+
+        el.heroEraValue.textContent = eraDisplay;
+        el.heroNundChar.textContent = `Markt ${rep.nundinal} · ${rep.dayChar}${rep.feast ? " (" + rep.feast + ")" : ""}`;
+        el.heroGregDate.textContent = formatLongDateDe(greg);
+        el.heroJulDate.textContent = formatLongDateDe(jul);
+        el.heroAucCycle.textContent = `${rep.eras.auc} a.u.c. · Zyklus ${rep.cyclePos}/24 (${rep.yearLength} T.)`;
+        el.heroDiocCustom.textContent = `${rep.eras.diocletian} Diokl. · Eigene Ära: Jahr ${rep.eras.customYear}`;
+      }
+
+      function renderNormToRepOutput(jdn) {
+        const rep = jdnToRepublican(jdn);
+        const greg = jdnToGregorian(jdn);
+        const jul = jdnToJulian(jdn);
+        const weekday = getWeekdayFromJdn(jdn);
+
+        el.normToRepResult.innerHTML = `
+          <div class="conv-result-head">${rep.day}. ${rep.monthObj.name} (${rep.monthObj.histName})</div>
+          <div class="conv-result-sub">${rep.latinLong}, ${formatEraSuffixLatin(rep.eras)}</div>
+          <div class="conv-kv">
+            <div class="conv-k">Abkürzung</div>
+            <div class="conv-v">${rep.latinAbbr}</div>
+            <div class="conv-k">Gewählte Ära</div>
+            <div class="conv-v">${formatSelectedEraDisplay(rep.eras)}</div>
+            <div class="conv-k">Marktwoche und Typ</div>
+            <div class="conv-v">Nundinalbuchstabe <strong>${rep.nundinal}</strong> · Charakter <strong>${rep.dayChar}</strong> (${CHAR_MEANINGS[rep.dayChar] || ""})${rep.feast ? " · Fest: <em>" + rep.feast + "</em>" : ""}</div>
+            <div class="conv-k">Rep. Jahr und Länge</div>
+            <div class="conv-v">Jahr ${rep.repYear} ab Anker (Zyklus-Pos. ${rep.cyclePos}/24, ${rep.yearLength} Tage${rep.isOverridden ? ", Pontifex-Eingriff" : ""})</div>
+            <div class="conv-k">Alle 5 Ären</div>
+            <div class="conv-v">${rep.eras.auc} a.u.c. · Christl.: ${rep.eras.christian} · Diokl.: ${rep.eras.diocletian} · Eigene Ära: ${rep.eras.customYear}${rep.eras.consuls ? " · Coss.: " + rep.eras.consuls.displayPair : ""}</div>
+            <div class="conv-k">Greg. und Julianisch</div>
+            <div class="conv-v">${weekday}, ${formatLongDateDe(greg)} (Greg.) | ${formatLongDateDe(jul)} (Jul.)</div>
+          </div>
+        `;
+      }
+
+      function updateRepEraInputControls() {
+        const isConsuls = state.eraKey === "consuls";
+        el.repYearNumericWrap.classList.toggle("hidden", isConsuls);
+        el.repConsulWrap.classList.toggle("hidden", !isConsuls);
+        el.repYearBcAd.classList.toggle("hidden", state.eraKey !== "christian");
+
+        const labels = {
+          auc: "Jahr (Ab Urbe Condita, a.u.c.)",
+          diocletian: "Jahr (Diokletianische Ära, Wechsel am 1. Iustitius)",
+          christian: "Jahr (Christliche Ära)",
+          custom: `Jahr (Selbstdefinierte Ära: Jahr 1 = ${formatAstroYearDe(state.customEraYear1Astro)}, davor Jahr 0)`
+        };
+        el.repYearLabel.textContent = labels[state.eraKey] || "Jahr";
+      }
+
+      function syncRepConverterFromActive() {
+        const rep = jdnToRepublican(state.activeJdn);
+        el.repDay.value = String(rep.day);
+        el.repMonth.value = String(rep.monthIndex);
+        const eraInfo = getEraYearInputForRepDate(rep);
+
+        if (state.eraKey === "consuls") {
+          if (eraInfo.value !== null) {
+            el.repConsulSelect.value = String(eraInfo.value);
+            el.repConsulOutOfRangeHint.classList.add("hidden");
+          } else {
+            el.repConsulSelect.value = "";
+            el.repConsulOutOfRangeHint.classList.remove("hidden");
+          }
+        } else {
+          el.repConsulOutOfRangeHint.classList.add("hidden");
+          el.repYearInput.value = String(eraInfo.value);
+          el.repYearBcAd.value = eraInfo.bcAd;
+        }
+        renderRepToNormOutput(rep.repYear, rep.monthIndex, rep.day);
+      }
+
+      function renderRepToNormOutput(repYear, monthIndex, day) {
+        const months = getMonthsForRepYear(repYear);
+        el.repInputWarn.classList.add("hidden");
+        el.repInputWarn.textContent = "";
+
+        if (monthIndex >= months.length) {
+          el.repInputWarn.classList.remove("hidden");
+          el.repInputWarn.textContent = `Hinweis: Das gewählte republikanische Jahr (${repYear}, ${getYearLength(repYear)} Tage) ist ein Gemeinjahr und besitzt keinen 13. Monat (Mensis Intercalaris).`;
+          el.repToNormResult.innerHTML = `<div class="conv-result-sub">Kein gültiges Datum in diesem Gemeinjahr (355 Tage).</div>`;
+          return null;
+        }
+
+        const targetMonth = months[monthIndex];
+        if (Number.isNaN(day) || day < 1 || day > targetMonth.length) {
+          el.repInputWarn.classList.remove("hidden");
+          el.repInputWarn.textContent = `Hinweis: ${targetMonth.name} hat in diesem Jahr nur ${targetMonth.length} Tage (eingegeben: ${Number.isNaN(day) ? "leer" : day}).`;
+          el.repToNormResult.innerHTML = `<div class="conv-result-sub">Ungültiger Tag für ${targetMonth.name} (erlaubt: 1 bis ${targetMonth.length} Tage).</div>`;
+          return null;
+        }
+
+        const jdn = republicanToJdn(repYear, monthIndex, day);
+        const rep = jdnToRepublican(jdn);
+        const greg = jdnToGregorian(jdn);
+        const jul = jdnToJulian(jdn);
+        const weekday = getWeekdayFromJdn(jdn);
+
+        el.repToNormResult.innerHTML = `
+          <div class="conv-result-head">${weekday}, ${formatLongDateDe(greg)}</div>
+          <div class="conv-result-sub">${rep.latinLong}, ${formatEraSuffixLatin(rep.eras)}</div>
+          <div class="conv-kv">
+            <div class="conv-k">Gregorianisch</div>
+            <div class="conv-v">${formatLongDateDe(greg)} (${formatShortDate(greg)})</div>
+            <div class="conv-k">Julianisch</div>
+            <div class="conv-v">${formatLongDateDe(jul)} (${formatShortDate(jul)})</div>
+            <div class="conv-k">Abkürzung</div>
+            <div class="conv-v">${rep.latinAbbr}</div>
+            <div class="conv-k">Marktwoche und Typ</div>
+            <div class="conv-v">Nundinalbuchstabe <strong>${rep.nundinal}</strong> · Charakter <strong>${rep.dayChar}</strong> (${CHAR_MEANINGS[rep.dayChar] || ""})</div>
+            <div class="conv-k">Jahresära</div>
+            <div class="conv-v">${formatSelectedEraDisplay(rep.eras)}</div>
+            <div class="conv-k">Konsuln</div>
+            <div class="conv-v">${rep.eras.consuls ? rep.eras.consuls.displayPair + " (" + rep.eras.consuls.bcYear + " v. Chr.)" : "Nur im Bereich 1900–2099 (200–1 v. Chr.) definiert"}</div>
+          </div>
+        `;
+        return jdn;
+      }
+
+      /* =========================================================================
+       * 11. PONTIFEX MAXIMUS (STRIKT AB JAHR 1, FARBCODIERUNG, WARNUNG, EXPORT)
+       * ========================================================================= */
+      function computeCenterPontifexWindow(repYear) {
+        if (repYear < 1) return 1;
+        const pos = (repYear - 1) % 24;
+        return Math.max(1, repYear - pos);
+      }
+
+      function getPontifexSummaryData() {
+        const keys = Object.keys(state.overrides).map(Number).filter((y) => y >= 1).sort((a, b) => a - b);
+        let netTotal = 0;
+        const rows = keys.map((yr) => {
+          const stdLen = getStandardYearLength(yr);
+          const customLen = state.overrides[yr];
+          const diff = customLen - stdLen;
+          netTotal += diff;
+          const nomAstro = getNominalAstroYear(yr);
+          const consul = getConsulForNominalYear(nomAstro);
+          return {
+            repYear: yr,
+            nominalAstroYear: nomAstro,
+            christian: formatAstroYearDe(nomAstro),
+            stdLen,
+            customLen,
+            diff,
+            consuls: consul ? consul.displayPair : ""
+          };
+        });
+        return { rows, netTotal };
+      }
+
+      function renderPontifexPanel() {
+        const activeRep = jdnToRepublican(state.activeJdn);
+        if (state.pontifexWindowStart === null || state.pontifexWindowStart < 1) {
+          state.pontifexWindowStart = computeCenterPontifexWindow(activeRep.repYear);
+        }
+        const winStart = state.pontifexWindowStart;
+        el.btnPontifexWindowPrev.disabled = winStart <= 1;
+
+        const overrideKeys = Object.keys(state.overrides).map(Number).filter((y) => y >= 1);
+        let netOverrideToActive = 0;
+        for (const oy of overrideKeys) {
+          if (activeRep.repYear > 1 && oy < activeRep.repYear) {
+            netOverrideToActive += state.overrides[oy] - getStandardYearLength(oy);
+          }
+        }
+        let netOverrideAll = 0;
+        for (const oy of overrideKeys) {
+          netOverrideAll += state.overrides[oy] - getStandardYearLength(oy);
+        }
+
+        const anchorCompareJdn = state.anchor.calType === "gregorian"
+          ? gregorianToJdn(activeRep.nominalAstroYear, state.anchor.month, state.anchor.day)
+          : julianToJdn(activeRep.nominalAstroYear, state.anchor.month, state.anchor.day);
+        const startJdn = getStartJdnOfRepYear(activeRep.repYear);
+        const driftVsAnchorSeason = startJdn - anchorCompareJdn;
+
+        const allSignClass = netOverrideAll > 0 ? "pos" : (netOverrideAll < 0 ? "neg" : "gold");
+        const toActiveClass = netOverrideToActive > 0 ? "pos" : (netOverrideToActive < 0 ? "neg" : "gold");
+
+        el.pontifexStats.innerHTML = `
+          <span class="stat-pill gold">Geänderte Jahre (ab Anker): <strong>${overrideKeys.length}</strong></span>
+          <span class="stat-pill ${allSignClass}">Gesamt-Schaltsaldo: <strong>${netOverrideAll >= 0 ? "+" : ""}${netOverrideAll} Tage</strong></span>
+          <span class="stat-pill ${toActiveClass}">Versatz bis Jahr ${activeRep.repYear}: <strong>${netOverrideToActive >= 0 ? "+" : ""}${netOverrideToActive} Tage</strong></span>
+          <span class="stat-pill">1. Principius gegen Jahresanker: <strong>${driftVsAnchorSeason >= 0 ? "+" : ""}${driftVsAnchorSeason} Tage</strong></span>
+        `;
+
+        el.pontifexGrid.innerHTML = "";
+        for (let i = 0; i < 24; i++) {
+          const yr = winStart + i;
+          const stdLen = getStandardYearLength(yr);
+          const curLen = getYearLength(yr);
+          const isOverridden = Object.prototype.hasOwnProperty.call(state.overrides, yr);
+          const diff = curLen - stdLen;
+          const nomAstro = getNominalAstroYear(yr);
+          const consul = getConsulForNominalYear(nomAstro);
+          const cyclePos = getCyclePosition(yr);
+
+          let cardClass = "pontifex-card";
+          if (stdLen === 377) cardClass += " type-377";
+          else if (stdLen === 378) cardClass += " type-378";
+
+          if (isOverridden && diff > 0) cardClass += " mod-longer";
+          else if (isOverridden && diff < 0) cardClass += " mod-shorter";
+
+          if (yr === activeRep.repYear) cardClass += " current-year";
+
+          const card = document.createElement("div");
+          card.className = cardClass;
+
+          const top = document.createElement("div");
+          top.className = "pontifex-card-top";
+          const badgeHtml = isOverridden && diff !== 0
+            ? `<span class="diff-badge ${diff > 0 ? "pos" : "neg"}">${diff > 0 ? "+" : ""}${diff} T.</span>`
+            : `<span class="diff-badge std">${curLen} T.</span>`;
+          top.innerHTML = `<span>Jahr ${yr} (Zyklus ${cyclePos}/24)</span>${badgeHtml}`;
+
+          const meta = document.createElement("div");
+          meta.className = "pontifex-card-meta";
+          const stdLabel = stdLen === 355 ? "Gemein" : (stdLen === 377 ? "Kl. Schalt." : "Gr. Schalt.");
+          const consulPart = consul
+            ? ` · Coss. ${shortenConsulName(consul.c1)} et ${shortenConsulName(consul.c2)}`
+            : "";
+          meta.textContent = `${formatAstroYearDe(nomAstro)} · Std: ${stdLen} T. (${stdLabel})${consulPart}`;
+
+          const sel = document.createElement("select");
+          sel.innerHTML = `
+            <option value="std">Standard (${stdLen} Tage · ${stdLabel})</option>
+            <option value="355">Gemeinjahr (355 Tage)</option>
+            <option value="377">Kleines Schaltjahr (377 Tage · 27 Int.)</option>
+            <option value="378">Großes Schaltjahr (378 Tage · 28 Int.)</option>
+          `;
+          sel.value = isOverridden ? String(curLen) : "std";
+
+          sel.addEventListener("change", () => {
+            if (sel.value === "std" || Number(sel.value) === stdLen) {
+              delete state.overrides[yr];
+            } else {
+              state.overrides[yr] = Number(sel.value);
+            }
+            refreshAllViews(false);
+          });
+
+          card.appendChild(top);
+          card.appendChild(meta);
+          card.appendChild(sel);
+          el.pontifexGrid.appendChild(card);
+        }
+      }
+
+      function showPontifexStatus(msg, isWarn = false) {
+        el.pontifexExportStatus.textContent = msg;
+        el.pontifexExportStatus.className = "status-note " + (isWarn ? "warn" : "ok");
+        el.pontifexExportStatus.classList.remove("hidden");
+      }
+
+      function downloadFile(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      /* =========================================================================
+       * 12. 12 / 13 FASTI-TAFELN UND FILTERUNG
+       * ========================================================================= */
+      function doesRowMatchFilter(filterKey, nund, dayChar, feast, isMarker) {
+        switch (filterKey) {
+          case "nundinae": return nund === "A";
+          case "feasts": return Boolean(feast);
+          case "markers": return isMarker;
+          case "legal": return dayChar === "F" || dayChar === "C";
+          default: return true;
+        }
+      }
+
+      function renderTablets() {
+        const repYear = state.viewedRepYear;
+        const yearLen = getYearLength(repYear);
+        const isInterc = yearLen > 355;
+        const isOverridden = repYear >= 1 && Object.prototype.hasOwnProperty.call(state.overrides, repYear);
+        const startJdn = getStartJdnOfRepYear(repYear);
+        const endJdn = startJdn + yearLen - 1;
+        const startGreg = jdnToGregorian(startJdn);
+        const endGreg = jdnToGregorian(endJdn);
+        const nomAstro = getNominalAstroYear(repYear);
+        const eras = computeEras(repYear, nomAstro, 0);
+
+        const consulPart = eras.consuls
+          ? ` · Coss. ${eras.consuls.displayPair} (${eras.consuls.bcYear} v. Chr.)`
+          : "";
+
+        el.tabletsYearTitle.textContent =
+          `Republikanisches Jahr ${repYear} (${formatAstroYearDe(nomAstro)} · ${eras.auc} a.u.c.)`;
+
+        el.tabletsYearSub.textContent =
+          `${isInterc ? "13 Tafeln (Schaltjahr: " + yearLen + " Tage)" : "12 Tafeln (Gemeinjahr: 355 Tage)"}` +
+          ` · Zyklus ${getCyclePosition(repYear)}/24` +
+          `${isOverridden ? " · Pontifex-Eingriff aktiv" : ""}` +
+          ` · ${formatShortDate(startGreg)} bis ${formatShortDate(endGreg)} Greg.` +
+          consulPart;
+
+        const months = getMonthsForRepYear(repYear);
+        el.tabletsGrid.innerHTML = "";
+
+        let curJdn = startJdn;
+        let matchingRows = 0;
+
+        months.forEach((m) => {
+          const tablet = document.createElement("article");
+          let tClass = "fasti-tablet";
+          if (m.index === 12) tClass += " is-intercalary";
+          else if (m.index === 11) tClass += " is-feb";
+          else if (m.length === 31) tClass += " is-maior";
+          else tClass += " is-minor";
+          tablet.className = tClass;
+
+          let tabletHasActive = false;
+
+          const head = document.createElement("div");
+          head.className = "tablet-head";
+          head.innerHTML = `
+            <div>
+              <div class="tablet-month-num">TABULA ${m.numRoman}${m.index === 12 ? " · SCHALTMONAT" : ""}</div>
+              <div class="tablet-month-name">${m.name}</div>
+              <div class="tablet-month-sub">hist. ${m.histName} · Non. ${m.nones}. · Id. ${m.ides}.</div>
+            </div>
+            <div class="tablet-days-badge">${m.length} DIES</div>
+          `;
+
+          const rowsWrap = document.createElement("div");
+          rowsWrap.className = "tablet-rows";
+          const nextM = months[(m.index + 1) % months.length];
+
+          for (let d = 1; d <= m.length; d++) {
+            const jdn = curJdn++;
+            const nundIdx = (((jdn - state.anchor.jdn) % 8) + 8) % 8;
+            const nund = NUNDINAL_LETTERS[nundIdx];
+            const ch = m.chars[d - 1] || "C";
+            const feast = (m.feasts && m.feasts[d]) || null;
+            const latin = formatRomanDateGrammar(d, m, nextM);
+            const greg = jdnToGregorian(jdn);
+            const isActive = jdn === state.activeJdn;
+            if (isActive) tabletHasActive = true;
+
+            const matches = doesRowMatchFilter(state.tabletFilter, nund, ch, feast, latin.isMarker);
+            if (matches) matchingRows++;
+
+            const row = document.createElement("div");
+            row.className =
+              "fasti-row" +
+              (latin.isMarker ? " is-marker" : "") +
+              (isActive ? " is-active" : "") +
+              (state.tabletFilter !== "all" && !matches ? " is-dimmed" : "");
+
+            if (isActive) {
+              row.id = "activeFastiDay";
+            }
+
+            row.title = `${d}. ${m.name} (${latin.long}) · ${formatLongDateDe(greg)} Greg. · ${CHAR_MEANINGS[ch] || ch}`;
+
+            const dayNumEl = document.createElement("span");
+            dayNumEl.className = "col-daynum";
+            dayNumEl.textContent = String(d);
+
+            const nundEl = document.createElement("span");
+            nundEl.className = "col-nund" + (nund === "A" ? " is-nundinae-a" : "");
+            nundEl.textContent = nund;
+
+            const charEl = document.createElement("span");
+            charEl.className = `col-char char-${ch}`;
+            charEl.textContent = ch;
+
+            const abbrEl = document.createElement("span");
+            abbrEl.className = "col-abbr";
+            abbrEl.innerHTML = feast
+              ? `${latin.abbr}<span class="feast-tag">${feast}</span>`
+              : latin.abbr;
+
+            const gregEl = document.createElement("span");
+            gregEl.className = "col-greg";
+            gregEl.textContent = formatShortDate(greg);
+
+            row.appendChild(dayNumEl);
+            row.appendChild(nundEl);
+            row.appendChild(charEl);
+            row.appendChild(abbrEl);
+            row.appendChild(gregEl);
+
+            row.addEventListener("click", () => {
+              state.activeJdn = jdn;
+              syncInputsFromActiveJdn();
+              refreshAllViews(false);
+            });
+
+            rowsWrap.appendChild(row);
+          }
+
+          if (tabletHasActive) {
+            tablet.classList.add("has-active-day");
+          }
+
+          tablet.appendChild(head);
+          tablet.appendChild(rowsWrap);
+          el.tabletsGrid.appendChild(tablet);
+        });
+
+        el.tabletFilterCount.textContent = state.tabletFilter === "all"
+          ? `Alle ${yearLen} Tage dieses Jahres sichtbar`
+          : `${matchingRows} von ${yearLen} Tagen entsprechen dem Filter`;
+      }
+
+      /* =========================================================================
+       * 13. SYNCHRONISATION UND GESAMTAKTUALISIERUNG
+       * ========================================================================= */
+      function syncInputsFromActiveJdn() {
+        const greg = jdnToGregorian(state.activeJdn);
+        const jul = jdnToJulian(state.activeJdn);
+        const dObj = state.normalCal === "gregorian" ? greg : jul;
+
+        el.normDay.value = String(dObj.day);
+        el.normMonth.value = String(dObj.month);
+        if (dObj.year > 0) {
+          el.normYear.value = String(dObj.year);
+          el.normBcAd.value = "AD";
+        } else {
+          el.normYear.value = String(1 - dObj.year);
+          el.normBcAd.value = "BC";
+        }
+        el.normInputWarn.classList.add("hidden");
+      }
+
+      function refreshAllViews(resetViewedYear = true) {
+        const activeRep = jdnToRepublican(state.activeJdn);
+        if (resetViewedYear || state.viewedRepYear === null) {
+          state.viewedRepYear = activeRep.repYear;
+        }
+        renderQuickStatus();
+        renderParameterHints();
+        updateRepEraInputControls();
+        renderHero();
+        renderNormToRepOutput(state.activeJdn);
+        syncRepConverterFromActive();
+        renderPontifexPanel();
+        renderTablets();
+      }
+
+      /* =========================================================================
+       * 14. EVENT-LISTENER
+       * ========================================================================= */
+      document.getElementById("btnApplyAnchor").addEventListener("click", () => {
+        applyAnchorFromInputs();
+      });
+
+      document.getElementById("btnAnchorTodayMarch").addEventListener("click", () => {
+        el.anchorDay.value = "1";
+        el.anchorMonth.value = "3";
+        el.anchorYear.value = String(now.getFullYear());
+        el.anchorBcAd.value = "AD";
+        el.anchorCalType.value = "gregorian";
+        applyAnchorFromInputs();
+      });
+
+      el.paramEra.addEventListener("change", () => {
+        state.eraKey = el.paramEra.value;
+        refreshAllViews(false);
+      });
+
+      document.getElementById("btnApplyCustomEra").addEventListener("click", () => {
+        const raw = parseInt(el.customEraYearInput.value, 10);
+        if (Number.isNaN(raw) || raw < 1 || raw > 9999) {
+          el.customEraNote.textContent = "Bitte ein gültiges Jahr zwischen 1 und 9999 eingeben.";
+          return;
+        }
+        state.customEraYear1Astro = el.customEraBcAd.value === "BC" ? 1 - raw : raw;
+        refreshAllViews(false);
+      });
+
+      el.paramNormalCal.addEventListener("change", () => {
+        state.normalCal = el.paramNormalCal.value;
+        renderParameterHints();
+        el.normInputWarn.classList.add("hidden");
+      });
+
+      document.getElementById("btnJumpToday").addEventListener("click", () => {
+        state.activeJdn = TODAY_JDN;
+        state.pontifexWindowStart = null;
+        syncInputsFromActiveJdn();
+        refreshAllViews(true);
+      });
+
+      document.getElementById("btnScrollGlow").addEventListener("click", () => {
+        const activeRep = jdnToRepublican(state.activeJdn);
+        if (state.viewedRepYear !== activeRep.repYear) {
+          state.viewedRepYear = activeRep.repYear;
+          renderTablets();
+        }
+        const target = document.getElementById("activeFastiDay");
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          document.getElementById("fastiSection").scrollIntoView({ behavior: "smooth" });
+        }
+      });
+
+      document.getElementById("btnNormToday").addEventListener("click", () => {
+        state.activeJdn = TODAY_JDN;
+        state.pontifexWindowStart = null;
+        syncInputsFromActiveJdn();
+        refreshAllViews(true);
+      });
+
+      document.getElementById("btnConvertNormToRep").addEventListener("click", () => {
+        const d = parseInt(el.normDay.value, 10);
+        const m = parseInt(el.normMonth.value, 10);
+        const yRaw = parseInt(el.normYear.value, 10);
+        const bcAd = el.normBcAd.value;
+
+        el.normInputWarn.classList.add("hidden");
+        el.normInputWarn.textContent = "";
+
+        if (Number.isNaN(yRaw) || yRaw < 1 || yRaw > 9999) {
+          el.normInputWarn.classList.remove("hidden");
+          el.normInputWarn.textContent = "Ungültige Jahreszahl: Bitte geben Sie ein Jahr zwischen 1 und 9999 ein.";
+          return;
+        }
+        if (Number.isNaN(m) || m < 1 || m > 12) {
+          el.normInputWarn.classList.remove("hidden");
+          el.normInputWarn.textContent = "Ungültiger Monat.";
+          return;
+        }
+
+        const astroY = bcAd === "BC" ? 1 - yRaw : yRaw;
+        const maxDays = getDaysInNormalMonth(astroY, m, state.normalCal);
+        if (Number.isNaN(d) || d < 1 || d > maxDays) {
+          const calLabel = state.normalCal === "gregorian" ? "Gregorianischen" : "Julianischen";
+          el.normInputWarn.classList.remove("hidden");
+          el.normInputWarn.textContent = `Ungültiges Datum: Der ${GREG_MONTHS_DE[m - 1]} ${formatAstroYearDe(astroY)} hat im ${calLabel} Kalender nur ${maxDays} Tage.`;
+          return;
+        }
+
+        const jdn = state.normalCal === "gregorian"
+          ? gregorianToJdn(astroY, m, d)
+          : julianToJdn(astroY, m, d);
+
+        state.activeJdn = jdn;
+        state.pontifexWindowStart = null;
+        refreshAllViews(true);
+      });
+
+      document.getElementById("btnRepSyncCurrent").addEventListener("click", () => {
+        syncRepConverterFromActive();
+      });
+
+      document.getElementById("btnConvertRepToNorm").addEventListener("click", () => {
+        const day = parseInt(el.repDay.value, 10);
+        const monthIndex = parseInt(el.repMonth.value, 10);
+
+        el.repInputWarn.classList.add("hidden");
+        el.repInputWarn.textContent = "";
+
+        let eraYearNum;
+        if (state.eraKey === "consuls") {
+          if (!el.repConsulSelect.value) {
+            el.repInputWarn.classList.remove("hidden");
+            el.repInputWarn.textContent = "Bitte wählen Sie ein Konsulpaar aus dem Dropdown-Menü aus.";
+            return;
+          }
+          eraYearNum = parseInt(el.repConsulSelect.value, 10);
+        } else {
+          const parsedY = parseInt(el.repYearInput.value, 10);
+          if (Number.isNaN(parsedY)) {
+            el.repInputWarn.classList.remove("hidden");
+            el.repInputWarn.textContent = "Bitte geben Sie eine gültige Jahreszahl ein.";
+            return;
+          }
+          if (state.eraKey === "christian" && parsedY < 1) {
+            el.repInputWarn.classList.remove("hidden");
+            el.repInputWarn.textContent = "In der christlichen Zeitrechnung gibt es kein Jahr 0 oder negative Eingaben (wählen Sie stattdessen v. Chr. oder n. Chr., oder wechseln Sie zur selbstdefinierten Ära).";
+            return;
+          }
+          eraYearNum = parsedY;
+        }
+
+        const bcAd = el.repYearBcAd.value;
+        const repYear = resolveRepYearFromEraInput(eraYearNum, bcAd, monthIndex);
+        const jdn = renderRepToNormOutput(repYear, monthIndex, day);
+
+        if (jdn !== null) {
+          state.activeJdn = jdn;
+          state.viewedRepYear = repYear;
+          state.pontifexWindowStart = null;
+          syncInputsFromActiveJdn();
+          renderQuickStatus();
+          renderHero();
+          renderNormToRepOutput(jdn);
+          renderPontifexPanel();
+          renderTablets();
+        } else {
+          state.viewedRepYear = repYear;
+          renderTablets();
+        }
+      });
+
+      /* Pontifex-Navigation */
+      el.btnPontifexWindowPrev.addEventListener("click", () => {
+        state.pontifexWindowStart = Math.max(1, state.pontifexWindowStart - 24);
+        renderPontifexPanel();
+      });
+
+      document.getElementById("btnPontifexWindowNext").addEventListener("click", () => {
+        state.pontifexWindowStart += 24;
+        renderPontifexPanel();
+      });
+
+      document.getElementById("btnPontifexWindowCur").addEventListener("click", () => {
+        state.pontifexWindowStart = null;
+        renderPontifexPanel();
+      });
+
+      /* Pontifex-Reset mit Warnhinweis */
+      document.getElementById("btnPontifexReset").addEventListener("click", () => {
+        const summary = getPontifexSummaryData();
+        if (summary.rows.length === 0) {
+          showPontifexStatus("Es liegen derzeit keine Schaltjahres-Abweichungen vor, die zurückgesetzt werden müssten.", true);
+          return;
+        }
+        el.resetModalBody.innerHTML =
+          `Sie sind dabei, <strong>${summary.rows.length} manuelle Pontifex-Maximus-Schaltjahresanpassung(en)</strong> ` +
+          `(Gesamt-Schaltsaldo: <strong>${summary.netTotal >= 0 ? "+" : ""}${summary.netTotal} Tage</strong>) unwiderruflich auf den 24-Jahres-Standardzyklus zurückzusetzen.<br><br>` +
+          `Möchten Sie vorher eventuell noch einen Export als JSON oder CSV durchführen? Falls nicht, bestätigen Sie bitte das Zurücksetzen.`;
+        el.resetModalBackdrop.classList.remove("hidden");
+      });
+
+      document.getElementById("btnCancelResetModal").addEventListener("click", () => {
+        el.resetModalBackdrop.classList.add("hidden");
+      });
+
+      document.getElementById("btnConfirmResetModal").addEventListener("click", () => {
+        state.overrides = {};
+        el.resetModalBackdrop.classList.add("hidden");
+        showPontifexStatus("Alle Pontifex-Maximus-Anpassungen wurden auf den 24-Jahres-Standardzyklus zurückgesetzt.");
+        refreshAllViews(true);
+      });
+
+      el.resetModalBackdrop.addEventListener("click", (evt) => {
+        if (evt.target === el.resetModalBackdrop) {
+          el.resetModalBackdrop.classList.add("hidden");
+        }
+      });
+
+      /* Pontifex-Export und Import */
+      document.getElementById("btnExportPontifexJson").addEventListener("click", () => {
+        const summary = getPontifexSummaryData();
+        const payload = {
+          format: "fasti-rei-publicae-pontifex-v1",
+          exportedAt: new Date().toISOString(),
+          anchor: state.anchor,
+          eraKey: state.eraKey,
+          customEraYear1Astro: state.customEraYear1Astro,
+          overrides: state.overrides,
+          details: summary.rows
+        };
+        downloadFile("pontifex-schaltjahre.json", JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
+        showPontifexStatus(`JSON-Export erstellt (${summary.rows.length} geänderte Jahre, Schaltsaldo ${summary.netTotal >= 0 ? "+" : ""}${summary.netTotal} Tage).`);
+      });
+
+      document.getElementById("btnExportPontifexCsv").addEventListener("click", () => {
+        const summary = getPontifexSummaryData();
+        const lines = ["RepublikanischesJahr;NominellesJahr;StandardTage;PontifexTage;Differenz;Konsuln"];
+        summary.rows.forEach((r) => {
+          lines.push(`${r.repYear};"${r.christian}";${r.stdLen};${r.customLen};${r.diff};"${r.consuls}"`);
+        });
+        downloadFile("pontifex-schaltjahre.csv", "\uFEFF" + lines.join("\n"), "text/csv;charset=utf-8");
+        showPontifexStatus(`CSV-Tabelle mit ${summary.rows.length} Pontifex-Einträgen heruntergeladen.`);
+      });
+
+      document.getElementById("btnCopyPontifexSummary").addEventListener("click", async () => {
+        const summary = getPontifexSummaryData();
+        const anchorDisp = state.anchor.calType === "gregorian"
+          ? formatLongDateDe(jdnToGregorian(state.anchor.jdn)) + " (Greg.)"
+          : formatLongDateDe(jdnToJulian(state.anchor.jdn)) + " (Jul.)";
+
+        const textLines = [
+          "FASTI REI PUBLICAE — PONTIFEX MAXIMUS SCHALTPROTOKOLL",
+          `Startanker (1. Principius Jahr 1): ${anchorDisp}`,
+          `Geänderte Jahre: ${summary.rows.length} | Gesamtsaldo: ${summary.netTotal >= 0 ? "+" : ""}${summary.netTotal} Tage`,
+          ""
+        ];
+        if (summary.rows.length === 0) {
+          textLines.push("Keine Abweichungen vom 24-Jahres-Standardzyklus.");
+        } else {
+          summary.rows.forEach((r) => {
+            textLines.push(`Jahr ${r.repYear} (${r.christian}): ${r.stdLen} -> ${r.customLen} Tage (${r.diff >= 0 ? "+" : ""}${r.diff} T.)${r.consuls ? " | " + r.consuls : ""}`);
+          });
+        }
+        try {
+          await navigator.clipboard.writeText(textLines.join("\n"));
+          showPontifexStatus("Schaltprotokoll erfolgreich in die Zwischenablage kopiert.");
+        } catch (err) {
+          showPontifexStatus("Kopieren in die Zwischenablage wurde vom Browser blockiert. Nutzen Sie bitte den JSON- oder CSV-Export.", true);
+        }
+      });
+
+      document.getElementById("btnImportPontifexJson").addEventListener("click", () => {
+        el.importPontifexFile.click();
+      });
+
+      el.importPontifexFile.addEventListener("change", (evt) => {
+        const file = evt.target.files && evt.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const data = JSON.parse(String(reader.result));
+            if (!data || typeof data.overrides !== "object") {
+              showPontifexStatus("Ungültige JSON-Datei: Es wurde kein gültiges Pontifex-Anpassungsobjekt gefunden.", true);
+              return;
+            }
+            if (data.anchor && typeof data.anchor.jdn === "number") {
+              state.anchor = data.anchor;
+              el.anchorDay.value = String(data.anchor.day);
+              el.anchorMonth.value = String(data.anchor.month);
+              el.anchorYear.value = String(data.anchor.yearRaw);
+              el.anchorBcAd.value = data.anchor.bcAd;
+              el.anchorCalType.value = data.anchor.calType;
+              renderAnchorStatus(null);
+            }
+            if (typeof data.customEraYear1Astro === "number") {
+              state.customEraYear1Astro = data.customEraYear1Astro;
+            }
+            const cleanOverrides = {};
+            for (const [k, v] of Object.entries(data.overrides)) {
+              const yr = Number(k);
+              const len = Number(v);
+              if (Number.isInteger(yr) && yr >= 1 && (len === 355 || len === 377 || len === 378)) {
+                cleanOverrides[yr] = len;
+              }
+            }
+            state.overrides = cleanOverrides;
+            state.pontifexWindowStart = 1;
+            refreshAllViews(true);
+            showPontifexStatus(`Import erfolgreich: ${Object.keys(cleanOverrides).length} Schaltjahres-Anpassung(en) geladen.`);
+          } catch (err) {
+            showPontifexStatus("Fehler beim Lesen der JSON-Datei.", true);
+          }
+          el.importPontifexFile.value = "";
+        };
+        reader.readAsText(file, "utf-8");
+      });
+
+      /* Fasti-Tafeln Navigation, Filter und CSV-Export */
+      document.getElementById("btnPrevRepYear").addEventListener("click", () => {
+        state.viewedRepYear--;
+        renderTablets();
+      });
+
+      document.getElementById("btnNextRepYear").addEventListener("click", () => {
+        state.viewedRepYear++;
+        renderTablets();
+      });
+
+      document.getElementById("btnTabletsToday").addEventListener("click", () => {
+        state.activeJdn = TODAY_JDN;
+        state.pontifexWindowStart = null;
+        syncInputsFromActiveJdn();
+        refreshAllViews(true);
+        setTimeout(() => {
+          const target = document.getElementById("activeFastiDay");
+          if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 60);
+      });
+
+      document.getElementById("btnExportYearCsv").addEventListener("click", () => {
+        const repYear = state.viewedRepYear;
+        const months = getMonthsForRepYear(repYear);
+        let curJdn = getStartJdnOfRepYear(repYear);
+        const lines = ["MonatNr;Monat;Tag;Nundinae;Charakter;LateinKurz;LateinLang;Festtag;Gregorianisch;Julianisch"];
+
+        months.forEach((m) => {
+          const nextM = months[(m.index + 1) % months.length];
+          for (let d = 1; d <= m.length; d++) {
+            const jdn = curJdn++;
+            const nund = NUNDINAL_LETTERS[(((jdn - state.anchor.jdn) % 8) + 8) % 8];
+            const ch = m.chars[d - 1] || "C";
+            const feast = (m.feasts && m.feasts[d]) || "";
+            const latin = formatRomanDateGrammar(d, m, nextM);
+            const greg = formatShortDate(jdnToGregorian(jdn));
+            const jul = formatShortDate(jdnToJulian(jdn));
+            lines.push(`${m.index + 1};"${m.name}";${d};${nund};${ch};"${latin.abbr}";"${latin.long}";"${feast}";"${greg}";"${jul}"`);
+          }
+        });
+        downloadFile(`fasti-jahr-${repYear}.csv`, "\uFEFF" + lines.join("\n"), "text/csv;charset=utf-8");
+      });
+
+      el.tabletFilterChips.addEventListener("click", (evt) => {
+        const btn = evt.target.closest(".filter-chip");
+        if (!btn) return;
+        state.tabletFilter = btn.dataset.filter || "all";
+        el.tabletFilterChips.querySelectorAll(".filter-chip").forEach((c) => {
+          c.classList.toggle("active", c === btn);
+        });
+        renderTablets();
+      });
+
+      /* =========================================================================
+       * 15. INITIALISIERUNG BEIM LADEN
+       * ========================================================================= */
+      populateRepMonthSelect();
+      populateConsulsSelect();
+      el.anchorYear.value = String(state.anchor.yearRaw);
+      el.customEraYearInput.value = String(state.customEraYear1Astro);
+      renderAnchorStatus(null);
+      syncInputsFromActiveJdn();
+      refreshAllViews(true);
+    })();
+  </script>
+</body>
+</html>
