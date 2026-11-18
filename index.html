@@ -72,10 +72,14 @@
       scroll-behavior: smooth;
       font-size: 16px;
       overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
       overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
       margin: 0;
       padding: 0;
       background:
@@ -116,11 +120,13 @@
     }
 
     body.mode-desktop {
-      min-width: 1240px;
+      min-width: 0;
     }
 
     body.mode-desktop .page-shell {
+      width: 1240px;
       min-width: 1240px;
+      max-width: none;
     }
 
     body.mode-mobile .page-shell {
@@ -1868,7 +1874,7 @@
           <label for="paramScaleInput">Größe %</label>
           <div class="scale-group">
             <button class="btn btn-sm" id="btnScaleDown" type="button" title="Verkleinern">−</button>
-            <input type="number" id="paramScaleInput" inputmode="numeric" min="60" max="150" step="5" value="100" title="Skalierung in Prozent (60 bis 150)" />
+            <input type="number" id="paramScaleInput" inputmode="numeric" min="25" max="150" step="5" value="100" title="Skalierung in Prozent (25 bis 150)" />
             <button class="btn btn-sm" id="btnScaleUp" type="button" title="Vergrößern">+</button>
             <button class="btn btn-sm" id="btnScaleReset" type="button" title="Auf 100 % setzen">100%</button>
           </div>
@@ -4244,7 +4250,7 @@
           if (["auto", "mobile", "desktop"].includes(parsed.viewMode)) {
             state.viewMode = parsed.viewMode;
           }
-          if (typeof parsed.uiScale === "number" && parsed.uiScale >= 60 && parsed.uiScale <= 150) {
+          if (typeof parsed.uiScale === "number" && parsed.uiScale >= 25 && parsed.uiScale <= 150) {
             state.uiScale = Math.round(parsed.uiScale);
           }
         } catch (e) {}
@@ -6142,20 +6148,27 @@
         document.body.classList.toggle("mode-desktop", isDesktopMode);
         document.body.classList.toggle("mode-mobile", state.viewMode === "mobile");
 
-        const clampedScale = Math.max(60, Math.min(150, Math.round(state.uiScale || 100)));
+        const clampedScale = Math.max(25, Math.min(150, Math.round(state.uiScale || 100)));
         state.uiScale = clampedScale;
 
         const shell = document.querySelector(".page-shell");
-        let effectiveZoom = clampedScale / 100;
+        let scale = clampedScale / 100;
 
-        // Im Desktop-Modus auf schmalen Bildschirmen (Handy) automatisch auf volle Bildschirmbreite einpassen
-        if (isDesktopMode && window.innerWidth < 1260) {
-          effectiveZoom = (window.innerWidth / 1260) * (clampedScale / 100);
+        if (isDesktopMode && window.innerWidth < 1240) {
+          scale = (window.innerWidth / 1240) * (clampedScale / 100);
         }
 
         document.documentElement.style.fontSize = "16px";
         if (shell) {
-          shell.style.zoom = effectiveZoom.toFixed(3);
+          shell.style.zoom = "";
+          shell.style.transformOrigin = "top left";
+          if (Math.abs(scale - 1) < 0.001) {
+            shell.style.transform = "";
+            shell.style.width = "";
+          } else {
+            shell.style.transform = `scale(${scale.toFixed(4)})`;
+            shell.style.width = isDesktopMode ? "1240px" : `${(100 / scale).toFixed(4)}%`;
+          }
         }
 
         el.paramViewMode.value = state.viewMode;
@@ -6163,9 +6176,7 @@
       }
 
       window.addEventListener("resize", () => {
-        if (state.viewMode === "desktop") {
-          applyViewSettings();
-        }
+        applyViewSettings();
       });
 
       function syncConfigControlsFromState() {
@@ -6908,7 +6919,7 @@
       function updateScale(newScale) {
         const num = parseInt(newScale, 10);
         if (Number.isNaN(num)) return;
-        state.uiScale = Math.max(60, Math.min(150, num));
+        state.uiScale = Math.max(25, Math.min(150, num));
         applyViewSettings();
         saveState();
       }
