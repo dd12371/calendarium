@@ -71,9 +71,11 @@
     html {
       scroll-behavior: smooth;
       font-size: 16px;
+      overflow-x: hidden;
     }
 
     body {
+      overflow-x: hidden;
       margin: 0;
       padding: 0;
       background:
@@ -124,6 +126,23 @@
     body.mode-mobile .page-shell {
       max-width: 640px;
       padding: 12px 10px 64px;
+    }
+
+    body:not(.mode-desktop) .page-shell,
+    body:not(.mode-desktop) .panel,
+    body:not(.mode-desktop) .hero-plaque,
+    body:not(.mode-desktop) .sub-box,
+    body:not(.mode-desktop) .conv-result,
+    body:not(.mode-desktop) .fasti-tablet {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    body:not(.mode-desktop) .latin-val-stone,
+    body:not(.mode-desktop) .latin-val-abbr,
+    body:not(.mode-desktop) .hero-rep-modern {
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     /* Monumentaler Kopfbereich */
@@ -6119,14 +6138,35 @@
        * 14. SYNCHRONISATION ALLER FORMULARFELDER UND GESAMTAKTUALISIERUNG
        * ========================================================================= */
       function applyViewSettings() {
-        document.body.classList.toggle("mode-desktop", state.viewMode === "desktop");
+        const isDesktopMode = state.viewMode === "desktop";
+        document.body.classList.toggle("mode-desktop", isDesktopMode);
         document.body.classList.toggle("mode-mobile", state.viewMode === "mobile");
+
         const clampedScale = Math.max(60, Math.min(150, Math.round(state.uiScale || 100)));
         state.uiScale = clampedScale;
-        document.documentElement.style.fontSize = `${(16 * clampedScale / 100).toFixed(2)}px`;
+
+        const shell = document.querySelector(".page-shell");
+        let effectiveZoom = clampedScale / 100;
+
+        // Im Desktop-Modus auf schmalen Bildschirmen (Handy) automatisch auf volle Bildschirmbreite einpassen
+        if (isDesktopMode && window.innerWidth < 1260) {
+          effectiveZoom = (window.innerWidth / 1260) * (clampedScale / 100);
+        }
+
+        document.documentElement.style.fontSize = "16px";
+        if (shell) {
+          shell.style.zoom = effectiveZoom.toFixed(3);
+        }
+
         el.paramViewMode.value = state.viewMode;
         el.paramScaleInput.value = String(clampedScale);
       }
+
+      window.addEventListener("resize", () => {
+        if (state.viewMode === "desktop") {
+          applyViewSettings();
+        }
+      });
 
       function syncConfigControlsFromState() {
         applyViewSettings();
