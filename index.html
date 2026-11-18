@@ -6502,10 +6502,10 @@
         };
       }
 
-      const COMPACT_ERA_CODES = ["auc", "consuls", "diocletian", "christian", "custom"];
-      const COMPACT_VIEW_CODES = ["auto", "mobile", "desktop"];
-      const COMPACT_FILTER_CODES = ["all", "nundinae", "feasts", "religiosi", "markers", "legal"];
-      const COMPACT_LEN_CODES = [355, 377, 378];
+      const LEGACY_ERA_CODES = ["auc", "consuls", "diocletian", "christian", "custom"];
+      const LEGACY_VIEW_CODES = ["auto", "mobile", "desktop"];
+      const LEGACY_FILTER_CODES = ["all", "nundinae", "feasts", "religiosi", "markers", "legal"];
+      const LEGACY_LEN_CODES = [355, 377, 378];
 
       function buildAnchorFromJdn(jdn, calType) {
         const dObj = calType === "julian" ? jdnToJulian(jdn) : jdnToGregorian(jdn);
@@ -6521,55 +6521,119 @@
         };
       }
 
+      function parseGermanAstroYear(input) {
+        if (typeof input === "number" && Number.isFinite(input)) {
+          return Math.trunc(input);
+        }
+        const str = String(input || "").trim();
+        const match = str.match(/\d+/);
+        if (!match) return null;
+        const num = parseInt(match[0], 10);
+        if (Number.isNaN(num) || num < 1 || num > 9999) return null;
+        return /v\.\s*chr/i.test(str) ? 1 - num : num;
+      }
+
       document.getElementById("btnExportPontifexJson").addEventListener("click", () => {
         const def = createDefaultState();
-        const payload = { f: "fr6", d: state.activeJdn };
+        const expNow = new Date();
+        const exportZeit =
+          `${String(expNow.getDate()).padStart(2, "0")}.${String(expNow.getMonth() + 1).padStart(2, "0")}.${expNow.getFullYear()}, ` +
+          `${String(expNow.getHours()).padStart(2, "0")}:${String(expNow.getMinutes()).padStart(2, "0")} Uhr`;
 
-        if (state.calendarSystem === "julian") payload.s = 1;
-        if (state.intercalaryMode === "fixed_27") payload.i = 1;
-        if (state.julianBasis === "authentic_julian") payload.j = 1;
+        const aenderungen = {};
+
+        if (state.calendarSystem !== def.calendarSystem) {
+          aenderungen.kalendersystem = state.calendarSystem === "julian" ? "Julianisch" : "Republikanisch";
+        }
+        if (state.intercalaryMode !== def.intercalaryMode) {
+          aenderungen.schaltmonatAufteilung = state.intercalaryMode === "fixed_27"
+            ? "Schaltmonat immer 27 Tage (Februar 23 oder 24 Tage)"
+            : "Schaltmonat 27 oder 28 Tage (Februar immer 23 Tage)";
+        }
+        if (state.julianBasis !== def.julianBasis) {
+          aenderungen.julianischeBasis = state.julianBasis === "authentic_julian"
+            ? "Authentisch Julianisch (alle 4 Jahre Schaltjahr inkl. 1900)"
+            : "Gregorianisch synchronisiert (1900 kein Schaltjahr)";
+        }
         if (state.anchor.jdn !== def.anchor.jdn || state.anchor.calType !== def.anchor.calType) {
-          payload.k = [state.anchor.jdn, state.anchor.calType === "julian" ? 1 : 0];
+          aenderungen.startanker = {
+            tag: state.anchor.day,
+            monat: GREG_MONTHS_DE[state.anchor.month - 1],
+            jahr: formatAstroYearDe(state.anchor.astroYear),
+            kalendertyp: state.anchor.calType === "julian" ? "Julianisch" : "Gregorianisch"
+          };
         }
-        if (state.yearStartMonth !== 0) payload.m = state.yearStartMonth;
-        if (state.monthNaming === "traditional") payload.n = 1;
-
-        const eraIdx = COMPACT_ERA_CODES.indexOf(state.eraKey);
-        if (eraIdx > 0) payload.e = eraIdx;
-        if (state.customEraYear1Astro !== 1900) payload.c = state.customEraYear1Astro;
-        if (state.normalCal === "julian") payload.g = 1;
-
-        const viewIdx = COMPACT_VIEW_CODES.indexOf(state.viewMode);
-        if (viewIdx > 0) payload.r = viewIdx;
-        if (state.uiScale !== 100) payload.z = state.uiScale;
-
-        const filterIdx = COMPACT_FILTER_CODES.indexOf(state.tabletFilter);
-        if (filterIdx > 0) payload.t = filterIdx;
-
-        const activeCalYear = jdnToActiveSystem(state.activeJdn).calYear;
-        if (state.viewedRepYear !== null && state.viewedRepYear !== activeCalYear) {
-          payload.y = state.viewedRepYear;
+        if (state.yearStartMonth !== def.yearStartMonth) {
+          const disp = getMonthDisplay(MONTHS[state.yearStartMonth]);
+          aenderungen.jahresanfang = `${NORMAL_MONTH_LABELS[state.yearStartMonth]} (${disp.name})`;
         }
-        if (state.pontifexWindowStart !== null) {
-          payload.p = state.pontifexWindowStart;
+        if (state.monthNaming !== def.monthNaming) {
+          aenderungen.monatsnamen = state.monthNaming === "traditional"
+            ? "Traditionell römisch (Martius bis Februarius)"
+            : "Eigene Version (Principius bis Terminalius)";
+        }
+        if (state.eraKey !== def.eraKey) {
+          const eraLabelsDe = {
+            auc: "Ab Urbe Condita (a.u.c.)",
+            consuls: "Konsul-Jahreszählung (200–1 v. Chr.)",
+            diocletian: "Diokletianische Ära",
+            christian: "Christliche Ära",
+            custom: "Selbstdefinierte Ära"
+          };
+          aenderungen.jahresaera = eraLabelsDe[state.eraKey];
+        }
+        if (state.customEraYear1Astro !== def.customEraYear1Astro || state.eraKey === "custom") {
+          aenderungen.eigeneAeraJahr1 = formatAstroYearDe(state.customEraYear1Astro);
+        }
+        if (state.normalCal !== def.normalCal) {
+          aenderungen.eingabekalender = state.normalCal === "julian" ? "Julianisch" : "Gregorianisch";
+        }
+        if (state.viewMode !== def.viewMode) {
+          aenderungen.ansicht = state.viewMode === "desktop" ? "Desktop-Site" : "Mobil";
+        }
+        if (state.uiScale !== def.uiScale) {
+          aenderungen.darstellungsgroesse = `${state.uiScale} %`;
+        }
+        if (state.tabletFilter !== def.tabletFilter) {
+          const filterLabelsDe = {
+            all: "Alle Tage",
+            nundinae: "Markttage (Nundinae A)",
+            feasts: "Nur Festtage (Feriae & Ludi)",
+            religiosi: "Dies religiosi / atri",
+            markers: "Kalenden, Nonen und Iden",
+            legal: "Gerichts- und Versammlungstage (F und C)"
+          };
+          aenderungen.tafelFilter = filterLabelsDe[state.tabletFilter];
         }
 
-        const overrideEntries = Object.keys(state.overrides)
+        const pontifexSchaltjahre = {};
+        const overrideKeys = Object.keys(state.overrides)
           .map(Number)
           .filter((yr) => Number.isInteger(yr) && yr >= 1)
           .sort((a, b) => a - b);
-        if (overrideEntries.length > 0) {
-          const compactOverrides = [];
-          overrideEntries.forEach((yr) => {
-            const lenIdx = COMPACT_LEN_CODES.indexOf(state.overrides[yr]);
-            if (lenIdx !== -1) compactOverrides.push(yr, lenIdx);
-          });
-          if (compactOverrides.length > 0) payload.o = compactOverrides;
-        }
 
-        const jsonStr = JSON.stringify(payload);
-        downloadFile("fasti-kalender-anpassungen.json", jsonStr, "application/json;charset=utf-8");
-        showPontifexStatus(`Kompaktes Backup exportiert (${jsonStr.length} Bytes · ${overrideEntries.length} Pontifex-Schaltjahr-Anpassung(en) inklusive aller Einstellungen).`);
+        overrideKeys.forEach((yr) => {
+          const len = state.overrides[yr];
+          const nomAstro = getNominalAstroYear(yr);
+          const lenText = len === 355
+            ? "355 Tage (Gemeinjahr)"
+            : (len === 377 ? "377 Tage (Kleines Schaltjahr)" : "378 Tage (Großes Schaltjahr)");
+          pontifexSchaltjahre[`Jahr ${yr} (${formatAstroYearDe(nomAstro)})`] = lenText;
+        });
+
+        const payload = {
+          format: "fasti-romani-deutsch-v7",
+          exportiertAm: exportZeit,
+          aenderungen: Object.keys(aenderungen).length > 0
+            ? aenderungen
+            : "Keine (alle Einstellungen entsprechen den Werkseinstellungen)",
+          pontifexSchaltjahre: overrideKeys.length > 0
+            ? pontifexSchaltjahre
+            : "Keine manuellen Schaltjahre"
+        };
+
+        downloadFile("fasti-kalender-anpassungen.json", JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
+        showPontifexStatus(`Übersichtliches JSON exportiert (${Object.keys(aenderungen).length} Einstellungs-Änderung(en) und ${overrideKeys.length} Pontifex-Schaltjahr(e); aktuelles Datum wird beim Import automatisch geladen).`);
       });
 
       document.getElementById("btnExportPontifexCsv").addEventListener("click", () => {
@@ -6641,17 +6705,103 @@
         reader.onload = () => {
           try {
             const data = JSON.parse(String(reader.result));
-            const isCompact = Boolean(data && data.f === "fr6");
+            const isGermanV7 = Boolean(data && data.format === "fasti-romani-deutsch-v7");
+            const isCompactV6 = Boolean(data && data.f === "fr6");
             const isLegacy = Boolean(data && typeof data.overrides === "object" && data.overrides !== null);
 
-            if (!isCompact && !isLegacy) {
+            if (!isGermanV7 && !isCompactV6 && !isLegacy) {
               showPontifexStatus("Ungültige JSON-Datei: Es wurde kein gültiges Kalender-Backup gefunden.", true);
               return;
             }
 
             const next = createDefaultState();
+            next.activeJdn = TODAY_JDN;
+            next.viewedRepYear = null;
+            next.pontifexWindowStart = null;
 
-            if (isCompact) {
+            if (isGermanV7) {
+              const aend = data.aenderungen && typeof data.aenderungen === "object" ? data.aenderungen : {};
+
+              if (typeof aend.kalendersystem === "string") {
+                next.calendarSystem = /jul/i.test(aend.kalendersystem) ? "julian" : "republican";
+              }
+              if (typeof aend.schaltmonatAufteilung === "string") {
+                next.intercalaryMode = /immer\s*27/i.test(aend.schaltmonatAufteilung) ? "fixed_27" : "variable_27_28";
+              }
+              if (typeof aend.julianischeBasis === "string") {
+                next.julianBasis = /authentisch/i.test(aend.julianischeBasis) ? "authentic_julian" : "gregorian_sync";
+              }
+              if (aend.startanker && typeof aend.startanker === "object") {
+                const sa = aend.startanker;
+                const d = parseInt(sa.tag, 10);
+                let m = typeof sa.monat === "number" ? sa.monat : parseInt(sa.monat, 10);
+                if (Number.isNaN(m) && typeof sa.monat === "string") {
+                  const idx = GREG_MONTHS_DE.findIndex((gm) => sa.monat.trim().toLowerCase().startsWith(gm.toLowerCase()));
+                  if (idx !== -1) m = idx + 1;
+                }
+                const astroY = parseGermanAstroYear(sa.jahr);
+                const calType = /jul/i.test(String(sa.kalendertyp || "")) ? "julian" : "gregorian";
+                if (astroY !== null && m >= 1 && m <= 12 && d >= 1 && d <= getDaysInNormalMonth(astroY, m, calType)) {
+                  const jdn = calType === "julian" ? julianToJdn(astroY, m, d) : gregorianToJdn(astroY, m, d);
+                  next.anchor = buildAnchorFromJdn(jdn, calType);
+                }
+              }
+              if (typeof aend.jahresanfang === "string") {
+                const idx = NORMAL_MONTH_LABELS.findIndex((lbl) => aend.jahresanfang.trim().toLowerCase().startsWith(lbl.toLowerCase()));
+                if (idx !== -1) next.yearStartMonth = idx;
+              } else if (Number.isInteger(aend.jahresanfang) && aend.jahresanfang >= 0 && aend.jahresanfang <= 11) {
+                next.yearStartMonth = aend.jahresanfang;
+              }
+              if (typeof aend.monatsnamen === "string") {
+                next.monthNaming = /traditionell/i.test(aend.monatsnamen) ? "traditional" : "custom";
+              }
+              if (typeof aend.jahresaera === "string") {
+                const val = aend.jahresaera.toLowerCase();
+                if (val.includes("konsul")) next.eraKey = "consuls";
+                else if (val.includes("diokletian")) next.eraKey = "diocletian";
+                else if (val.includes("christ")) next.eraKey = "christian";
+                else if (val.includes("selbst") || val.includes("eigen")) next.eraKey = "custom";
+                else next.eraKey = "auc";
+              }
+              if (aend.eigeneAeraJahr1 !== undefined) {
+                const parsedCustom = parseGermanAstroYear(aend.eigeneAeraJahr1);
+                if (parsedCustom !== null) next.customEraYear1Astro = parsedCustom;
+              }
+              if (typeof aend.eingabekalender === "string") {
+                next.normalCal = /jul/i.test(aend.eingabekalender) ? "julian" : "gregorian";
+              }
+              if (typeof aend.ansicht === "string") {
+                if (/desktop/i.test(aend.ansicht)) next.viewMode = "desktop";
+                else if (/mobil/i.test(aend.ansicht)) next.viewMode = "mobile";
+                else next.viewMode = "auto";
+              }
+              if (aend.darstellungsgroesse !== undefined) {
+                const scaleVal = parseInt(String(aend.darstellungsgroesse), 10);
+                if (!Number.isNaN(scaleVal) && scaleVal >= 60 && scaleVal <= 150) {
+                  next.uiScale = scaleVal;
+                }
+              }
+              if (typeof aend.tafelFilter === "string") {
+                const f = aend.tafelFilter.toLowerCase();
+                if (f.includes("markt") || f.includes("nundinae")) next.tabletFilter = "nundinae";
+                else if (f.includes("fest") || f.includes("feriae")) next.tabletFilter = "feasts";
+                else if (f.includes("relig")) next.tabletFilter = "religiosi";
+                else if (f.includes("kalend") || f.includes("nonen") || f.includes("iden")) next.tabletFilter = "markers";
+                else if (f.includes("gericht") || f.includes("versammlung")) next.tabletFilter = "legal";
+                else next.tabletFilter = "all";
+              }
+              if (data.pontifexSchaltjahre && typeof data.pontifexSchaltjahre === "object") {
+                for (const [key, val] of Object.entries(data.pontifexSchaltjahre)) {
+                  const yrMatch = String(key).match(/(?:Jahr\s*)?(\d+)/i);
+                  const lenMatch = String(val).match(/\b(355|377|378)\b/);
+                  const yr = yrMatch ? parseInt(yrMatch[1], 10) : NaN;
+                  const len = lenMatch ? parseInt(lenMatch[1], 10) : NaN;
+                  if (Number.isInteger(yr) && yr >= 1 && (len === 355 || len === 377 || len === 378)) {
+                    next.overrides[yr] = len;
+                  }
+                }
+              }
+            } else if (isCompactV6) {
               if (data.s === 1) next.calendarSystem = "julian";
               if (data.i === 1) next.intercalaryMode = "fixed_27";
               if (data.j === 1) next.julianBasis = "authentic_julian";
@@ -6659,102 +6809,47 @@
                 const calType = data.k[1] === 1 ? "julian" : "gregorian";
                 next.anchor = buildAnchorFromJdn(Math.trunc(data.k[0]), calType);
               }
-              if (Number.isInteger(data.m) && data.m >= 0 && data.m <= 11) {
-                next.yearStartMonth = data.m;
-              }
+              if (Number.isInteger(data.m) && data.m >= 0 && data.m <= 11) next.yearStartMonth = data.m;
               if (data.n === 1) next.monthNaming = "traditional";
-              if (Number.isInteger(data.e) && COMPACT_ERA_CODES[data.e]) {
-                next.eraKey = COMPACT_ERA_CODES[data.e];
-              }
-              if (typeof data.c === "number" && Number.isFinite(data.c)) {
-                next.customEraYear1Astro = Math.trunc(data.c);
-              }
+              if (Number.isInteger(data.e) && LEGACY_ERA_CODES[data.e]) next.eraKey = LEGACY_ERA_CODES[data.e];
+              if (typeof data.c === "number" && Number.isFinite(data.c)) next.customEraYear1Astro = Math.trunc(data.c);
               if (data.g === 1) next.normalCal = "julian";
-              if (Number.isInteger(data.r) && COMPACT_VIEW_CODES[data.r]) {
-                next.viewMode = COMPACT_VIEW_CODES[data.r];
-              }
-              if (typeof data.z === "number" && data.z >= 60 && data.z <= 150) {
-                next.uiScale = Math.round(data.z);
-              }
-              if (Number.isInteger(data.t) && COMPACT_FILTER_CODES[data.t]) {
-                next.tabletFilter = COMPACT_FILTER_CODES[data.t];
-              }
-              if (typeof data.d === "number" && Number.isFinite(data.d)) {
-                next.activeJdn = Math.trunc(data.d);
-              }
-              if (typeof data.y === "number" && Number.isFinite(data.y)) {
-                next.viewedRepYear = Math.trunc(data.y);
-              }
-              if (typeof data.p === "number" && Number.isFinite(data.p)) {
-                next.pontifexWindowStart = Math.trunc(data.p);
-              }
+              if (Number.isInteger(data.r) && LEGACY_VIEW_CODES[data.r]) next.viewMode = LEGACY_VIEW_CODES[data.r];
+              if (typeof data.z === "number" && data.z >= 60 && data.z <= 150) next.uiScale = Math.round(data.z);
+              if (Number.isInteger(data.t) && LEGACY_FILTER_CODES[data.t]) next.tabletFilter = LEGACY_FILTER_CODES[data.t];
               if (Array.isArray(data.o)) {
                 for (let idx = 0; idx + 1 < data.o.length; idx += 2) {
                   const yr = Number(data.o[idx]);
-                  const len = COMPACT_LEN_CODES[data.o[idx + 1]];
-                  if (Number.isInteger(yr) && yr >= 1 && len) {
-                    next.overrides[yr] = len;
-                  }
+                  const len = LEGACY_LEN_CODES[data.o[idx + 1]];
+                  if (Number.isInteger(yr) && yr >= 1 && len) next.overrides[yr] = len;
                 }
               }
             } else {
               const src = data.settings && typeof data.settings === "object" ? data.settings : data;
-              if (src.calendarSystem === "republican" || src.calendarSystem === "julian") {
-                next.calendarSystem = src.calendarSystem;
-              }
-              if (src.intercalaryMode === "variable_27_28" || src.intercalaryMode === "fixed_27") {
-                next.intercalaryMode = src.intercalaryMode;
-              }
-              if (src.julianBasis === "gregorian_sync" || src.julianBasis === "authentic_julian") {
-                next.julianBasis = src.julianBasis;
-              }
-              if (src.anchor && typeof src.anchor.jdn === "number") {
-                next.anchor = src.anchor;
-              }
-              if (Number.isInteger(src.yearStartMonth) && src.yearStartMonth >= 0 && src.yearStartMonth <= 11) {
-                next.yearStartMonth = src.yearStartMonth;
-              }
-              if (src.monthNaming === "custom" || src.monthNaming === "traditional") {
-                next.monthNaming = src.monthNaming;
-              }
-              if (COMPACT_ERA_CODES.includes(src.eraKey)) {
-                next.eraKey = src.eraKey;
-              }
-              if (typeof src.customEraYear1Astro === "number" && Number.isFinite(src.customEraYear1Astro)) {
-                next.customEraYear1Astro = Math.trunc(src.customEraYear1Astro);
-              }
-              if (src.normalCal === "gregorian" || src.normalCal === "julian") {
-                next.normalCal = src.normalCal;
-              }
-              if (COMPACT_VIEW_CODES.includes(src.viewMode)) {
-                next.viewMode = src.viewMode;
-              }
-              if (typeof src.uiScale === "number" && src.uiScale >= 60 && src.uiScale <= 150) {
-                next.uiScale = Math.round(src.uiScale);
-              }
-              if (typeof src.activeJdn === "number" && Number.isFinite(src.activeJdn)) {
-                next.activeJdn = Math.trunc(src.activeJdn);
-              }
-              if (typeof src.viewedRepYear === "number" && Number.isFinite(src.viewedRepYear)) {
-                next.viewedRepYear = Math.trunc(src.viewedRepYear);
-              }
-              if (COMPACT_FILTER_CODES.includes(src.tabletFilter)) {
-                next.tabletFilter = src.tabletFilter;
-              }
+              if (src.calendarSystem === "republican" || src.calendarSystem === "julian") next.calendarSystem = src.calendarSystem;
+              if (src.intercalaryMode === "variable_27_28" || src.intercalaryMode === "fixed_27") next.intercalaryMode = src.intercalaryMode;
+              if (src.julianBasis === "gregorian_sync" || src.julianBasis === "authentic_julian") next.julianBasis = src.julianBasis;
+              if (src.anchor && typeof src.anchor.jdn === "number") next.anchor = src.anchor;
+              if (Number.isInteger(src.yearStartMonth) && src.yearStartMonth >= 0 && src.yearStartMonth <= 11) next.yearStartMonth = src.yearStartMonth;
+              if (src.monthNaming === "custom" || src.monthNaming === "traditional") next.monthNaming = src.monthNaming;
+              if (LEGACY_ERA_CODES.includes(src.eraKey)) next.eraKey = src.eraKey;
+              if (typeof src.customEraYear1Astro === "number" && Number.isFinite(src.customEraYear1Astro)) next.customEraYear1Astro = Math.trunc(src.customEraYear1Astro);
+              if (src.normalCal === "gregorian" || src.normalCal === "julian") next.normalCal = src.normalCal;
+              if (LEGACY_VIEW_CODES.includes(src.viewMode)) next.viewMode = src.viewMode;
+              if (typeof src.uiScale === "number" && src.uiScale >= 60 && src.uiScale <= 150) next.uiScale = Math.round(src.uiScale);
+              if (LEGACY_FILTER_CODES.includes(src.tabletFilter)) next.tabletFilter = src.tabletFilter;
               for (const [k, v] of Object.entries(data.overrides)) {
                 const yr = Number(k);
                 const len = Number(v);
-                if (Number.isInteger(yr) && yr >= 1 && COMPACT_LEN_CODES.includes(len)) {
-                  next.overrides[yr] = len;
-                }
+                if (Number.isInteger(yr) && yr >= 1 && LEGACY_LEN_CODES.includes(len)) next.overrides[yr] = len;
               }
             }
 
             state = next;
             syncConfigControlsFromState();
             syncInputsFromActiveJdn();
-            refreshAllViews(state.viewedRepYear === null);
-            showPontifexStatus(`Import erfolgreich: Gesamte Kalenderkonfiguration und ${Object.keys(state.overrides).length} Schaltjahres-Anpassung(en) wiederhergestellt.`);
+            refreshAllViews(true);
+            showPontifexStatus(`Import erfolgreich: Einstellungen und ${Object.keys(state.overrides).length} Schaltjahres-Anpassung(en) übernommen – das heutige Tagesdatum wird direkt im geladenen Kalender angezeigt.`);
           } catch (err) {
             showPontifexStatus("Fehler beim Lesen der JSON-Datei.", true);
           }
