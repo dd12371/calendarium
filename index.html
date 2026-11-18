@@ -134,7 +134,6 @@
       padding: 12px 10px 64px;
     }
 
-    body:not(.mode-desktop) .page-shell,
     body:not(.mode-desktop) .panel,
     body:not(.mode-desktop) .hero-plaque,
     body:not(.mode-desktop) .sub-box,
@@ -6165,9 +6164,11 @@
           if (Math.abs(scale - 1) < 0.001) {
             shell.style.transform = "";
             shell.style.width = "";
+            shell.style.maxWidth = "";
           } else {
             shell.style.transform = `scale(${scale.toFixed(4)})`;
             shell.style.width = isDesktopMode ? "1240px" : `${(100 / scale).toFixed(4)}%`;
+            shell.style.maxWidth = "none";
           }
         }
 
