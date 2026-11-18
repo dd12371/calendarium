@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FASTI REI PUBLICAE — Römischer Republikanischer Kalender</title>
+  <title>FASTI ROMANI — Römischer Kalender (Republikanisch &amp; Julianisch)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -129,7 +129,7 @@
     /* Monumentaler Kopfbereich */
     .monument-header {
       text-align: center;
-      padding: 24px 24px 26px;
+      padding: 24px 24px 22px;
       margin-bottom: 16px;
       background:
         radial-gradient(circle at top center, rgba(226, 184, 87, 0.14), transparent 65%),
@@ -162,18 +162,70 @@
       margin: 0;
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: clamp(1.85rem, 3.5vw, 3rem);
+      font-size: clamp(1.85rem, 3.4vw, 2.95rem);
       letter-spacing: 0.09em;
       color: var(--ivory);
       text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
     }
 
     .monument-subtitle {
-      margin: 8px auto 0;
-      max-width: 940px;
+      margin: 8px auto 16px;
+      max-width: 980px;
       font-style: italic;
       font-size: 1.07rem;
       color: var(--ivory-muted);
+    }
+
+    /* System-Umschalter im Kopfbereich */
+    .system-switcher-bar {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(14, 17, 23, 0.78);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .sys-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ivory-muted);
+      font-family: var(--font-display);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sys-switch-btn:hover {
+      color: var(--ivory);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .sys-switch-btn.active[data-sys="republican"] {
+      background: linear-gradient(180deg, #c99a35 0%, #9b731d 100%);
+      color: #130e04;
+      border-color: var(--gold-bright);
+      font-weight: 700;
+      box-shadow: 0 0 18px rgba(226, 184, 87, 0.35);
+    }
+
+    .sys-switch-btn.active[data-sys="julian"] {
+      background: linear-gradient(180deg, #9d4561 0%, #6f283e 100%);
+      color: #fff3f6;
+      border-color: var(--porphyry-bright);
+      font-weight: 700;
+      box-shadow: 0 0 18px rgba(223, 116, 148, 0.35);
     }
 
     /* Schnellnavigation, Live-Status und Hauptschalter */
@@ -236,6 +288,39 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+    }
+
+    .nav-sys-toggle {
+      display: inline-flex;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid rgba(226, 184, 87, 0.35);
+      background: rgba(14, 17, 23, 0.78);
+    }
+
+    .nav-sys-mini {
+      border: none;
+      background: transparent;
+      color: var(--ivory-muted);
+      font-family: var(--font-display);
+      font-size: 0.63rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .nav-sys-mini.active[data-sys="republican"] {
+      background: rgba(226, 184, 87, 0.25);
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .nav-sys-mini.active[data-sys="julian"] {
+      background: rgba(223, 116, 148, 0.28);
+      color: #ffd5e1;
+      font-weight: 700;
     }
 
     .view-controls {
@@ -349,7 +434,7 @@
       color: var(--gold-bright);
     }
 
-    /* Überarbeitete Stichtag-Tafel (3 offizielle lateinische Schreibungen) */
+    /* Stichtag-Tafel (3 offizielle lateinische Schreibungen) */
     .hero-plaque {
       display: grid;
       grid-template-columns: 1.45fr 1fr;
@@ -364,6 +449,11 @@
       border-left: 5px solid var(--gold);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-deep);
+    }
+
+    body.system-julian .hero-plaque {
+      border-left-color: var(--porphyry-bright);
+      border-color: rgba(223, 116, 148, 0.5);
     }
 
     @media (max-width: 1080px) {
@@ -381,7 +471,7 @@
       margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -405,6 +495,25 @@
       border-radius: 50%;
       background: var(--gold-bright);
       box-shadow: 0 0 8px var(--gold-bright);
+    }
+
+    .pill-system {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 11px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      border: 1px solid rgba(226, 184, 87, 0.45);
+      background: rgba(226, 184, 87, 0.12);
+      color: var(--gold-bright);
+    }
+
+    body.system-julian .pill-system {
+      border-color: rgba(223, 116, 148, 0.6);
+      background: rgba(143, 57, 84, 0.28);
+      color: #ffd5e1;
     }
 
     .hero-modern-row {
@@ -517,6 +626,20 @@
 
     .hero-grammar-note strong {
       color: var(--ivory);
+    }
+
+    .hero-counterpart-note {
+      margin-top: 8px;
+      padding: 8px 13px;
+      background: rgba(226, 184, 87, 0.08);
+      border-left: 3px solid var(--amber-bright);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.91rem;
+      color: var(--ivory-muted);
+    }
+
+    .hero-counterpart-note strong {
+      color: var(--amber-bright);
     }
 
     .hero-consuls-banner {
@@ -944,7 +1067,7 @@
       color: var(--ivory);
     }
 
-    /* Pontifex Maximus */
+    /* Schaltjahres-Kontrolle / Schaltzyklus */
     .pontifex-toolbar {
       display: flex;
       flex-direction: column;
@@ -1040,6 +1163,11 @@
       background: linear-gradient(135deg, rgba(226, 184, 87, 0.13) 0%, rgba(24, 29, 37, 0.95) 70%);
     }
 
+    .pontifex-card.type-jul-leap {
+      border-left-color: var(--porphyry-bright);
+      background: linear-gradient(135deg, rgba(143, 57, 84, 0.18) 0%, rgba(24, 29, 37, 0.95) 75%);
+    }
+
     .pontifex-card.mod-longer {
       border-color: var(--emerald-bright);
       border-left-width: 5px;
@@ -1077,6 +1205,7 @@
 
     .diff-badge.pos { background: rgba(108, 224, 173, 0.2); color: var(--emerald-bright); border: 1px solid var(--emerald-bright); }
     .diff-badge.neg { background: rgba(244, 124, 113, 0.2); color: var(--rubrica-bright); border: 1px solid var(--rubrica-bright); }
+    .diff-badge.leap { background: rgba(223, 116, 148, 0.22); color: #ffd5e1; border: 1px solid var(--porphyry-bright); }
     .diff-badge.std { background: rgba(255, 255, 255, 0.08); color: var(--ivory-muted); }
 
     .pontifex-card-meta {
@@ -1086,6 +1215,14 @@
       margin-bottom: 8px;
       min-height: 2.3em;
       line-height: 1.35;
+    }
+
+    .pontifex-card-note {
+      font-family: var(--font-mono);
+      font-size: 0.71rem;
+      color: var(--ivory-dim);
+      padding-top: 5px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     /* Fasti-Jahrestafeln: breite, vollständig ausgeschriebene Tafeln mit konstanter Zeilenhöhe */
@@ -1319,7 +1456,7 @@
 
     .tablet-colhead {
       display: grid;
-      grid-template-columns: 1.55rem 1.8rem 2.75rem 8rem minmax(9.5rem, 1fr) 5.5rem;
+      grid-template-columns: 1.55rem 1.8rem 2.75rem 8.5rem minmax(9.5rem, 1fr) 5.5rem;
       align-items: center;
       gap: 0.4rem;
       height: 1.75rem;
@@ -1351,7 +1488,7 @@
     /* Einheitliche, exakt feste Zeilenhöhe ohne Verrutschen und ohne Abschneiden */
     .fasti-row {
       display: grid;
-      grid-template-columns: 1.55rem 1.8rem 2.75rem 8rem minmax(9.5rem, 1fr) 5.5rem;
+      grid-template-columns: 1.55rem 1.8rem 2.75rem 8.5rem minmax(9.5rem, 1fr) 5.5rem;
       align-items: center;
       gap: 0.4rem;
       height: 2.25rem;
@@ -1377,6 +1514,10 @@
 
     .fasti-row.is-marker {
       background: rgba(226, 184, 87, 0.09);
+    }
+
+    .fasti-row.is-religiosus {
+      background: rgba(143, 57, 84, 0.09);
     }
 
     .fasti-row.is-active {
@@ -1473,6 +1614,17 @@
       color: #ffd9d6;
       background: rgba(201, 74, 63, 0.28);
       border: 1px solid rgba(244, 124, 113, 0.55);
+    }
+
+    .tag-relig {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #f6c9dc;
+      background: rgba(143, 57, 84, 0.35);
+      border: 1px solid rgba(223, 116, 148, 0.5);
     }
 
     .tag-char-desc {
@@ -1653,27 +1805,40 @@
     <header class="monument-header">
       <div class="spqr-badge">
         <span class="laurel">❦</span>
-        <span>SENATVS POPVLVSQVE ROMANVS · FASTI ANTIATES</span>
+        <span>SENATVS POPVLVSQVE ROMANVS · FASTI ANTIATES ET IVLIANI</span>
         <span class="laurel">❦</span>
       </div>
-      <h1 class="monument-title">RÖMISCHER REPUBLIKANISCHER KALENDER</h1>
+      <h1 class="monument-title">RÖMISCHER KALENDER · REPUBLIKANISCH &amp; JULIANISCH</h1>
       <p class="monument-subtitle">
-        Präjulianisches Kalendersystem (355, 377 oder 378 Tage im 24-Jahres-Zyklus) mit Kalenden, Nonen und Iden,
-        Marktwoche A–H, Tagescharakteren, Konsulatsären (200–1 v. Chr.), frei wählbarem Jahresanfang, Monatsnamen-Wahl und Pontifex-Maximus-Schaltkontrolle.
+        Beide römischen Kalendersysteme vereint: Der präjulianische Republikanische Kalender (355, 377 oder 378 Tage im 24-Jahres-Zyklus, wahlweise 27/28-tägiger Schaltmonat oder 27-tägiger Schaltmonat mit 23/24-tägigem Februar, ausschließlich Feste bis 45 v. Chr.)
+        sowie der Julianische Kalender aus Caesars Kalenderreform von 45 v. Chr. (365/366 Tage, <em>Dies bissextus</em>, standardmäßig gregorianisch synchronisiert oder authentisch julianisch, mit sämtlichen republikanischen, kaiserzeitlichen und spätantiken Festen) — inklusive Kalenden, Nonen, Iden, Marktwoche A–H, Tagescharakteren, Konsulatsären (200–1 v. Chr.), frei wählbarem Jahresanfang, Monatsnamen-Wahl und Pontifex-Maximus-Schaltkontrolle.
       </p>
+
+      <div class="system-switcher-bar" role="group" aria-label="Römisches Kalendersystem mit einem Klick wechseln">
+        <button type="button" class="sys-switch-btn active" data-sys="republican" id="btnSysRepHeader">
+          🏛 Republikanisch
+        </button>
+        <button type="button" class="sys-switch-btn" data-sys="julian" id="btnSysJulHeader">
+          👑 Julianisch
+        </button>
+      </div>
     </header>
 
     <!-- SCHNELLNAVIGATION, STATUS UND HAUPTSCHALTER -->
     <nav class="quick-nav" aria-label="Schnellnavigation">
       <div class="quick-nav-links">
         <a class="nav-pill accent-gold" href="#heroSection">Aktiver Stichtag</a>
-        <a class="nav-pill accent-amber" href="#configSection">Anker, Jahresanfang und Ära</a>
+        <a class="nav-pill accent-amber" href="#configSection">Anker, System &amp; Ära</a>
         <a class="nav-pill accent-lapis" href="#convertersSection">Konverter</a>
-        <a class="nav-pill accent-porphyry" href="#pontifexSection">Pontifex Maximus</a>
+        <a class="nav-pill accent-porphyry" href="#pontifexSection">Schaltzyklus &amp; Pontifex</a>
         <a class="nav-pill accent-emerald" href="#fastiSection">Jahrestafeln</a>
         <a class="nav-pill" href="#docsSection">Regeln und Legende</a>
       </div>
       <div class="quick-right">
+        <div class="nav-sys-toggle" role="group" aria-label="Schnellwechsel Kalendersystem">
+          <button type="button" class="nav-sys-mini active" data-sys="republican" id="btnSysRepMini">Republikanisch</button>
+          <button type="button" class="nav-sys-mini" data-sys="julian" id="btnSysJulMini">Julianisch</button>
+        </div>
         <div class="view-controls" aria-label="Ansicht und Darstellungsgröße">
           <label for="paramViewMode">Ansicht</label>
           <select id="paramViewMode">
@@ -1695,10 +1860,11 @@
     </nav>
 
     <!-- HERO LIVE / AKTIVER STICHTAG -->
-    <section class="hero-plaque" id="heroSection" aria-label="Aktuelles republikanisches Datum">
+    <section class="hero-plaque" id="heroSection" aria-label="Aktuelles römisches Datum">
       <div>
         <div class="hero-label">
           <span class="pill-live" id="heroModeBadge">HEUTIGES DATUM</span>
+          <span class="pill-system" id="heroSystemBadge">REPUBLIKANISCH</span>
           <span id="heroWeekdayGreg">—</span>
         </div>
 
@@ -1723,6 +1889,7 @@
         </div>
 
         <div class="hero-grammar-note" id="heroGrammarNote">—</div>
+        <div class="hero-counterpart-note" id="heroCounterpartNote">—</div>
 
         <div class="hero-consuls-banner hidden" id="heroConsulsBanner">
           <div class="hero-consuls-title" id="heroConsulsTitle">AMTIERENDE KONSULN</div>
@@ -1754,7 +1921,7 @@
           <div class="meta-chip-val" id="heroGregDate">—</div>
         </div>
         <div class="meta-chip chip-lapis">
-          <div class="meta-chip-label">Julianisches Datum</div>
+          <div class="meta-chip-label">Historisch-Julianisches Datum</div>
           <div class="meta-chip-val" id="heroJulDate">—</div>
         </div>
         <div class="meta-chip chip-emerald">
@@ -1772,20 +1939,44 @@
       </div>
     </section>
 
-    <!-- PARAMETER: STARTANKER, JAHRESANFANG, MONATSNAMEN UND JAHRESÄRA -->
-    <section class="panel panel-anchor-era" id="configSection" aria-label="Startanker, Jahresanfang, Monatsnamen und Jahresära">
+    <!-- PARAMETER: KALENDERSYSTEM, STARTANKER, SCHALTREGEL, JAHRESANFANG, MONATSNAMEN UND JAHRESÄRA -->
+    <section class="panel panel-anchor-era" id="configSection" aria-label="Startanker, Kalendersystem, Jahresanfang, Monatsnamen und Jahresära">
       <div class="panel-header">
-        <h2 class="panel-title">⚙ Startanker, Jahresanfang, Monatsnamen und Jahresära</h2>
+        <h2 class="panel-title">⚙ Kalendersystem, Startanker, Schaltregel, Jahresanfang und Ära</h2>
         <span class="panel-subtitle">Alle Änderungen bleiben beim Neuladen der Seite automatisch gespeichert</span>
       </div>
 
       <div class="config-split">
-        <!-- Linke Box: Startanker, Jahresanfang und Monatsnamen -->
+        <!-- Linke Box: Kalendersystem, Startanker, Schaltregel, Jahresanfang und Monatsnamen -->
         <div class="sub-box">
           <h3 class="sub-box-title">
-            <span id="anchorBoxHeading">1. Startanker (1. Principius des Jahres 1 = Marktbuchstabe A)</span>
+            <span id="anchorBoxHeading">1. Kalendersystem, Startanker &amp; Schaltregel</span>
             <button class="btn btn-sm" id="btnAnchor1900Default">1. März 1900 laden</button>
           </h3>
+
+          <div class="row-2" style="margin-bottom:12px;">
+            <div class="field">
+              <label for="paramCalendarSystem">Aktives römisches Kalendersystem</label>
+              <select id="paramCalendarSystem">
+                <option value="republican" selected>Republikanisch (Präjulianisch · bis 45 v. Chr.)</option>
+                <option value="julian">Julianisch (Ab 45 v. Chr.)</option>
+              </select>
+            </div>
+            <div class="field" id="intercalaryModeWrap">
+              <label for="paramIntercalaryMode">Schaltmonat-Aufteilung (377/378 T.)</label>
+              <select id="paramIntercalaryMode">
+                <option value="variable_27_28" selected>Schaltmonat 27 oder 28 T. · Feb. immer 23 T. (Standard)</option>
+                <option value="fixed_27">Schaltmonat immer 27 T. · Feb. 23 oder 24 T.</option>
+              </select>
+            </div>
+            <div class="field hidden" id="julianBasisWrap">
+              <label for="paramJulianBasis">Julianische Schaltjahr- &amp; Datumsbasis</label>
+              <select id="paramJulianBasis">
+                <option value="gregorian_sync" selected>Gregorianisch synchronisiert (Standard · 1900 kein Schaltjahr)</option>
+                <option value="authentic_julian">Authentisch Julianisch (alle 4 J. Schaltjahr inkl. 1900)</option>
+              </select>
+            </div>
+          </div>
 
           <div class="anchor-row">
             <div class="field">
@@ -1851,7 +2042,7 @@
 
           <div class="status-note" id="anchorStatusNote">—</div>
           <p class="field-hint" style="margin:8px 0 0;">
-            <strong>Hinweis zu Startanker und Jahresanfang:</strong> Der Startanker bestimmt exakt das Datum des allerersten Tages (1. Tag des gewählten Startmonats im Jahr 1, Marktbuchstabe A). Wählen Sie vor 1583 ausdrücklich Gregorianisch oder Julianisch, damit die Schalttagsdifferenz eindeutig bleibt. Der Schaltmonat <em>Mensis Intercalaris</em> folgt im Schaltjahr immer direkt auf den 23. Terminalius bzw. Februarius.
+            <strong>Hinweis zu Startanker, Schaltregel und Systemwechsel:</strong> Der Startanker bestimmt im Republikanischen Kalender exakt das Datum des 1. Tages des gewählten Startmonats im Jahr 1 (Marktbuchstabe A) und verankert zugleich den durchgehenden 8-tägigen Nundinalzyklus (A–H) in beiden Systemen. Im Julianischen Kalender arbeitet das System standardmäßig synchron zum gregorianischen Kalender (1900 kein Schaltjahr, keine Verschiebung gegenüber heutigen Daten); auf Wunsch kann auf die authentisch julianische Schaltung (Schaltjahr alle 4 Jahre inkl. 1900) umgestellt werden. Bei traditionellen Monatsnamen heißen der 5. und 6. Monat im Julianischen Kalender <em>Iulius</em> und <em>Augustus</em> (statt <em>Quinctilis</em> und <em>Sextilis</em>), während die eigene Namensreihe (<em>Communius / Imperius</em>) stets unverändert bleibt.
           </p>
         </div>
 
@@ -1890,13 +2081,13 @@
           </div>
 
           <div class="field">
-            <label for="paramNormalCal">Eingabe-Kalendersystem im Konverter „Normal zu Republikanisch“</label>
+            <label for="paramNormalCal">Eingabe-Kalendersystem im Konverter „Normal zu Römisch“</label>
             <select id="paramNormalCal">
-              <option value="gregorian" selected>Gregorianischer Kalender (Standard heute)</option>
-              <option value="julian">Julianischer Kalender (Antike bzw. Ostkirchen-Versatz)</option>
+              <option value="gregorian" selected>Gregorianischer Kalender (Standard)</option>
+              <option value="julian">Julianischer Kalender (historischer bzw. Ostkirchen-Versatz)</option>
             </select>
             <span class="field-hint">
-              Bestimmt, ob Ihre Eingabe im linken Konverter als gregorianisches oder julianisches Datum interpretiert wird. In den Ergebnissen werden stets beide Systeme parallel ausgegeben.
+              Bestimmt, ob Ihre Eingabe im linken Konverter als gregorianisches oder historisch-julianisches Datum interpretiert wird. In den Ergebnissen werden stets beide Systeme parallel ausgegeben.
             </span>
           </div>
         </div>
@@ -1905,17 +2096,17 @@
 
     <!-- ZWEI-WEGE-DATUMSKONVERTER -->
     <div class="converters-grid" id="convertersSection">
-      <!-- Normal -> Republikanisch -->
-      <section class="panel panel-norm-rep" aria-label="Konverter Normal zu Republikanisch">
+      <!-- Normal -> Römisch -->
+      <section class="panel panel-norm-rep" aria-label="Konverter Normal zu Römisch">
         <div class="panel-header">
-          <h2 class="panel-title">⇄ Normal zu Republikanisch</h2>
+          <h2 class="panel-title" id="convNormTitle">⇄ Normal zu Republikanisch</h2>
           <button class="btn btn-lapis btn-sm" id="btnNormToday">Heute laden</button>
         </div>
 
         <div class="row-3">
           <div class="field">
             <label for="normDay">Tag</label>
-            <input type="number" id="normDay" inputmode="numeric" min="1" max="31" value="17" />
+            <input type="number" id="normDay" inputmode="numeric" min="1" max="31" value="18" />
           </div>
           <div class="field">
             <label for="normMonth">Monat</label>
@@ -1949,26 +2140,26 @@
         <div id="normInputWarn" class="status-note warn hidden"></div>
 
         <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-lapis" id="btnConvertNormToRep">In Republikanisch umrechnen und anzeigen</button>
+          <button class="btn btn-lapis" id="btnConvertNormToRep">Umrechnen und anzeigen</button>
         </div>
 
         <div class="conv-result" id="normToRepResult"></div>
       </section>
 
-      <!-- Republikanisch -> Normal -->
-      <section class="panel panel-rep-norm" aria-label="Konverter Republikanisch zu Normal">
+      <!-- Römisch -> Normal -->
+      <section class="panel panel-rep-norm" aria-label="Konverter Römisch zu Normal">
         <div class="panel-header">
-          <h2 class="panel-title">⇄ Republikanisch zu Normal</h2>
+          <h2 class="panel-title" id="convRepTitle">⇄ Republikanisch zu Normal</h2>
           <button class="btn btn-sm" id="btnRepSyncCurrent">Aktiven Tag laden</button>
         </div>
 
         <div class="row-2" style="margin-bottom:10px;">
           <div class="field">
-            <label for="repDay">Republikanischer Tag</label>
+            <label for="repDay" id="repDayLabel">Römischer Tag</label>
             <input type="number" id="repDay" inputmode="numeric" min="1" max="31" value="1" />
           </div>
           <div class="field">
-            <label for="repMonth">Republikanischer Monat</label>
+            <label for="repMonth" id="repMonthLabel">Römischer Monat</label>
             <select id="repMonth"></select>
           </div>
         </div>
@@ -2002,10 +2193,10 @@
       </section>
     </div>
 
-    <!-- PONTIFEX MAXIMUS SCHALTKONTROLLE -->
-    <section class="panel panel-pontifex" id="pontifexSection" aria-label="Pontifex Maximus Schaltjahr-Kontrolle">
+    <!-- PONTIFEX MAXIMUS / SCHALTZYKLUS-KONTROLLE -->
+    <section class="panel panel-pontifex" id="pontifexSection" aria-label="Schaltjahr-Kontrolle und Schaltzyklus">
       <div class="panel-header">
-        <h2 class="panel-title">👑 Pontifex Maximus · Schaltjahre selbst festlegen</h2>
+        <h2 class="panel-title" id="pontifexPanelTitle">👑 Pontifex Maximus · Schaltjahre selbst festlegen</h2>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn btn-sm" id="btnPontifexWindowPrev">◀ 24 Jahre früher</button>
           <button class="btn btn-sm" id="btnPontifexWindowCur">Um aktuelles Jahr</button>
@@ -2015,25 +2206,18 @@
       </div>
 
       <div class="pontifex-toolbar">
+        <div id="pontifexJulianNotice" class="status-note hidden"></div>
+
         <div class="pontifex-stats" id="pontifexStats"></div>
 
-        <div class="pontifex-legend-row">
-          <span class="p-swatch std-355">Gemeinjahr (355 T.)</span>
-          <span class="p-swatch std-377">Kl. Schaltjahr (377 T.)</span>
-          <span class="p-swatch std-378">Gr. Schaltjahr (378 T.)</span>
-          <span class="p-swatch mod-longer">Pontifex: Verlängert (+ Tage)</span>
-          <span class="p-swatch mod-shorter">Pontifex: Verkürzt (− Tage)</span>
-          <span class="p-swatch active-yr">Aktives Stichtag-Jahr</span>
-        </div>
+        <div class="pontifex-legend-row" id="pontifexLegendRow"></div>
 
-        <span class="field-hint">
-          Als <strong>Pontifex Maximus</strong> dürfen Sie jedes Jahr <strong>ab Beginn des Startankers (Jahr 1 und alle Folgejahre)</strong> beliebig vom 24-Jahres-Standardzyklus abweichend als Gemeinjahr (355 Tage), kleines Schaltjahr (377 Tage) oder großes Schaltjahr (378 Tage) festlegen. Jahre vor dem Startanker bleiben historisch unveränderbar.
-        </span>
+        <span class="field-hint" id="pontifexHelpHint"></span>
 
         <div class="pontifex-export-bar">
           <div style="display:flex; flex-direction:column; gap:6px; width:100%;">
             <span class="field-hint">
-              <strong>Gesamtexport und -import aller eigenen Kalenderanpassungen</strong> (Startanker, Kalendersystem, Jahresanfang, Monatsnamen, Jahresära, eigene Ära, Darstellungsgröße und alle Pontifex-Schaltjahre):
+              <strong>Gesamtexport und -import aller Kalenderanpassungen</strong> (Kalendersystem, Schaltregeln, Startanker, Kalendertyp, Jahresanfang, Monatsnamen, Jahresära, eigene Ära, Darstellungsgröße und alle Pontifex-Schaltjahre):
             </span>
             <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; align-items:center;">
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -2055,9 +2239,9 @@
     </section>
 
     <!-- 12 / 13 FASTI-TAFELN -->
-    <section class="panel panel-fasti" id="fastiSection" aria-label="Tafeln des republikanischen Jahres">
+    <section class="panel panel-fasti" id="fastiSection" aria-label="Tafeln des römischen Jahres">
       <div class="panel-header">
-        <h2 class="panel-title">🏛 Fasti Rei Publicae · Vollständige Jahrestafeln</h2>
+        <h2 class="panel-title" id="fastiSectionTitle">🏛 Fasti Rei Publicae · Vollständige Jahrestafeln</h2>
         <span class="panel-subtitle">Klicken Sie auf einen beliebigen Tag in einer der Tafeln, um ihn zu inspizieren und als Stichtag zu laden</span>
       </div>
 
@@ -2081,7 +2265,7 @@
       <div class="tablets-legend-banner">
         <span><strong>Bedeutung der Markierungen:</strong></span>
         <span><span class="red-text-sample">Rotes A</span> = <strong>Nundinae (Römischer Markttag)</strong> alle 8 Tage; <strong>B–H</strong> = reguläre Zwischentage der Marktwoche.</span>
-        <span><span class="red-text-sample">Rote Festtagsschrift (Rubrica)</span> = vollständig ausgeschriebene Staatsfeste (<em>Feriae</em>) wie in antiken Marmor-Fasti.</span>
+        <span><span class="red-text-sample">Rote Festtagsschrift (Rubrica)</span> = vollständig ausgeschriebene Staatsfeste (<em>Feriae</em> &amp; <em>Ludi</em>) wie in antiken Marmor-Fasti; <span class="tag-relig">relig.</span> = <em>dies religiosus / ater</em>.</span>
         <span><strong>Typen:</strong> <code>F</code> Gerichtstag · <code>C</code> Volksversammlung · <code>N</code> Keine Amtshandlung · <code>NP</code> Staatsfest · <code>EN</code> Mittags fas · <code>FP</code> Vormittags fas · <code>QRCF/QSDF</code> Opfer-/Reinigungstage.</span>
       </div>
 
@@ -2089,7 +2273,8 @@
         <div class="filter-chips" id="tabletFilterChips">
           <button class="filter-chip active" data-filter="all">Alle Tage</button>
           <button class="filter-chip" data-filter="nundinae">Markttage (Nundinae A)</button>
-          <button class="filter-chip" data-filter="feasts">Nur Festtage (Feriae)</button>
+          <button class="filter-chip" data-filter="feasts">Nur Festtage (Feriae &amp; Ludi)</button>
+          <button class="filter-chip" data-filter="religiosi">Dies religiosi / atri</button>
           <button class="filter-chip" data-filter="markers">Kalenden, Nonen und Iden</button>
           <button class="filter-chip" data-filter="legal">Gerichts- und Versammlungstage (F und C)</button>
         </div>
@@ -2103,7 +2288,7 @@
     <section class="panel panel-docs" id="docsSection" aria-label="Dokumentation und Legende">
       <div class="panel-header">
         <h2 class="panel-title">📜 Aufbau, Grammatik und Historische Regeln</h2>
-        <span class="panel-subtitle">Präjulianisches System · 24-Jahres-Zyklus · Tagescharaktere · Drei lateinische Schreibweisen</span>
+        <span class="panel-subtitle">Republikanisches &amp; Julianisches System · 24-Jahres-Zyklus · Tagescharaktere · Drei lateinische Schreibweisen</span>
       </div>
 
       <div class="legend-grid">
@@ -2113,14 +2298,16 @@
         </div>
 
         <div class="legend-box lb-lapis">
-          <h4>2. Der 24-Jahres-Schaltzyklus</h4>
+          <h4>2. Schaltzyklen: Republikanisch &amp; Julianisch</h4>
           <ul class="legend-list">
-            <li><strong>Jahre 1–16:</strong> Strenger 4-Jahres-Takt <span class="inline-badge">355 · 377 · 355 · 378</span> (4 mal 1.465 = 5.860 Tage).</li>
-            <li><strong>Jahre 17–24:</strong> Nur noch kleine Schaltjahre (377) in Jahr 18, 20 und 22; die <strong>allerletzte Schaltung im 24. Jahr entfällt</strong> (<span class="inline-badge">355 · 377 · 355 · 377 · 355 · 377 · 355 · 355</span> = 2.906 Tage).</li>
+            <li><strong>Jahre 1–16 (Republikanisch):</strong> Strenger 4-Jahres-Takt <span class="inline-badge">355 · 377 · 355 · 378</span> (4 mal 1.465 = 5.860 Tage).</li>
+            <li><strong>Jahre 17–24 (Republikanisch):</strong> Nur noch kleine Schaltjahre (377) in Jahr 18, 20 und 22; die <strong>allerletzte Schaltung im 24. Jahr entfällt</strong> (<span class="inline-badge">355 · 377 · 355 · 377 · 355 · 377 · 355 · 355</span> = 2.906 Tage).</li>
             <li><strong>Gesamtsumme:</strong> 5.860 plus 2.906 = <strong>8.766 Tage</strong> in 24 Jahren, also exakt <strong>365,25 Tage pro Jahr</strong> (identisch mit dem julianischen Mittel).</li>
-            <li>Innerhalb der ersten 16 Jahre eilt der Kalender bis zu +16 Tage voraus und holt diese Differenz in den Jahren 17–24 wieder exakt auf.</li>
-            <li><strong>Pontifex Maximus:</strong> Abweichende Schaltungen dürfen ausschließlich für Jahre ab dem gewählten Startanker (Jahr 1 und Folgejahre) vorgenommen werden.</li>
-            <li><strong>Schaltmonat bei beliebigem Jahresanfang:</strong> Egal welcher Monat als Jahresbeginn gewählt wird, die Verkürzung des Terminalius bzw. Februarius auf 23 Tage und die Einfügung des <em>Mensis Intercalaris</em> erfolgen stets unmittelbar nach dem Terminalius bzw. Februarius.</li>
+            <li>Innerhalb der ersten 16 Jahre eilt der Republikanische Kalender bis zu +16 Tage voraus und holt diese Differenz in den Jahren 17–24 wieder exakt auf.</li>
+            <li><strong>Zwei Schaltmonat-Modelle (Republikanisch):</strong> Im Standardmodus hat der Terminalius/Februarius im Schaltjahr stets 23 Tage und der <em>Mensis Intercalaris</em> 27 Tage (377) bzw. 28 Tage (378). Alternativ kann der <em>Mensis Intercalaris</em> auf konstant 27 Tage festgelegt werden — dann erhält der Terminalius/Februarius im 378-Tage-Jahr 24 Tage.</li>
+            <li><strong>Pontifex Maximus (Republikanisch):</strong> Abweichende Schaltungen dürfen ausschließlich für Jahre ab dem gewählten Startanker (Jahr 1 und Folgejahre) vorgenommen werden.</li>
+            <li><strong>Schaltmonat bei beliebigem Jahresanfang:</strong> Egal welcher Monat als Jahresbeginn gewählt wird, die Verkürzung des Terminalius bzw. Februarius auf 23/24 Tage und die Einfügung des <em>Mensis Intercalaris</em> erfolgen stets unmittelbar nach dem Terminalius bzw. Februarius.</li>
+            <li><strong>Julianischer Kalender (eingeführt durch Caesars Reform 45 v. Chr.):</strong> Schafft den <em>Mensis Intercalaris</em> ab, verlängert die 29-Tage-Monate auf 30 bzw. 31 Tage (365 Tage im Gemeinjahr) und fügt im Schaltjahr nach dem 24. Februarius (<em>a. d. VI Kal. Mart.</em>) einen Schalttag (<em>ante diem bis sextum Kalendas Martias</em>) ein. Standardmäßig folgt er der gregorianischen Schaltregel und Datumszählung (1900 kein Schaltjahr), kann jedoch auf die authentisch julianische Schaltung (Schaltjahr alle 4 Jahre inkl. 1900) umgestellt werden.</li>
           </ul>
         </div>
 
@@ -2133,8 +2320,9 @@
             <li><span class="inline-badge">N</span> <strong>Dies Nefastus:</strong> Keine Amtshandlungen und keine Gerichte (religiös gebunden).</li>
             <li><span class="inline-badge">NP</span> <strong>Nefastus Parte oder Feriae:</strong> Hohe Staats- und Opferfeste (alle Iden tragen das Zeichen NP).</li>
             <li><span class="inline-badge">EN</span> <strong>Endotercisus:</strong> Morgens und abends nefastus, nur mittags nach dem Opfer fastus.</li>
-            <li><span class="inline-badge">FP</span> <strong>Fastus Principio:</strong> Am Vormittag fastus (19. Imperius bzw. Sextilis).</li>
-            <li><span class="inline-badge">QRCF / QSDF</span> <strong>Spezialtage:</strong> 24. Principius/Martius und 24. Veccelius/Maius (<em>Quando Rex Comitiavit Fas</em>) sowie 15. Solstitius/Iunius (<em>Quando Stercus Delatum Fas</em>).</li>
+            <li><span class="inline-badge">FP</span> <strong>Fastus Principio:</strong> Am Vormittag fastus (19. Imperius bzw. Sextilis in den republikanischen Fasti; teils auch 21. Febr.).</li>
+            <li><span class="inline-badge">QRCF / QSDF</span> <strong>Spezialtage:</strong> 24. Principius/Martius, 24. Veccelius/Maius sowie <em>a. d. VII</em> &amp; <em>V Kal. Mart.</em> im Intercalaris (<em>Quando Rex Comitiavit Fas</em>) und 15. Solstitius/Iunius (<em>Quando Stercus Delatum Fas</em>).</li>
+            <li><span class="inline-badge">relig.</span> <strong>Dies religiosus / Dies ater:</strong> Religiös unheilvolle oder der Totenwelt geweihte Tage (z. B. <em>Parentalia</em>, <em>Lemuria</em>, <em>Vestalia</em>, <em>Dies Alliensis</em> am 18. Juli, <em>Mundus patet</em>). Der Republikanische Kalender umfasst ausschließlich Feste bis 45 v. Chr., der Julianische zusätzlich alle kaiserzeitlichen und spätantiken Feste.</li>
           </ul>
         </div>
 
@@ -2142,7 +2330,7 @@
           <h4>4. Offizielle Schreibung, Zahlzeichen und Jahresären</h4>
           <ul class="legend-list">
             <li><strong>Capitalis Monumentalis:</strong> Monumentale Inschrift-Form in Versalien, nach antiker Steinschreibweise mit <strong>V statt U</strong>, Mittelpunkten (<code>·</code>) und römischen Zahlzeichen für alle Jahre.</li>
-            <li><strong>Ausgeschriebene Vollform:</strong> Klassische lateinische Inklusivzählung (<em>Kalendis, Nonis, Idibus</em> im Ablativ; <em>pridie</em> bzw. <em>ante diem ...</em> im Akkusativ) mit ausgeschriebenem Jahreszusatz in römischen Zahlen.</li>
+            <li><strong>Ausgeschriebene Vollform:</strong> Klassische lateinische Inklusivzählung (<em>Kalendis, Nonis, Idibus</em> im Ablativ; <em>pridie</em> bzw. <em>ante diem ...</em> im Akkusativ; im julianischen Schaltjahr am 25. Febr. <em>ante diem bis sextum Kalendas</em>) mit ausgeschriebenem Jahreszusatz in römischen Zahlen.</li>
             <li><strong>Abgekürzte Buchschrift:</strong> Literarische und kalendarische Minuskel-Kurzform (<em>a. d.</em>, <em>Kal.</em>, <em>Non.</em>, <em>Id.</em>, <em>a. u. c.</em>, <em>coss.</em>).</li>
             <li><strong>Konsul-Jahreszählung (200–1 v. Chr.):</strong> Für die Jahre 1900–2099 erscheinen alle 200 ordentlichen Konsulpaare der Jahre <strong>200–1 v. Chr.</strong> im klassischen Ablativus absolutus (<em>coss.</em> bzw. <em>cos.</em> bei Alleinkonsulat).</li>
             <li><strong>Ab Urbe Condita (a.u.c.), Diokletian, Christus und Eigene Ära:</strong> Diokletianisch wechselt am 1. Iustitius bzw. September; in der selbstdefinierten Ära liegt unmittelbar vor Jahr 1 das Jahr 0.</li>
@@ -2173,6 +2361,8 @@
         Möchten Sie wirklich <strong>sämtliche gespeicherten Änderungen</strong> dauerhaft löschen und den Kalender vollständig auf die Werkseinstellungen zurücksetzen?<br><br>
         Dabei werden wiederhergestellt:
         <ul style="margin:8px 0 0; padding-left:20px;">
+          <li><strong>Kalendersystem:</strong> Republikanisch · <strong>Schaltmonat:</strong> 27/28 T. (Feb. 23 T.)</li>
+          <li><strong>Julianische Basis:</strong> Gregorianisch synchronisiert (1900 kein Schaltjahr)</li>
           <li><strong>Startanker:</strong> 1. März 1900 n. Chr. (Gregorianisch)</li>
           <li><strong>Jahresanfang:</strong> März (Principius) · <strong>Monatsnamen:</strong> Eigene Version</li>
           <li><strong>Jahresära:</strong> Ab Urbe Condita (a.u.c.) · <strong>Eingabe:</strong> Gregorianisch</li>
@@ -2192,10 +2382,11 @@
     (function () {
       "use strict";
 
-      const STORAGE_KEY = "fasti_rei_publicae_state_v2";
+      const STORAGE_KEY = "fasti_rei_publicae_state_v4";
+      const LEGACY_KEYS = ["fasti_rei_publicae_state_v3", "fasti_rei_publicae_state_v2"];
 
       /* =========================================================================
-       * 1. MONATSDEFINITIONEN (EIGENE VERSION UND TRADITIONELLE RÖMISCHE NAMEN)
+       * 1. MONATSDEFINITIONEN (REPUBLIKANISCH BIS 45 v. CHR. & JULIANISCH)
        * ========================================================================= */
       const MONTHS = [
         {
@@ -2205,20 +2396,89 @@
           traditional: { name: "Martius", abbr: "Mart.", ablPl: "Martiis", accPl: "Martias" },
           lengthCommon: 31,
           lengthInterc: 31,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 7,
           ides: 15,
-          chars: [
-            "NP","F","F","F","F","F","F","F","C","C","C","C","EN","NP","NP",
+          charsRep: [
+            "NP","F","C","C","C","C","F","F","C","C","C","C","EN","NP","NP",
             "F","NP","C","NP","C","C","N","NP","QRCF","C","C","C","C","C","C","C"
           ],
-          feasts: {
-            1: "Feriae Marti (Matronalia)",
-            14: "Equirria",
-            15: "Feriae Annae Perennae",
-            17: "Liberalia et Agonalia",
-            19: "Quinquatrus",
-            23: "Tubilustrium",
-            24: "Quando Rex Comitiavit Fas"
+          charsJul: [
+            "NP","F","C","C","C","C","F","F","C","C","C","C","EN","NP","NP",
+            "F","NP","C","NP","C","C","N","NP","QRCF","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [9],
+          diesRelJul: [9],
+          feastsRep: {
+            1: "Feriae Marti · Matronalia · Iuno Lucina",
+            7: "Vediovis (Tempel)",
+            9: "Salier-Prozession (Ancilia)",
+            14: "Equirria · Mamuralia",
+            15: "Feriae Iovi · Anna Perenna",
+            16: "Argei-Prozession (1. Tag)",
+            17: "Liberalia · Agonalia Martis · Argei",
+            19: "Quinquatrus (Mars & Minerva)",
+            23: "Tubilustrium · Salier-Prozession",
+            24: "Quando Rex Comitiavit Fas",
+            31: "Luna (Aventin)"
+          },
+          detailsRep: {
+            1: "Feriae Marti, Salier-Umzug (ancilia movent), Matronalia, Dies natalis Iuno Lucina (Esquilin), Erneuerung des heiligen Vesta-Feuers, Lorbeerschmuck an Regia, Flamines-Häusern & Curiae Veteres",
+            7: "Dies natalis des Tempels des Vediovis auf dem Kapitol",
+            9: "Weitere Prozession der Salier mit den heiligen Schilden (ancilia)",
+            14: "Zweite Equirria (Pferderennen zu Ehren des Mars) · Mamuralia",
+            15: "Feriae Iovi (Iden-Opfer an Jupiter) · Fest der Anna Perenna",
+            16: "Prozession der Argei (1. Tag)",
+            17: "Liberalia (Liber) · Agonalia / Agonium Martiale (Mars) · Argei (2. Tag)",
+            19: "Quinquatrus für Mars und Minerva (später 5-tägige Quinquatria)",
+            23: "Tubilustrium (Reinigung der Kriegstrompeten) · Salier-Prozession",
+            24: "QRCF (Quando Rex Comitiavit Fas; Comitia Calata für Testamente)",
+            31: "Dies natalis des Tempels der Luna auf dem Aventin"
+          },
+          feastsJul: {
+            1: "Feriae Marti · Matronalia · Iuno Lucina",
+            5: "Isidis Navigium",
+            6: "Supplik. Vesta & Penates · M. Aurelius & L. Verus",
+            7: "Vediovis · Iunonalia",
+            9: "Salier-Prozession (Ancilia)",
+            13: "Circenses (Iuppiter Cultor)",
+            14: "Equirria · Mamuralia",
+            15: "Feriae Iovi · Anna Perenna · Canna intrat",
+            16: "Argei-Prozession (1. Tag)",
+            17: "Liberalia · Agonalia · Ludi Liberalici",
+            19: "Quinquatrus (Mars & Minerva)",
+            20: "Pelusia",
+            22: "Arbor intrat (Cybele & Attis)",
+            23: "Tubilustrium · Salier-Prozession",
+            24: "QRCF · Dies Sanguinis · Sacra Nox",
+            25: "Hilaria (Cybele & Attis)",
+            26: "Requetio",
+            27: "Lavatio (Cybele)",
+            28: "Initium Gaiani",
+            31: "Luna (Aventin)"
+          },
+          detailsJul: {
+            1: "Feriae Marti, Salier-Prozession (ancilia movent), Matronalia, Iuno Lucina (Esquilin), Erneuerung des Vesta-Feuers, Lorbeerschmuck an Regia & Curiae Veteres, Dies natalis Martis, Circenses (ab Mitte 1. Jh. n. Chr.), Nataliciae des Mars Victor",
+            5: "Isidis Navigium (Schiffsprozession für Isis, ab Mitte 1. Jh. n. Chr.)",
+            6: "Supplikation an Vesta & die öffentlichen Penaten (Feriale Cumanum, 4–14 n. Chr.) · Dies imperii für Marcus Aurelius & Lucius Verus",
+            7: "Dies natalis des Vediovis-Tempels (Kapitol) · Iunonalia (Spätantike)",
+            9: "Weitere Prozession der Salier",
+            13: "Circenses für Jupiter Cultor (Iovi Cultori)",
+            14: "Equirria · Mamuralia",
+            15: "Feriae Iovi · Anna Perenna · Beginn der Heiligen Woche für Cybele & Attis (Canna intrat, ab Claudius / Antoninus Pius)",
+            16: "Prozession der Argei",
+            17: "Liberalia · Agonalia / Agonium Martiale · Argei · Circenses & Ludi Liberalici (ab Mitte 1. Jh. n. Chr.)",
+            19: "Quinquatrus für Mars und Minerva",
+            20: "Pelusia",
+            22: "Arbor intrat (Cybele & Attis, eingeführt unter Claudius)",
+            23: "Tubilustrium · Salier-Prozession",
+            24: "QRCF (Comitia Calata) · Dies Sanguinis (Selbstgeißelung & Kastration der Galli) · Sacra Nox (Attis)",
+            25: "Hilaria (Freudenfest nach der Heiligen Nacht, ab Antoninus Pius)",
+            26: "Requetio (Ruhetag nach den Hilaria)",
+            27: "Lavatio (rituelle Prozession und Waschung der Cybele, seit Augustus)",
+            28: "Initium Gaiani (Mysterien am Gaianum bzw. Akklamation Caligulas als Princeps)",
+            31: "Dies natalis des Tempels der Luna auf dem Aventin"
           }
         },
         {
@@ -2228,20 +2488,121 @@
           traditional: { name: "Aprilis", abbr: "Apr.", ablPl: "Aprilibus", accPl: "Apriles" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 30,
+          lengthJulLeap: 30,
           nones: 5,
           ides: 13,
-          chars: [
-            "N","C","C","C","N","N","N","N","N","N","N","N","NP","N","NP",
-            "N","N","N","NP","N","NP","N","NP","C","NP","C","C","C","C"
+          charsRep: [
+            "F","F","C","C","N","N","N","N","N","N","N","N","NP","N","NP",
+            "N","N","N","NP","N","NP","N","F","C","NP","C","C","C","C"
           ],
-          feasts: {
-            1: "Veneralia",
-            5: "Ludi Megalenses (Beginn)",
-            15: "Fordicidia",
-            19: "Cerialia",
+          charsJul: [
+            "F","F","C","C","N","N","N","N","N","N","N","N","NP","N","NP",
+            "N","N","N","NP","N","NP","N","F","C","NP","C","C","C","C","C"
+          ],
+          diesRelRep: [],
+          diesRelJul: [],
+          feastsRep: {
+            1: "Veneralia (Venus & Fortuna Virilis)",
+            4: "Ludi Megalenses (Beginn)",
+            5: "Fortuna Publica · Ludi Megalenses",
+            6: "Ludi Megalenses",
+            7: "Ludi Megalenses",
+            8: "Ludi Megalenses",
+            9: "Ludi Megalenses",
+            10: "Magna Mater · Ende Ludi Megalenses",
+            12: "Ludi Ceriales (Beginn, ab 202 v. Chr.)",
+            13: "Feriae Iovi · Iuppiter Victor · Ludi Ceriales",
+            14: "Ludi Ceriales",
+            15: "Fordicidia · Ludi Ceriales",
+            16: "Ludi Ceriales",
+            17: "Ludi Ceriales",
+            18: "Ludi Ceriales",
+            19: "Cerealia · Ende Ludi Ceriales",
             21: "Parilia (Gründung Roms)",
             23: "Vinalia Priora",
-            25: "Robigalia"
+            25: "Robigalia",
+            27: "Ludi Florae / Floralia (Beginn vorjul.)",
+            28: "Ludi Florae",
+            29: "Ludi Florae"
+          },
+          detailsRep: {
+            1: "Veneralia zu Ehren von Venus Verticordia und Fortuna Virilis",
+            4: "Beginn der Ludi Megalenses (Spiele für die Magna Mater)",
+            5: "Dies natalis des Tempels der Fortuna Publica · Ludi Megalenses",
+            6: "Ludi Megalenses",
+            7: "Ludi Megalenses",
+            8: "Ludi Megalenses",
+            9: "Ludi Megalenses",
+            10: "Dies natalis des Tempels der Magna Mater auf dem Palatin (191 v. Chr.) · Abschluss der Ludi Megalenses",
+            12: "Beginn der Ludi Ceriales (Spiele für Ceres, seit 202 v. Chr.)",
+            13: "Feriae Iovi (Widderopfer auf der Arx) · Tempel von Jupiter Victor & Jupiter Libertas · Ludi Ceriales",
+            14: "Ludi Ceriales",
+            15: "Fordicidia (Opfer einer trächtigen Kuh an Tellus) · Ludi Ceriales",
+            16: "Ludi Ceriales",
+            17: "Ludi Ceriales",
+            18: "Ludi Ceriales",
+            19: "Cerealia (Ceres, Liber und Libera) · Abschluss der Ludi Ceriales",
+            21: "Parilia (Hirtenfest für Pales) & Dies natalis Roms (Gründung 753 v. Chr.)",
+            23: "Vinalia Priora (für Jupiter und Venus)",
+            25: "Robigalia (Ackerfest gegen Getreiderost mit Hundeopfer)",
+            27: "Beginn der Ludi Florae (Floralia, im vorjulianischen Kalender am IV Kal. Mai.)",
+            28: "Ludi Florae (Fortsetzung)",
+            29: "Ludi Florae (Fortsetzung bis Anfang Maius)"
+          },
+          feastsJul: {
+            1: "Veneralia (Venus & Fortuna Virilis)",
+            3: "Quirinus-Tempel (Circenses)",
+            4: "Ludi Megalenses (Beginn)",
+            5: "Fortuna Publica · Ludi Megalenses",
+            6: "Ludi Megalenses",
+            7: "Ludi Megalenses",
+            8: "Castor & Pollux · Ludi Megalenses",
+            9: "Ludi Megalenses",
+            10: "Magna Mater · Ende Ludi Megalenses",
+            11: "Septimius Severus (Circenses)",
+            12: "Ludi Ceriales (Beginn)",
+            13: "Feriae Iovi · Iuppiter Victor · Ludi Ceriales",
+            14: "Ludi Ceriales · Victoria Augusta",
+            15: "Fordicidia · Ludi Ceriales",
+            16: "Ludi Ceriales · Felicitas Imperii",
+            17: "Ludi Ceriales",
+            18: "Ludi Ceriales",
+            19: "Cerealia · Ende Ludi Ceriales",
+            21: "Parilia · Roma condita (Circenses)",
+            23: "Vinalia (Venus Erycina)",
+            25: "Robigalia · Serapia",
+            26: "Marcus Aurelius (Circenses)",
+            28: "Ludi Florae (Beginn julianisch)",
+            29: "Ludi Florae",
+            30: "Ludi Florae"
+          },
+          detailsJul: {
+            1: "Veneralia für Venus und Fortuna Virilis",
+            3: "Dies natalis des Quirinus-Tempels mit Zirkusspielen (ab Mitte 1. Jh. n. Chr.)",
+            4: "Beginn der Ludi Megalenses (Spiele der Großen Mutter)",
+            5: "Dies natalis Tempel der Fortuna Publica · Ludi Megalenses",
+            6: "Ludi Megalenses",
+            7: "Ludi Megalenses",
+            8: "Dies natalis Tempel von Castor & Pollux (ab Mitte 1. Jh. n. Chr.) · Ludi Megalenses",
+            9: "Ludi Megalenses",
+            10: "Tempelweihe der Magna Mater auf dem Palatin · Ende der Ludi Megalenses",
+            11: "Dies natalis des vergöttlichten Septimius Severus mit Zirkusspielen",
+            12: "Beginn der Ludi Ceriales (Spiele für Ceres)",
+            13: "Monatliche Feriae Iovis (Widderopfer auf der Arx) · Tempel von Jupiter Victor & Jupiter Libertas · Ludi Ceriales",
+            14: "Ludi Ceriales · Supplikation an Victoria Augusta (erster Sieg des Augustus, Feriale Cumanum)",
+            15: "Fordicidia (XVI Kal. Mai. vorjulianisch) · Ludi Ceriales",
+            16: "Ludi Ceriales · Supplikation an Felicitas Imperii (erste Imperator-Akklamation des Augustus, Feriale Cumanum)",
+            17: "Ludi Ceriales",
+            18: "Ludi Ceriales",
+            19: "Cerealia für Ceres, Liber & Libera (XII Kal. Mai. vorjulianisch) · Ende der Ludi Ceriales",
+            21: "Parilia (X Kal. Mai. vorjul.) · Roma condita / Dies Romana mit Zirkusspielen (ab Mitte 1. Jh. n. Chr.)",
+            23: "Vinalia für Venus Erycina (VIII Kal. Mai. vorjul.)",
+            25: "Robigalia (VI Kal. Mai. vorjul.) · Serapia (kaiserzeitliches Fest ab 1. Jh. n. Chr.)",
+            26: "Dies natalis des Marcus Aurelius mit Zirkusspielen",
+            28: "Beginn der Ludi Florae (im vorjulianischen Kalender am 27. April)",
+            29: "Ludi Florae",
+            30: "Ludi Florae"
           }
         },
         {
@@ -2251,20 +2612,83 @@
           traditional: { name: "Maius", abbr: "Mai.", ablPl: "Maiis", accPl: "Maias" },
           lengthCommon: 31,
           lengthInterc: 31,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 7,
           ides: 15,
-          chars: [
-            "N","F","C","C","C","C","N","F","N","C","N","NP","N","C","NP",
+          charsRep: [
+            "F","F","C","C","C","C","N","F","N","C","N","C","N","C","NP",
             "F","C","C","C","C","NP","N","NP","QRCF","C","C","C","C","C","C","C"
           ],
-          feasts: {
+          charsJul: [
+            "F","F","C","C","C","C","F","F","N","C","N","C","N","C","NP",
+            "F","C","C","C","C","NP","N","NP","QRCF","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [9, 11, 13],
+          diesRelJul: [9, 11, 13],
+          feastsRep: {
+            1: "Maia · Bona Dea · Lares Praestites · Ende Ludi Florae",
             9: "Lemuria (1. Tag)",
-            11: "Lemuria (2. Tag)",
+            11: "Lemuria (2. Tag) · Mania",
             13: "Lemuria (3. Tag)",
-            15: "Mercuralia",
-            21: "Agonalia",
-            23: "Tubilustrium",
-            24: "Quando Rex Comitiavit Fas"
+            14: "Mars Invictus · Argei-Prozession",
+            15: "Feriae Iovi · Mercuralia (Mercurius & Maia)",
+            21: "Agonalia (Vediovis)",
+            23: "Tubilustrium · Feriae Volcano",
+            24: "Quando Rex Comitiavit Fas",
+            25: "Fortuna Publica / Primigenia",
+            29: "Ambarvalia (üblich) · Honos et Virtus"
+          },
+          detailsRep: {
+            1: "Opfer einer trächtigen Sau an Maia durch den Flamen Volcanalis · Bona Dea (Aventin) · Lares Praestites · Ende Ludi Florae (Republik)",
+            9: "Lemuria (1. Nacht: Totenfest zur Beschwichtigung der Lemuren, dies religiosus)",
+            11: "Lemuria (2. Tag) · Opfer an Mania (dies religiosus)",
+            13: "Lemuria (3. Tag, dies religiosus)",
+            14: "Dies natalis Mars Invictus (Circus Flaminius) · Zweite Prozession der Argei",
+            15: "Feriae Iovi · Mercuralia (Fest der Kaufleute mit Opfer an Mercurius und Maia)",
+            21: "Agonalia zu Ehren des Vediovis",
+            23: "Zweites Tubilustrium · Feriae Volcano (Riten für Vulcanus)",
+            24: "QRCF (Quando Rex Comitiavit Fas)",
+            25: "Dies natalis Tempel der Fortuna Populi Romani / Fortuna Primigenia",
+            29: "Übliches Datum der Ambarvalia (Flurumgang) · Dies natalis Honos et Virtus"
+          },
+          feastsJul: {
+            1: "Maia · Bona Dea · Lares Praestites · Ludi Florae",
+            2: "Ludi Florae",
+            3: "Ende Ludi Florae (Kaiserzeit)",
+            9: "Lemuria",
+            10: "Claudius Gothicus (Dies natalis)",
+            11: "Lemuria · Mania",
+            13: "Lemuria",
+            14: "Mars Invictus · Argei",
+            15: "Feriae Iovi · Mercuralia",
+            19: "Zenziarius (Filocalus)",
+            21: "Agonalia (Vediovis)",
+            23: "Tubilustrium · Feriae Volcano · Rosentag",
+            24: "QRCF · Geburtstag Germanicus",
+            25: "Fortuna Primigenia / Populi Romani",
+            29: "Ambarvalia · Ludi Fabarici · Honos & Virtus · Zinza",
+            30: "Ludi Fabarici",
+            31: "Ludi Fabarici · Rosalia signorum"
+          },
+          detailsJul: {
+            1: "Opfer einer trächtigen Sau an Maia durch den Flamen Volcanalis · Bona Dea (Aventin) · Lares Praestites · Ludi Florae",
+            2: "Ludi Florae",
+            3: "Abschluss der Ludi Florae in der Kaiserzeit",
+            9: "Lemuria (dies religiosus)",
+            10: "Dies natalis des Claudius Gothicus (268–270)",
+            11: "Lemuria · Opfer an Mania (dies religiosus)",
+            13: "Lemuria (dies religiosus)",
+            14: "Mars Invictus (Circus Flaminius) · Prozession der Argei",
+            15: "Feriae Iovi · Fest der Kaufleute (Mercurius & Maia)",
+            19: "Zenziarius (unbekanntes Fest im Kalender des Filocalus, nach Mitte 1. Jh. n. Chr.)",
+            21: "Agonalia für Vediovis",
+            23: "Tubilustrium · Feriae Volcano · Macellus rosam sumat (Tag des Rosenmarktes)",
+            24: "QRCF · Supplikation an Vesta zum Geburtstag des Germanicus (Feriale Cumanum 4–14 n. Chr. & Feriale Duranum 224–235 n. Chr.)",
+            25: "Dies natalis Tempel der Fortuna Populi Romani / Primigenia",
+            29: "Ambarvalia · Beginn der Ludi Fabarici (Bohnenspiele bis 1. Juni, nach Mitte 1. Jh. n. Chr.) · Honos & Virtus · Zinza (Kalender des Filocalus)",
+            30: "Ludi Fabarici",
+            31: "Ludi Fabarici · Rosalia signorum (Schmückung der Feldzeichen des Heeres mit Rosen)"
           }
         },
         {
@@ -2274,18 +2698,101 @@
           traditional: { name: "Iunius", abbr: "Iun.", ablPl: "Iuniis", accPl: "Iunias" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 30,
+          lengthJulLeap: 30,
           nones: 5,
           ides: 13,
-          chars: [
+          charsRep: [
             "N","F","C","C","N","N","N","N","N","N","NP","N","NP","N","QSDF",
             "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
           ],
-          feasts: {
-            1: "Kalendae Fabariae",
+          charsJul: [
+            "N","F","C","C","N","N","N","N","N","N","NP","N","NP","N","QSDF",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [7, 8, 9, 11, 13, 15],
+          diesRelJul: [7, 8, 9, 11, 13, 15],
+          feastsRep: {
+            1: "Carna (Bohnenkalenden) · Iuno Moneta · Mars · Tempestates",
+            3: "Bellona (Circus Flaminius)",
+            4: "Hercules Magnus Custos",
+            5: "Dius Fidius",
+            7: "Vesta aperitur (Vestalia) · Ludi Piscatorii",
+            8: "Mens (Tempel) · Vestalia",
             9: "Vestalia",
-            11: "Matralia",
-            15: "Quando Stercus Delatum Fas",
-            24: "Fors Fortuna"
+            10: "Vestalia",
+            11: "Matralia · Fortuna · Vestalia",
+            12: "Vestalia",
+            13: "Feriae Iovi · Quinquatrus minusculae · Vestalia",
+            14: "Quinquatrus minusculae · Vestalia",
+            15: "Vesta clauditur (QSDF) · Quinquatrus minusculae",
+            19: "Minerva (Aventin)",
+            20: "Summanus",
+            24: "Fors Fortuna",
+            27: "Lares & Iuppiter Stator",
+            29: "Hercules Musarum"
+          },
+          detailsRep: {
+            1: "Dies natalis Iuno Moneta, Mars (außerhalb Porta Capena), Tempestates · Fest der Carna / Cardea (Bohnenkalenden)",
+            3: "Dies natalis des Tempels der Bellona im Circus Flaminius",
+            4: "Dies natalis des Tempels des Hercules Magnus Custos beim Circus Flaminius",
+            5: "Dies natalis des Tempels des Dius Fidius",
+            7: "Vesta aperitur (Öffnung des Vesta-Heiligtums für Frauen, dies religiosus) · Ludi Piscatorii (Fischerspiele)",
+            8: "Dies natalis Tempel der Mens (dies religiosus) · Vestalia",
+            9: "Vestalia (Hauptfest der Vesta, dies religiosus)",
+            10: "Vestalia",
+            11: "Matralia für Mater Matuta (dies religiosus) · Tempel der Fortuna am Forum Boarium · Vestalia",
+            12: "Vestalia",
+            13: "Feriae Iovi · Quinquatrus minusculae (Flötenspieler, dies religiosus) · Vestalia",
+            14: "Quinquatrus minusculae · Vestalia",
+            15: "Vesta clauditur (QSDF: Schließung & Reinigung des Vesta-Tempels, dies religiosus) · Quinquatrus minusculae",
+            19: "Tempel der Minerva auf dem Aventin",
+            20: "Tempel des Summanus beim Circus Maximus",
+            24: "Fors Fortuna jenseits des Tibers",
+            27: "Tempel der Lares und des Iuppiter Stator auf dem Palatin",
+            29: "Tempel des Hercules Musarum"
+          },
+          feastsJul: {
+            1: "Carna · Iuno Moneta · Mars · Tempestates · Ende Ludi Fabarici",
+            3: "Bellona (Circus Flaminius)",
+            4: "Hercules Magnus Custos (Ludi)",
+            5: "Dius Fidius",
+            6: "Colossus coronatur (Sol)",
+            7: "Vesta aperitur (Vestalia) · Ludi Piscatorii",
+            8: "Mens · Vestalia",
+            9: "Vestalia",
+            10: "Vestalia",
+            11: "Matralia · Fortuna · Vestalia",
+            12: "Vestalia",
+            13: "Feriae Iovi · Quinquatrus minusculae · Vestalia",
+            14: "Quinquatrus minusculae · Vestalia",
+            15: "Vesta clauditur (QSDF) · Quinquatrus minusculae",
+            19: "Minerva (Aventin)",
+            20: "Summanus",
+            24: "Fors Fortuna · Solstitium / Dies lampadarum",
+            27: "Lares & Iuppiter Stator",
+            29: "Hercules Musarum"
+          },
+          detailsJul: {
+            1: "Iuno Moneta · Mars (Porta Capena) · Tempestates · Carna (Bohnenkalenden) · Abschluss Ludi Fabarici (Spätantike)",
+            3: "Tempel der Bellona im Circus Flaminius",
+            4: "Hercules Magnus Custos (mit Ludi in der Kaiserzeit)",
+            5: "Tempel des Dius Fidius",
+            6: "Colossus coronatur (Bekränzung der Kolossalstatue des Sol, Kaiserzeit)",
+            7: "Vesta aperitur (dies religiosus) · Ludi Piscatorii",
+            8: "Tempel der Mens (dies religiosus) · Vestalia",
+            9: "Vestalia (dies religiosus)",
+            10: "Vestalia",
+            11: "Matralia (dies religiosus) · Fortuna (Forum Boarium) · Vestalia",
+            12: "Vestalia",
+            13: "Feriae Iovi (dies religiosus) · Quinquatrus minusculae · Vestalia",
+            14: "Quinquatrus minusculae · Vestalia",
+            15: "Vesta clauditur (Q.ST.D.F., dies religiosus) · Quinquatrus minusculae",
+            19: "Tempel der Minerva auf dem Aventin",
+            20: "Tempel des Summanus beim Circus Maximus",
+            24: "Fors Fortuna (jenseits des Tibers) · Sonnenwende (Solstitium) oder Dies lampadarum",
+            27: "Tempel der Lares & des Iuppiter Stator auf dem Palatin",
+            29: "Tempel des Hercules Musarum"
           }
         },
         {
@@ -2293,21 +2800,126 @@
           numRoman: "V",
           custom: { name: "Communius", abbr: "Comm.", ablPl: "Communiis", accPl: "Communias" },
           traditional: { name: "Quinctilis", abbr: "Quinct.", ablPl: "Quinctilibus", accPl: "Quinctiles" },
+          traditionalJulian: { name: "Iulius", abbr: "Iul.", ablPl: "Iuliis", accPl: "Iulias" },
           lengthCommon: 31,
           lengthInterc: 31,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 7,
           ides: 15,
-          chars: [
+          charsRep: [
             "N","N","N","N","NP","N","N","N","C","C","C","C","C","C","NP",
-            "F","F","F","NP","C","NP","C","NP","N","NP","C","C","C","C","C","C"
+            "F","C","C","NP","C","NP","C","NP","N","NP","C","C","C","C","C","C"
           ],
-          feasts: {
+          charsJul: [
+            "N","N","N","N","NP","N","N","N","C","C","C","C","C","C","NP",
+            "F","C","C","NP","C","NP","C","NP","N","NP","C","C","C","C","C","C"
+          ],
+          diesRelRep: [8, 18],
+          diesRelJul: [8, 18],
+          feastsRep: {
+            1: "Iuno / Felicitas (Tempel)",
             5: "Poplifugia",
-            7: "Nonae Caprotinae",
-            19: "Lucaria (1. Tag)",
+            6: "Ludi Apollinares (Beginn) · Fortuna Muliebris",
+            7: "Nonae Caprotinae · Ancillarum Feriae · Pales",
+            8: "Vitulatio · Ludi Apollinares",
+            9: "Ludi Apollinares",
+            10: "Ludi Apollinares",
+            11: "Ludi Apollinares",
+            12: "Ludi Apollinares",
+            13: "Ende Ludi Apollinares (Apollo)",
+            14: "Mercatus (Beginn)",
+            15: "Feriae Iovi · Transvectio equitum · Mercatus",
+            16: "Mercatus",
+            17: "Honos & Virtus · Victoria · Mercatus",
+            18: "Dies Alliensis (Dies ater) · Mercatus",
+            19: "Lucaria (1. Tag) · Ende Mercatus",
             21: "Lucaria (2. Tag)",
+            22: "Concordia (Tempel)",
             23: "Neptunalia",
-            25: "Furrinalia"
+            25: "Furrinalia",
+            30: "Fortuna Huiusce Diei"
+          },
+          detailsRep: {
+            1: "Monatliche Kalenden-Opfer an Juno durch die Regina sacrorum · Tempel der Felicitas / Iuno Felicitas",
+            5: "Poplifugia (einziges großes Staatsfest vor den Nonen)",
+            6: "Beginn der Ludi Apollinares (jährlich seit 208 v. Chr.) · Fortuna Muliebris",
+            7: "Caprotinia (Nonae Caprotinae) · Ancillarum Feriae · Opfer an Consus · Tempel der zwei Pales · Ludi Apollinares",
+            8: "Vitulatio (dies religiosus) · Ludi Apollinares",
+            9: "Ludi Apollinares",
+            10: "Ludi Apollinares",
+            11: "Ludi Apollinares",
+            12: "Ludi Apollinares",
+            13: "Letzter Tag der Ludi Apollinares mit Opfer am Apollotempel (Campus Martius)",
+            14: "Beginn der Mercatus (Markttage nach den Spielen)",
+            15: "Feriae Iovi · Equitum Romanorum probatio / Transvectio equitum (Reiterparade) · Mercatus",
+            16: "Mercatus",
+            17: "Tempel von Honos & Virtus · Opfer an Honos und Victoria · Mercatus",
+            18: "Dies Alliensis (Dies ater / dies religiosus: Jahrestag der Niederlage an der Allia 390 v. Chr.) · Mercatus",
+            19: "Lucaria (1. Tag) · Abschluss der Mercatus",
+            21: "Lucaria (2. Tag)",
+            22: "Dies natalis des Concordiatempels am Fuß des Kapitols",
+            23: "Neptunalia zu Ehren des Neptun",
+            25: "Furrinalia zu Ehren der Furrina",
+            30: "Dies natalis des Tempels der Fortuna Huiusce Diei"
+          },
+          feastsJul: {
+            1: "Iuno / Felicitas (Tempel)",
+            5: "Poplifugia",
+            6: "Ludi Apollinares (Beginn) · Fortuna Muliebris",
+            7: "Nonae Caprotinae · Ancillarum Feriae · Pales",
+            8: "Vitulatio · Ludi Apollinares",
+            9: "Ludi Apollinares",
+            10: "Ludi Apollinares",
+            11: "Ludi Apollinares",
+            12: "Ludi Apollinares",
+            13: "Ende Ludi Apollinares (Apollo)",
+            14: "Mercatus (Beginn)",
+            15: "Feriae Iovi · Transvectio equitum · Mercatus",
+            16: "Mercatus",
+            17: "Honos & Virtus · Victoria · Mercatus",
+            18: "Dies Alliensis (Dies ater) · Mercatus",
+            19: "Lucaria (1.) · Ende Mercatus",
+            20: "Ludi Victoriae Caesaris (Beginn)",
+            21: "Lucaria (2.) · Ludi Victoriae Caesaris",
+            22: "Concordia · Ludi Victoriae Caesaris",
+            23: "Neptunalia · Ludi Victoriae Caesaris",
+            24: "Ludi Victoriae Caesaris",
+            25: "Furrinalia · Ludi Victoriae Caesaris",
+            26: "Ludi Victoriae Caesaris",
+            27: "Ludi Victoriae Caesaris",
+            28: "Ludi Victoriae Caesaris",
+            29: "Ludi Victoriae Caesaris",
+            30: "Fortuna Huiusce Diei · Ende Ludi Caesaris"
+          },
+          detailsJul: {
+            1: "Kalenden-Opfer an Juno · Tempel der Felicitas / Iuno Felicitas",
+            5: "Poplifugia",
+            6: "Ludi Apollinares (Beginn) · Fortuna Muliebris",
+            7: "Caprotinia · Ancillarum Feriae · Opfer an Consus · Zwei Pales · Ludi Apollinares",
+            8: "Vitulatio (dies religiosus) · Ludi Apollinares",
+            9: "Ludi Apollinares",
+            10: "Ludi Apollinares",
+            11: "Ludi Apollinares",
+            12: "Ludi Apollinares",
+            13: "Ende der Ludi Apollinares (Apollotempel im Campus Martius)",
+            14: "Mercatus (Beginn)",
+            15: "Feriae Iovi · Transvectio equitum · Mercatus",
+            16: "Mercatus",
+            17: "Tempel von Honos & Virtus · Opfer an Honos und Victoria · Mercatus",
+            18: "Dies Alliensis (Allia-Niederlage, dies ater / dies religiosus) · Mercatus",
+            19: "Lucaria (1.) · Ende der Mercatus",
+            20: "Beginn der Ludi Victoriae Caesaris (jährlich ab 45 v. Chr.)",
+            21: "Lucaria (2.) · Ludi Victoriae Caesaris",
+            22: "Tempel der Concordia · Ludi Victoriae Caesaris",
+            23: "Neptunalia · Ludi Victoriae Caesaris",
+            24: "Ludi Victoriae Caesaris",
+            25: "Furrinalia · Ludi Victoriae Caesaris",
+            26: "Ludi Victoriae Caesaris",
+            27: "Ludi Victoriae Caesaris",
+            28: "Ludi Victoriae Caesaris",
+            29: "Ludi Victoriae Caesaris",
+            30: "Fortuna Huiusce Diei · Abschluss der Ludi Victoriae Caesaris"
           }
         },
         {
@@ -2315,22 +2927,92 @@
           numRoman: "VI",
           custom: { name: "Imperius", abbr: "Imp.", ablPl: "Imperiis", accPl: "Imperias" },
           traditional: { name: "Sextilis", abbr: "Sext.", ablPl: "Sextilibus", accPl: "Sextiles" },
+          traditionalJulian: { name: "Augustus", abbr: "Aug.", ablPl: "Augustis", accPl: "Augustas" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 5,
           ides: 13,
-          chars: [
-            "F","F","C","C","F","F","F","F","NP","C","C","C","NP","F","C",
+          charsRep: [
+            "F","F","C","C","F","F","C","C","C","C","C","C","NP","F","C",
             "C","NP","C","FP","C","NP","EN","NP","C","NP","C","NP","C","C"
           ],
-          feasts: {
-            13: "Vertumnalia",
-            17: "Portunalia",
-            19: "Vinalia Rustica",
+          charsJul: [
+            "F","F","C","C","F","F","C","C","C","C","C","C","NP","F","C",
+            "C","NP","C","F","C","NP","EN","NP","C","NP","C","NP","C","C","C","C"
+          ],
+          diesRelRep: [24],
+          diesRelJul: [24],
+          feastsRep: {
+            1: "Spes (Forum Holitorium) · Zwei Victoriae",
+            3: "Supplicia canum",
+            5: "Salus (Quirinal)",
+            9: "Sol Indiges",
+            12: "Hercules Invictus · Venus Victrix",
+            13: "Feriae Iovi · Diana (Nemoralia) · Vortumnus · Fortuna",
+            17: "Portunalia · Ianus-Tempel",
+            19: "Vinalia Rustica · Feriae Iovi",
             21: "Consualia",
-            23: "Volcanalia",
+            23: "Volcanalia · Maia · Nymphae · Ops",
+            24: "Luna (Graecostasis) · Mundus patet (1.)",
             25: "Opiconsivia",
-            27: "Volturnalia"
+            27: "Volturnalia",
+            28: "Sol et Luna (Tempel)"
+          },
+          detailsRep: {
+            1: "Dies natalis des Tempels der Spes (Forum Holitorium) und der Zwei Victoriae auf dem Palatin",
+            3: "Supplicia canum (Strafe der Hunde am Iuventas- und Summanus-Tempel)",
+            5: "Dies natalis des Tempels der Salus auf dem Quirinal",
+            9: "Staatsopfer für Sol Indiges auf dem Quirinal (in der Republik noch Tag C)",
+            12: "Fest für Hercules Invictus (Circus Maximus) · Venus Victrix des Pompeius Magnus (mit Honos & Virtus, Felicitas, evtl. Vesta, ab 55 v. Chr.)",
+            13: "Feriae Iovi (Ovis idulis) · Diana auf dem Aventin (Nemoralia, freier Tag für Sklaven) · Vortumnus · Fortuna Equestris · Hercules Victor/Invictus (Porta Trigemina) · Castor & Pollux (Circus Flaminius) · Camenae (Caelius) · Flora",
+            17: "Portunalia · Tempel des Ianus beim Marcellustheater",
+            19: "Vinalia Rustica für Venus (Circus Maximus) & Feriae Iovi (Charakter FP in den Fasti Antiates)",
+            21: "Consualia (Aventin)",
+            23: "Volcanalia · Opfer an Maia, die Nymphen (Fasti Arvales), Ops Opifera und Hora Quirini",
+            24: "Opfer an Luna (Graecostasis) · Mundus patet (1. Öffnung der Unterweltgrube, dies religiosus)",
+            25: "Opiconsivia für Ops Consiva in der Regia",
+            27: "Volturnalia (Opfer des Flamen Volturnalis an Volturnus)",
+            28: "Dies natalis des Tempels von Sol und Luna"
+          },
+          feastsJul: {
+            1: "Spes · Victoriae · Pertinax (354 n. Chr.)",
+            3: "Supplicia canum",
+            4: "Victoria Senatus (Circenses)",
+            5: "Salus Publica (Circenses)",
+            7: "Constantius (Circenses, 354 n. Chr.)",
+            8: "Ludi votivi (354 n. Chr.)",
+            9: "Sol Indiges (Quirinal)",
+            12: "Hercules Invictus · Venus Victrix · Lychnapsia",
+            13: "Feriae Iovi · Diana (Nemoralia) · Vortumnus · u. a.",
+            17: "Portunalia · Tiberinalia · Ianus",
+            19: "Vinalia Rustica · Probus (Circenses, 354 n. Chr.)",
+            21: "Consualia",
+            23: "Volcanalia (Circenses) · Maia · Nymphae · Ops",
+            24: "Luna · Mundus patet (1.)",
+            25: "Opiconsivia",
+            27: "Volturnalia",
+            28: "Sol et Luna (Circenses)"
+          },
+          detailsJul: {
+            1: "Spes & Zwei Victoriae · Dies natalis & Circenses für Divus Pertinax (Kalender des Filocalus 354 n. Chr.)",
+            3: "Supplicia canum (Strafe der Hunde)",
+            4: "Circenses für die Victoria des Senats (ab Mitte 1. Jh. n. Chr.)",
+            5: "Salus auf dem Quirinal mit Circenses für Salus Publica",
+            7: "Dies natalis & Circenses für Constantius (Kalender von 354)",
+            8: "Votivspiele (Ludi votivi, Kalender von 354)",
+            9: "Staatsopfer für Sol Indiges auf dem Quirinal",
+            12: "Hercules Invictus · Venus Victrix des Pompeius Magnus (mit Honos & Virtus, Felicitas, evtl. Vesta) · Lychnapsia (ab Mitte 1. Jh. n. Chr.)",
+            13: "Ovis idulis · Diana (Nemoralia) · Vortumnus · Fortuna Equestris · Hercules Victor/Invictus (Porta Trigemina) · Castor & Pollux (Circus Flaminius) · Camenae · Flora",
+            17: "Portunalia (XIV Kal. Sept. vorjul.) · Tiberinalia · Tempel des Ianus beim Marcellustheater",
+            19: "Vinalia (XII Kal. Sept. vorjul.) & Feriae Iovi · Dies natalis & Circenses für Probus (354 n. Chr.)",
+            21: "Consualia (X Kal. Sept. vorjul.)",
+            23: "Volcanalia (VIII Kal. Sept. vorjul.) mit Circenses · Maia · Nymphen · Ops Opifera · Hora Quirini",
+            24: "Opfer an Luna · Mundus patet (1. Öffnung, dies religiosus)",
+            25: "Opiconsivia (VI Kal. Sept. vorjul.)",
+            27: "Volturnalia (IV Kal. Sept. vorjul.)",
+            28: "Tempel von Sol & Luna (III Kal. Sept. vorjul.) mit Circenses"
           }
         },
         {
@@ -2340,15 +3022,117 @@
           traditional: { name: "September", abbr: "Sept.", ablPl: "Septembribus", accPl: "Septembres" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 30,
+          lengthJulLeap: 30,
           nones: 5,
           ides: 13,
-          chars: [
-            "F","F","C","C","F","C","C","C","C","C","C","C","NP","F","N",
-            "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          charsRep: [
+            "F","F","C","C","F","F","C","C","C","C","C","N","NP","F","N",
+            "C","C","N","C","C","C","C","C","C","C","C","C","C","C"
           ],
-          feasts: {
-            1: "Kalendae Diocletianae (Diokl. Neujahr)",
-            13: "Epulum Iovis"
+          charsJul: [
+            "F","F","C","C","F","F","C","C","C","C","C","N","NP","F","N",
+            "C","C","N","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [14],
+          diesRelJul: [14],
+          feastsRep: {
+            1: "Iuno Regina (Aventin)",
+            5: "Iuppiter Stator · Ludi Romani (Beginn)",
+            6: "Ludi Romani",
+            7: "Ludi Romani",
+            8: "Ludi Romani",
+            9: "Ludi Romani",
+            10: "Ludi Romani",
+            11: "Ludi Romani · Asclepius",
+            12: "Ludi Romani",
+            13: "Feriae Iovi · Epulum Iovis · Clavis annalis · Ludi Romani",
+            14: "Ludi Romani",
+            15: "Ludi Romani",
+            16: "Ludi Romani",
+            17: "Ludi Romani",
+            18: "Ludi Romani",
+            19: "Ende Ludi Romani",
+            20: "Mercatus Romani (Beginn)",
+            21: "Mercatus Romani",
+            22: "Mercatus Romani",
+            23: "Apollo (Campus Martius) · Ende Mercatus",
+            26: "Venus Genetrix (ab 46 v. Chr.)"
+          },
+          detailsRep: {
+            1: "Dies natalis des Tempels der Iuno Regina auf dem Aventin (seit 392 v. Chr.). [Hinweis Diokletianische Ära: Stichtag des dortigen Jahreswechsels]",
+            5: "Iuppiter Stator · Beginn der Ludi Romani / Ludi Magni (älteste und berühmteste Spiele Roms)",
+            6: "Ludi Romani",
+            7: "Ludi Romani",
+            8: "Ludi Romani",
+            9: "Ludi Romani",
+            10: "Ludi Romani",
+            11: "Ludi Romani · Tempel des Asclepius",
+            12: "Ludi Romani",
+            13: "Feriae Iovi · Epulum Iovis (Festmahl der Kapitolinischen Trias) · Clavis annalis (Einschlagen des Jahresnagels) · Ludi Romani",
+            14: "Ludi Romani (dies religiosus nach späten Quellen)",
+            15: "Ludi Romani",
+            16: "Ludi Romani",
+            17: "Ludi Romani",
+            18: "Ludi Romani",
+            19: "Abschluss der Ludi Romani",
+            20: "Beginn der Mercatus (Markttage nach den Ludi Romani)",
+            21: "Mercatus Romani",
+            22: "Mercatus Romani",
+            23: "Tempel des Apollo im Campus Martius · Ende der Mercatus",
+            26: "Tempel der Venus Genetrix auf dem Caesarforum (geweiht 46 v. Chr.)"
+          },
+          feastsJul: {
+            1: "Iuno Regina · Iuppiter Tonans & Libertas",
+            5: "Iuppiter Stator · Ludi Romani · Mammes vindemia",
+            6: "Ludi Romani",
+            7: "Ludi Romani",
+            8: "Ludi Romani",
+            9: "Ludi Romani · Aurelian (Circenses)",
+            10: "Ludi Romani",
+            11: "Ludi Romani · Asclepius",
+            12: "Ludi Romani",
+            13: "Feriae Iovi · Epulum Iovis · Clavis annalis",
+            14: "Ludi Romani · Probatio equorum · Domitian",
+            15: "Ludi Romani",
+            16: "Ludi Romani",
+            17: "Ludi Romani",
+            18: "Ludi Romani · Trajan · Nerva · Ludi Triumphales",
+            19: "Ende Ludi Romani · Ludi Triumphales · Antoninus Pius",
+            20: "Mercatus · Ludi Triumphales",
+            21: "Mercatus · Ludi Triumphales",
+            22: "Mercatus · Ende Ludi Triumphales",
+            23: "Apollo & Latona · Divus Augustus (Circenses) · Mercatus",
+            26: "Venus Genetrix",
+            27: "Profectio Divi (Circenses, 354 n. Chr.)",
+            29: "Ludi Fatales",
+            30: "Ludi Fatales"
+          },
+          detailsJul: {
+            1: "Iuno Regina (392 v. Chr.) · Tempel des Iuppiter Tonans (Kapitol) und des Iuppiter Libertas (frühe Regierungszeit des Augustus). [Hinweis Diokletianische Ära: Stichtag des dortigen Jahreswechsels]",
+            5: "Iuppiter Stator · Beginn Ludi Romani · Mammes vindemia (Weinlesefest für Dionysos/Liber, ab Mitte 1. Jh. n. Chr.)",
+            6: "Ludi Romani",
+            7: "Ludi Romani",
+            8: "Ludi Romani",
+            9: "Ludi Romani · Dies natalis des Aurelian mit Circenses",
+            10: "Ludi Romani",
+            11: "Ludi Romani · Tempel des Asclepius",
+            12: "Ludi Romani",
+            13: "Ovis idulis (Iuppiter Optimus Maximus) · Epulum Iovis · Clavis annalis",
+            14: "Ludi Romani · Probatio equorum (dies religiosus) · Regierungsantritt Domitians",
+            15: "Ludi Romani",
+            16: "Ludi Romani",
+            17: "Ludi Romani",
+            18: "Ludi Romani · Dies natalis Trajan · Dies imperii Nerva · Beginn Ludi Triumphales (Konstantin nach 324 n. Chr.)",
+            19: "Ende Ludi Romani · Ludi Triumphales · Dies natalis Antoninus Pius",
+            20: "Mercatus · Ludi Triumphales",
+            21: "Mercatus · Ludi Triumphales",
+            22: "Mercatus · Ende Ludi Triumphales",
+            23: "Tempel von Apollo & Latona (Marcellustheater) · Dies natalis Divus Augustus (Circenses) · Ende Mercatus",
+            26: "Tempel der Venus Genetrix (Caesarforum)",
+            27: "Profectio Divi mit Circenses (Kalender des Filocalus 354 n. Chr.)",
+            29: "Ludi Fatales (Spiele für die Parzen, ab Mitte 1. Jh. n. Chr.)",
+            30: "Ludi Fatales"
           }
         },
         {
@@ -2358,17 +3142,113 @@
           traditional: { name: "October", abbr: "Oct.", ablPl: "Octobribus", accPl: "Octobres" },
           lengthCommon: 31,
           lengthInterc: 31,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 7,
           ides: 15,
-          chars: [
-            "N","F","F","F","C","C","F","C","C","C","NP","C","NP","EN","NP",
-            "F","F","F","NP","C","C","C","C","C","C","C","C","C","C","C","C"
+          charsRep: [
+            "N","F","F","F","C","C","F","F","C","C","NP","C","NP","EN","NP",
+            "F","C","C","NP","C","C","C","C","C","C","C","C","C","C","C","C"
           ],
-          feasts: {
-            11: "Meditrinalia",
+          charsJul: [
+            "N","F","F","F","C","C","F","F","C","C","NP","C","NP","EN","NP",
+            "F","C","C","NP","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [5, 6, 19],
+          diesRelJul: [5, 6, 19],
+          feastsRep: {
+            1: "Fides (Kapitol) · Tigillum Sororium",
+            4: "Ieiunium Cereris (ab 191 v. Chr.)",
+            5: "Mundus patet (2.)",
+            6: "Dies ater (Schlacht bei Arausio 105 v. Chr.)",
+            7: "Iuppiter Fulgur · Iuno Curitis",
+            9: "Genius Publicus · Fausta Felicitas · Venus Victrix",
+            10: "Iuno Moneta (Wiederweihe)",
+            11: "Meditrinalia · Feriae Iovi",
             13: "Fontinalia",
-            15: "Equus October",
-            19: "Armilustrium"
+            14: "Penates (Velia)",
+            15: "Equus October · Feriae Iovi · Ludi Capitolini",
+            19: "Armilustrium",
+            26: "Ludi Victoriae Sullanae (Beginn, ab 81 v. Chr.)",
+            27: "Ludi Victoriae Sullanae",
+            28: "Ludi Victoriae Sullanae",
+            29: "Ludi Victoriae Sullanae",
+            30: "Ludi Victoriae Sullanae",
+            31: "Ludi Victoriae Sullanae"
+          },
+          detailsRep: {
+            1: "Opfer zum Dies natalis des Tempels der Fides auf dem Kapitol · Tigillum Sororium",
+            4: "Ieiunium Cereris (Fasttag zu Ehren der Ceres, ab 191 v. Chr.)",
+            5: "Mundus patet (2. jährliche Öffnung der Unterweltgrube, dies religiosus)",
+            6: "Dies ater (Unglückstag zum Jahrestag der Schlacht bei Arausio 105 v. Chr.)",
+            7: "Dies natalis für Iuppiter Fulgur und Iuno Curitis",
+            9: "Tempelweihen für Genius Publicus, Fausta Felicitas und Venus Victrix auf dem Kapitol",
+            10: "Wiederweihe des Tempels der Iuno Moneta",
+            11: "Meditrinalia (Jungwein-Fest) · Feriae Iovi",
+            13: "Fontinalia (Quellenfest für Fons vor der Porta Fontinalis)",
+            14: "Tempel der Penates Dei auf der Velia",
+            15: "Equus October (Oktoberpferd-Opfer an Mars) · Feriae Iovi · Ludi Capitolini",
+            19: "Armilustrium (Waffenweihe und -reinigung zu Ehren des Mars, dies religiosus)",
+            26: "Beginn der Ludi Victoriae Sullanae (Sullas Siegesspiele, jährlich ab 81 v. Chr. bis 1. Nov.)",
+            27: "Ludi Victoriae Sullanae",
+            28: "Ludi Victoriae Sullanae",
+            29: "Ludi Victoriae Sullanae",
+            30: "Ludi Victoriae Sullanae",
+            31: "Ludi Victoriae Sullanae"
+          },
+          feastsJul: {
+            1: "Fides · Tigillum Sororium · Alexander Severus",
+            3: "Ludi Augustales (Beginn)",
+            4: "Ieiunium Cereris · Ludi Augustales",
+            5: "Mundus patet (2.) · Ludi Augustales",
+            6: "Dies ater (Arausio) · Ludi Augustales",
+            7: "Iuppiter Fulgur · Iuno Curitis · Drusus Caesar · Ludi Aug.",
+            8: "Ludi Augustales",
+            9: "Genius Publicus · Fausta Felicitas · Venus Victrix · Ludi Aug.",
+            10: "Iuno Moneta · Ludi Augustales",
+            11: "Meditrinalia · Feriae Iovi · Ludi Augustales",
+            12: "Augustalia · Ende Ludi Augustales",
+            13: "Fontinalia",
+            14: "Penates (Velia)",
+            15: "Equus October · Feriae Iovi · Ludi Capitolini",
+            18: "Augustus (Toga virilis)",
+            19: "Armilustrium · Ludi Solis (Beginn)",
+            20: "Ludi Solis",
+            21: "Ludi Solis",
+            22: "Ende Ludi Solis",
+            26: "Ludi Victoriae Sullanae (Beginn)",
+            27: "Ludi Victoriae Sullanae",
+            28: "Ludi Victoriae Sullanae · Isia (Castu Isidis)",
+            29: "Ludi Victoriae Sullanae · Isia",
+            30: "Ludi Victoriae Sullanae · Isia",
+            31: "Ludi Victoriae Sullanae · Isia"
+          },
+          detailsJul: {
+            1: "Fides · Tigillum Sororium · Dies natalis Alexander Severus (Circenses)",
+            3: "Beginn der Ludi Augustales (ab 14 n. Chr.)",
+            4: "Ieiunium Cereris (jährlich unter Augustus) · Ludi Augustales",
+            5: "Mundus patet (2. Öffnung, dies religiosus) · Ludi Augustales",
+            6: "Dies ater (Niederlage bei Arausio 105 v. Chr.) · Ludi Augustales",
+            7: "Iuppiter Fulgur & Iuno Curitis · Supplikation an Vesta (Geburtstag Drusus Caesar) · Ludi Augustales",
+            8: "Ludi Augustales",
+            9: "Genius Publicus, Fausta Felicitas & Venus Victrix · Ludi Augustales",
+            10: "Iuno Moneta · Ludi Augustales",
+            11: "Meditrinalia · Feriae Iovi · Ludi Augustales",
+            12: "Augustalia (Fortuna Redux ab 19 v. Chr., ab 14 n. Chr. für Divus Augustus) · Ende Ludi Augustales",
+            13: "Fontinalia (Fons)",
+            14: "Tempel der Penaten auf der Velia",
+            15: "Equus October · Feriae Iovi · Ludi Capitolini",
+            18: "Supplikation an Spes & Iuventas (Anlegen der Toga virilis durch Augustus, Feriale Cumanum)",
+            19: "Armilustrium (dies religiosus) · Beginn Ludi Solis (ab Mitte 1. Jh. n. Chr.)",
+            20: "Ludi Solis",
+            21: "Ludi Solis",
+            22: "Abschluss der Ludi Solis",
+            26: "Ludi Victoriae Sullanae (ab 81 v. Chr. bis in die Kaiserzeit)",
+            27: "Ludi Victoriae Sullanae",
+            28: "Ludi Victoriae Sullanae · Beginn der Isia (Castu Isidis, ab ca. 30er/40er Jahre n. Chr.)",
+            29: "Ludi Victoriae Sullanae · Isia",
+            30: "Ludi Victoriae Sullanae · Isia",
+            31: "Ludi Victoriae Sullanae · Isia"
           }
         },
         {
@@ -2378,14 +3258,117 @@
           traditional: { name: "November", abbr: "Nov.", ablPl: "Novembribus", accPl: "Novembres" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 30,
+          lengthJulLeap: 30,
           nones: 5,
           ides: 13,
-          chars: [
-            "F","F","F","F","F","C","C","C","C","C","C","C","NP","F","C",
+          charsRep: [
+            "F","F","C","C","F","F","C","C","C","C","C","C","NP","F","C",
             "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
           ],
-          feasts: {
-            13: "Epulum Iovis"
+          charsJul: [
+            "F","F","C","C","F","F","C","C","C","C","C","C","NP","F","C",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [8, 14],
+          diesRelJul: [8, 14],
+          feastsRep: {
+            1: "Ende Ludi Victoriae Sullanae",
+            4: "Ludi Plebeii (Beginn)",
+            5: "Ludi Plebeii",
+            6: "Ludi Plebeii",
+            7: "Ludi Plebeii",
+            8: "Mundus patet (3.) · Ludi Plebeii",
+            9: "Ludi Plebeii",
+            10: "Ludi Plebeii · Winteranfang (Varro)",
+            11: "Ludi Plebeii",
+            12: "Ludi Plebeii",
+            13: "Feriae Iovi · Epulum Iovis · Feronia · Fortuna · Ludi Plebeii",
+            14: "Ludi Plebeii",
+            15: "Ludi Plebeii",
+            16: "Ludi Plebeii",
+            17: "Ende Ludi Plebeii",
+            18: "Mercatus Plebeii (Beginn)",
+            19: "Mercatus Plebeii",
+            20: "Ende Mercatus Plebeii"
+          },
+          detailsRep: {
+            1: "Abschluss der 7-tägigen Ludi Victoriae Sullanae",
+            4: "Beginn der Ludi Plebeii (Plebejische Spiele)",
+            5: "Ludi Plebeii",
+            6: "Ludi Plebeii",
+            7: "Ludi Plebeii",
+            8: "Mundus patet (3. jährliche Öffnung der Unterweltgrube) · Ludi Plebeii",
+            9: "Ludi Plebeii",
+            10: "Ludi Plebeii · Winterbeginn nach Varro",
+            11: "Ludi Plebeii",
+            12: "Ludi Plebeii",
+            13: "Feriae Iovi · Epulum Iovis · Tempel von Feronia & Fortuna Primigenia · Ludi Plebeii",
+            14: "Ludi Plebeii (dies religiosus nach späten Kalendern)",
+            15: "Ludi Plebeii",
+            16: "Ludi Plebeii",
+            17: "Abschluss der Ludi Plebeii",
+            18: "Beginn der Mercatus Plebeii (Markttage)",
+            19: "Mercatus Plebeii",
+            20: "Ende der Mercatus Plebeii"
+          },
+          feastsJul: {
+            1: "Ende Ludi Victoriae Sullanae · Isia: Heuresis",
+            2: "Isia: Ter novena",
+            3: "Ende Isia: Hilaria",
+            4: "Ludi Plebeii (Beginn)",
+            5: "Ludi Plebeii",
+            6: "Ludi Plebeii",
+            7: "Ludi Plebeii",
+            8: "Mundus patet (3.) · Ludi Plebeii · Nerva",
+            9: "Ludi Plebeii",
+            10: "Ludi Plebeii · Winteranfang (Varro)",
+            11: "Ludi Plebeii",
+            12: "Ludi Plebeii",
+            13: "Feriae Iovi · Epulum Iovis · Feronia · Fortuna · Ludi Plebeii",
+            14: "Probatio equorum · Ludi Plebeii",
+            15: "Ludi Plebeii",
+            16: "Ludi Plebeii · Geburtstag Tiberius",
+            17: "Ende Ludi Plebeii · Vespasian (Circenses)",
+            18: "Mercatus · Deus Sanctus Sol · Syr. Neujahr",
+            19: "Mercatus",
+            20: "Ende Mercatus",
+            24: "Bruma · Beginn Brumalia",
+            25: "Brumalia",
+            26: "Brumalia",
+            27: "Brumalia",
+            28: "Brumalia",
+            29: "Brumalia",
+            30: "Brumalia"
+          },
+          detailsJul: {
+            1: "Ende Ludi Victoriae Sullanae · Isia: Heuresis (Auffindung des Osiris mit 24 Zirkusrennen)",
+            2: "Isia: Ter novena (Gesang eines Chors aus 27 Männern)",
+            3: "Abschluss der Isia mit den Hilaria",
+            4: "Ludi Plebeii (Beginn)",
+            5: "Ludi Plebeii",
+            6: "Ludi Plebeii",
+            7: "Ludi Plebeii",
+            8: "Mundus patet (3. Öffnung) · Ludi Plebeii · Dies natalis Nerva (Circenses)",
+            9: "Ludi Plebeii",
+            10: "Ludi Plebeii · Winteranfang nach Varro",
+            11: "Ludi Plebeii",
+            12: "Ludi Plebeii",
+            13: "Feriae Iovi · Epulum Iovis · Feronia & Fortuna Primigenia · Ludi Plebeii",
+            14: "Probatio equorum (Reiterparade, dies religiosus) · Ludi Plebeii",
+            15: "Ludi Plebeii",
+            16: "Ludi Plebeii · Geburtstag Tiberius (Vesta-Supplikation, Feriale Cumanum)",
+            17: "Ende Ludi Plebeii · Dies natalis Vespasian (Circenses)",
+            18: "Mercatus · Kult des Deus Sanctus Sol (Licinius) · Neujahr in Syrien & Geburt Christi nach Clemens von Alexandria",
+            19: "Mercatus",
+            20: "Ende der Mercatus",
+            24: "Bruma (Beginn der Brumalia, bis 17. Dez.)",
+            25: "Brumalia",
+            26: "Brumalia",
+            27: "Brumalia",
+            28: "Brumalia",
+            29: "Brumalia",
+            30: "Brumalia"
           }
         },
         {
@@ -2395,19 +3378,103 @@
           traditional: { name: "December", abbr: "Dec.", ablPl: "Decembribus", accPl: "Decembres" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 5,
           ides: 13,
-          chars: [
-            "N","C","C","C","F","C","C","C","C","C","NP","EN","NP","F","NP",
+          charsRep: [
+            "N","N","N","C","F","F","C","C","C","C","NP","EN","NP","F","NP",
             "C","NP","C","NP","C","NP","C","NP","C","C","C","C","C","C"
           ],
-          feasts: {
-            11: "Agonalia",
+          charsJul: [
+            "N","N","N","C","F","F","C","C","C","C","NP","EN","NP","F","NP",
+            "C","NP","C","NP","C","NP","C","NP","C","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [],
+          diesRelJul: [],
+          feastsRep: {
+            3: "Bona Dea (Riten für Frauen)",
+            5: "Faunus (Fest der Pagi)",
+            8: "Tiberinus Pater et Gaia",
+            11: "Agonalia (Indiges) · Septimontium",
+            12: "Consus (Aventin)",
+            13: "Feriae Iovi · Tellus · Lectisternium Ceres",
             15: "Consualia",
-            17: "Saturnalia",
-            19: "Opalia",
-            21: "Divalia (Angeronalia)",
-            23: "Larentalia"
+            17: "Saturnalia (Beginn)",
+            18: "Saturnalia",
+            19: "Opalia · Saturnalia",
+            20: "Saturnalia",
+            21: "Divalia (Angerona) · Hercules & Ceres · Saturnalia",
+            22: "Lares Permarini · Saturnalia",
+            23: "Larentalia · Sigillaria (Ende Saturnalia)"
+          },
+          detailsRep: {
+            3: "Bona-Dea-Riten im Haus eines hohen Magistrats (nur für Frauen)",
+            5: "Ländliches Fest für Faunus (gehalten von den pagi)",
+            8: "Fest für Tiberinus Pater und Gaia",
+            11: "Agonalia für Indiges · Septimontium (Sieben-Hügel-Fest)",
+            12: "Zeremonien am Consus-Tempel auf dem Aventin",
+            13: "Feriae Iovi · Dies natalis Tellus-Tempel & Lectisternium für Ceres",
+            15: "Consualia (zweites Consus-Fest des Jahres)",
+            17: "Saturnalia zu Ehren des Saturn (Staatsopfer am 17., Festwoche 17.–23.)",
+            18: "Saturnalia",
+            19: "Opalia zu Ehren der Ops · Saturnalia",
+            20: "Saturnalia",
+            21: "Divalia zu Ehren der Angerona · Opfer an Hercules & Ceres · Saturnalia",
+            22: "Jahrestag des Tempels der Lares Permarini (Porticus Minucia) · Saturnalia",
+            23: "Larentalia · Tempel von Diana, Iuno Regina & Tempestates · Sigillaria (Geschenketag, Ende der Saturnalia)"
+          },
+          feastsJul: {
+            1: "Brumalia",
+            2: "Brumalia",
+            3: "Bona Dea · Brumalia",
+            4: "Brumalia",
+            5: "Faunus (Pagi) · Brumalia",
+            6: "Brumalia",
+            7: "Brumalia",
+            8: "Tiberinus Pater & Gaia · Brumalia",
+            9: "Brumalia",
+            10: "Brumalia",
+            11: "Agonalia (Indiges) · Septimontium · Brumalia",
+            12: "Consus (Aventin) · Brumalia",
+            13: "Feriae Iovi · Tellus · Ceres · Brumalia",
+            14: "Brumalia",
+            15: "Consualia · Brumalia",
+            16: "Brumalia",
+            17: "Saturnalia (Beginn) · Ende Brumalia",
+            18: "Eponalia · Saturnalia",
+            19: "Opalia · Saturnalia",
+            20: "Saturnalia",
+            21: "Divalia (Angerona) · Hercules & Ceres · Saturnalia",
+            22: "Lares Permarini · Saturnalia",
+            23: "Larentalia · Sigillaria (Ende Saturnalia)",
+            25: "Dies Natalis Solis Invicti · Brumalia"
+          },
+          detailsJul: {
+            1: "Brumalia (Fortsetzung aus November)",
+            2: "Brumalia",
+            3: "Bona-Dea-Riten nur für Frauen · Brumalia",
+            4: "Brumalia",
+            5: "Ländliches Faunus-Fest der Pagi · Brumalia",
+            6: "Brumalia",
+            7: "Brumalia",
+            8: "Fest für Tiberinus Pater & Gaia · Brumalia",
+            9: "Brumalia",
+            10: "Brumalia",
+            11: "Agonalia für Indiges · Septimontium · Brumalia",
+            12: "Zeremonien am Consus-Tempel (Aventin) · Brumalia",
+            13: "Feriae Iovi · Dies natalis Tellus-Tempel & Lectisternium für Ceres · Brumalia",
+            14: "Brumalia",
+            15: "Consualia (Feriae für Consus) · Brumalia",
+            16: "Brumalia",
+            17: "Saturnalia (Staatsopfer am 17., Festwoche 17.–23.) · Ende Brumalia",
+            18: "Eponalia zu Ehren der Epona · Saturnalia",
+            19: "Opalia zu Ehren der Ops · Saturnalia",
+            20: "Saturnalia",
+            21: "Divalia zu Ehren der Angerona · Opfer an Hercules & Ceres · Saturnalia",
+            22: "Jahrestag des Tempels der Lares Permarini (Porticus Minucia) · Saturnalia",
+            23: "Larentalia · Tempel von Diana, Iuno Regina & Tempestates · Sigillaria (Ende der Saturnalia)",
+            25: "Dies Natalis Solis Invicti (Geburtstag der Unbesiegten Sonne) · Brumalia (Kaiserzeit)"
           }
         },
         {
@@ -2417,16 +3484,85 @@
           traditional: { name: "Ianuarius", abbr: "Ian.", ablPl: "Ianuariis", accPl: "Ianuarias" },
           lengthCommon: 29,
           lengthInterc: 29,
+          lengthJulCommon: 31,
+          lengthJulLeap: 31,
           nones: 5,
           ides: 13,
-          chars: [
-            "F","F","C","C","F","F","F","F","NP","EN","NP","C","NP","EN","NP",
+          charsRep: [
+            "F","F","C","C","F","F","C","C","NP","EN","NP","C","NP","EN","NP",
             "C","C","C","C","C","C","C","C","C","C","C","C","C","C"
           ],
-          feasts: {
-            9: "Agonalia",
-            11: "Carmentalia (1. Tag)",
-            15: "Carmentalia (2. Tag)"
+          charsJul: [
+            "F","F","C","C","F","F","C","C","NP","EN","NP","C","NP","EN","NP",
+            "C","C","C","C","C","C","C","C","C","C","C","C","C","C","C","C"
+          ],
+          diesRelRep: [],
+          diesRelJul: [14],
+          feastsRep: {
+            1: "Amtsantritt der Konsuln · Aesculapius & Vediovis",
+            3: "Compitalia (übl. Beginn, beweglich)",
+            4: "Compitalia (beweglich)",
+            5: "Vica Pota (Velia) · Compitalia (übl. Ende)",
+            9: "Agonalia (Ianus)",
+            11: "Carmentalia (1. Tag) · Iuturna",
+            13: "Feriae Iovi",
+            15: "Carmentalia (2. Tag)",
+            24: "Sementivae (übl. Beginn, beweglich)",
+            25: "Sementivae (beweglich)",
+            26: "Sementivae (übl. Ende, beweglich)",
+            27: "Castor et Pollux (Tempelweihe)"
+          },
+          detailsRep: {
+            1: "Amtsantritt der Konsuln (ab 153 v. Chr.) · Opfer an Aesculapius & Vediovis auf der Tiberinsel",
+            3: "Compitalia (üblichster Beginn des beweglichen Kreuzwegfestes)",
+            4: "Compitalia (Fortsetzung)",
+            5: "Dies natalis des Heiligtums der Vica Pota (Velia) · übliches Ende der Compitalia",
+            9: "Agonalia für Ianus in der Regia",
+            11: "Carmentalia (1. Tag) · Dies natalis des Iuturna-Kults (Campus Martius)",
+            13: "Feriae Iovi (monatliches Iden-Opfer an Jupiter)",
+            15: "Carmentalia (2. Tag)",
+            24: "Sementivae / Paganalia (üblichster Beginn des beweglichen Saatfestes)",
+            25: "Sementivae (Fortsetzung)",
+            26: "Sementivae (übliches Ende)",
+            27: "Dies natalis des Tempels von Castor und Pollux (im vorjul. Kalender am IV Kal. Feb.)"
+          },
+          feastsJul: {
+            1: "Amtsantritt der Konsuln · Aesculapius & Vediovis",
+            3: "Compitalia (übl. Beginn)",
+            4: "Compitalia",
+            5: "Vica Pota (Velia) · Compitalia (übl. Ende)",
+            7: "Iuppiter Sempiternus (Augustus) · Circenses Ianus",
+            9: "Agonalia (Ianus)",
+            11: "Carmentalia (1.) · Iuturna",
+            13: "Feriae Iovi · Circenses Iuppiter Stator",
+            14: "Dies vitiosus (Geburtstag Marcus Antonius)",
+            15: "Carmentalia (2.)",
+            16: "Supplik. für Augustus (Titel Augustus)",
+            24: "Sementivae · Hadrian (Dies natalis)",
+            25: "Sementivae",
+            26: "Sementivae",
+            27: "Castor et Pollux",
+            30: "(Im Julianischen Kalender hinzugefügter Tag)",
+            31: "(Im Julianischen Kalender hinzugefügter Tag)"
+          },
+          detailsJul: {
+            1: "Amtsantritt der Konsuln (ab 153 v. Chr.) · Opfer an Aesculapius & Vediovis (Tiberinsel)",
+            3: "Compitalia (üblichster Beginn)",
+            4: "Compitalia",
+            5: "Vica Pota (Velia) · übliches Ende der Compitalia",
+            7: "Supplikation für Iuppiter Sempiternus (Fasces des Augustus, Feriale Cumanum) · Circenses für Pater Ianus",
+            9: "Agonalia für Ianus in der Regia",
+            11: "Carmentalia · Kult der Iuturna (Campus Martius)",
+            13: "Feriae Iovi · Ludi circenses für Iuppiter Stator (spätes 1. Jh. n. Chr.)",
+            14: "Dies vitiosus in Fasti des frühen Prinzipats (Geburtstag des Marcus Antonius)",
+            15: "Carmentalia (XVI Kal. Feb. vorjulianisch)",
+            16: "Supplikation für Augustus (Verleihung des Augustus-Titels, Feriale Cumanum)",
+            24: "Sementivae (übl. Beginn) · Opfer zum Dies natalis des Kaisers Hadrian",
+            25: "Sementivae",
+            26: "Sementivae",
+            27: "Tempel von Castor & Pollux (IV Kal. Feb. vorjul.)",
+            30: "Im Julianischen Kalender neu hinzugefügter Tag (III Kal. Feb.)",
+            31: "Im Julianischen Kalender neu hinzugefügter Tag (prid. Kal. Feb.)"
           }
         },
         {
@@ -2436,21 +3572,93 @@
           traditional: { name: "Februarius", abbr: "Febr.", ablPl: "Februariis", accPl: "Februarias" },
           lengthCommon: 28,
           lengthInterc: 23,
+          lengthJulCommon: 28,
+          lengthJulLeap: 29,
           nones: 5,
           ides: 13,
-          chars: [
+          charsRep: [
             "N","N","N","N","N","N","N","N","N","N","N","N","NP","N","NP",
-            "EN","NP","C","C","C","F","C","NP","N","C","C","NP","C"
+            "EN","NP","C","C","C","F","C","NP","N","C","EN","NP","C"
           ],
-          feasts: {
-            13: "Parentalia (Beginn)",
-            15: "Lupercalia",
-            17: "Quirinalia",
-            21: "Feralia",
-            22: "Caristia",
+          charsJul: [
+            "N","N","N","N","N","N","N","N","N","N","N","N","NP","N","NP",
+            "EN","NP","C","C","C","F","C","NP","N","C","EN","NP","C"
+          ],
+          diesRelRep: [13, 14, 15, 16, 17, 18, 19, 20, 21],
+          diesRelJul: [13, 14, 15, 16, 17, 18, 19, 20, 21],
+          feastsRep: {
+            1: "Iuno Sospita · Hain des Alernus",
+            5: "Concordia (Kapitol)",
+            13: "Feriae Iovi · Faunus · Parentalia (Beginn)",
+            14: "Parentalia",
+            15: "Februa / Lupercalia · Parentalia",
+            16: "Parentalia",
+            17: "Quirinalia · Fornacalia (Ende) · Parentalia",
+            18: "Parentalia",
+            19: "Parentalia",
+            20: "Parentalia",
+            21: "Feralia (Ende Parentalia)",
+            22: "Caristia (Cara Cognatio)",
             23: "Terminalia",
             24: "Regifugium",
             27: "Equirria"
+          },
+          detailsRep: {
+            1: "Dies natalis des Tempels der Iuno Sospita · Sacra am Hain des Alernus",
+            5: "Dies natalis des Tempels der Concordia auf dem Kapitol",
+            13: "Feriae Iovi · Faunus auf der Tiberinsel · Beginn der 9-tägigen Parentalia (Vestalinnen-Opfer, dies religiosus)",
+            14: "Parentalia (dies religiosus)",
+            15: "Februa / Lupercalia · Parentalia (dies religiosus)",
+            16: "Parentalia (dies religiosus)",
+            17: "Quirinalia · letzter Tag der Fornacalia (Ofenfest) · Parentalia (dies religiosus)",
+            18: "Parentalia (dies religiosus)",
+            19: "Parentalia (dies religiosus)",
+            20: "Parentalia (dies religiosus)",
+            21: "Feralia (Abschluss der öffentlichen Totenehrung der Parentalia, teils auch als FP markiert, dies religiosus)",
+            22: "Caristia / Cara Cognatio (Familienmahl)",
+            23: "Terminalia zu Ehren des Grenzgotts Terminus",
+            24: "Regifugium (nur im Gemeinjahr; im Schaltjahr folgt nach dem 23./24. der Mensis Intercalaris)",
+            27: "Erste Equirria zu Ehren des Mars (nur im Gemeinjahr)"
+          },
+          feastsJul: {
+            1: "Iuno Sospita · Circenses Hercules",
+            5: "Concordia (Kapitol)",
+            11: "Ludi Genialici",
+            12: "Ludi Genialici",
+            13: "Feriae Iovi · Faunus · Parentalia (Beginn)",
+            14: "Parentalia",
+            15: "Februa / Lupercalia · Parentalia",
+            16: "Parentalia",
+            17: "Quirinalia · Fornacalia (Ende) · Parentalia",
+            18: "Parentalia",
+            19: "Parentalia",
+            20: "Parentalia",
+            21: "Feralia (Ende Parentalia)",
+            22: "Caristia (Cara Cognatio)",
+            23: "Terminalia",
+            24: "Regifugium",
+            25: "Lorio (Adoption Antoninus Pius)",
+            27: "Equirria"
+          },
+          detailsJul: {
+            1: "Dies natalis Tempel der Iuno Sospita · Circenses für Hercules (ab Mitte 1. Jh. n. Chr.)",
+            5: "Dies natalis des Concordiatempels auf dem Kapitol",
+            11: "Ludi Genialici (Spiele für den Genius, ab Mitte 1. Jh. n. Chr.)",
+            12: "Ludi Genialici",
+            13: "Feriae Iovi · Faunus (Tiberinsel) · Beginn der Parentalia (dies religiosus)",
+            14: "Parentalia (dies religiosus)",
+            15: "Februa / Lupercalia · Parentalia (dies religiosus)",
+            16: "Parentalia (dies religiosus)",
+            17: "Quirinalia · Ende der Fornacalia · Parentalia (dies religiosus)",
+            18: "Parentalia (dies religiosus)",
+            19: "Parentalia (dies religiosus)",
+            20: "Parentalia (dies religiosus)",
+            21: "Feralia (Ende der Parentalia, in manchen Kalendern F bzw. FP, dies religiosus)",
+            22: "Caristia (Familienfeier)",
+            23: "Terminalia",
+            24: "Regifugium (VI Kal. Mart.)",
+            25: "Lorio (Adoption des Antoninus Pius durch Hadrian; im Schaltjahr fällt V Kal. Mart. auf den 26.)",
+            27: "Equirria (III Kal. Mart.; im Schaltjahr am 28.)"
           }
         },
         {
@@ -2460,23 +3668,33 @@
           traditional: { name: "Mensis Intercalaris", abbr: "Interc.", ablPl: "Intercalaribus", accPl: "Intercalares" },
           lengthCommon: 0,
           lengthInterc: 27,
+          lengthJulCommon: 0,
+          lengthJulLeap: 0,
           nones: 5,
           ides: 13,
-          chars: [
-            "N","C","C","C","F","C","C","C","C","C","C","C","NP","C","C",
-            "C","C","C","C","C","C","C","N","C","C","NP","C","C"
+          charsRep: [
+            "F","F","C","C","F","F","C","C","C","C","C","C","NP","F","C",
+            "C","C","C","C","C","C","QRCF","N","QRCF","EN","NP","C"
           ],
-          feasts: {
-            13: "Idus Intercalares",
-            23: "Regifugium (Schaltmonat)",
-            26: "Equirria (Schaltmonat)"
-          }
+          charsJul: [],
+          diesRelRep: [],
+          diesRelJul: [],
+          feastsRep: {
+            13: "Feriae Iovi · Idus Intercalares",
+            23: "Beginn der 5 Resttage · Regifugium",
+            26: "Equirria (Mars)"
+          },
+          detailsRep: {},
+          feastsJul: {},
+          detailsJul: {}
         }
       ];
 
       function getMonthDisplay(baseMonthObj) {
-        const active = state.monthNaming === "traditional" ? baseMonthObj.traditional : baseMonthObj.custom;
-        const alt = state.monthNaming === "traditional" ? baseMonthObj.custom : baseMonthObj.traditional;
+        const useJulTrad = state.calendarSystem === "julian" && baseMonthObj.traditionalJulian;
+        const trad = useJulTrad ? baseMonthObj.traditionalJulian : baseMonthObj.traditional;
+        const active = state.monthNaming === "traditional" ? trad : baseMonthObj.custom;
+        const alt = state.monthNaming === "traditional" ? baseMonthObj.custom : trad;
         return {
           ...baseMonthObj,
           name: active.name,
@@ -2905,6 +4123,9 @@
 
       function createDefaultState() {
         return {
+          calendarSystem: "republican",     // "republican" | "julian"
+          intercalaryMode: "variable_27_28", // "variable_27_28" | "fixed_27"
+          julianBasis: "gregorian_sync",    // "gregorian_sync" | "authentic_julian"
           anchor: {
             day: 1,
             month: 3,
@@ -2934,19 +4155,32 @@
       function saveState() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {
-          // Falls Speicher in isolierter Umgebung blockiert ist
-        }
+        } catch (e) {}
       }
 
       function loadState() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          let raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            for (const lk of LEGACY_KEYS) {
+              raw = localStorage.getItem(lk);
+              if (raw) break;
+            }
+          }
           if (!raw) return;
           const parsed = JSON.parse(raw);
           if (!parsed || typeof parsed !== "object") return;
 
           const def = createDefaultState();
+          if (parsed.calendarSystem === "republican" || parsed.calendarSystem === "julian") {
+            state.calendarSystem = parsed.calendarSystem;
+          }
+          if (parsed.intercalaryMode === "variable_27_28" || parsed.intercalaryMode === "fixed_27") {
+            state.intercalaryMode = parsed.intercalaryMode;
+          }
+          if (parsed.julianBasis === "gregorian_sync" || parsed.julianBasis === "authentic_julian") {
+            state.julianBasis = parsed.julianBasis;
+          }
           if (parsed.anchor && typeof parsed.anchor.jdn === "number") {
             state.anchor = { ...def.anchor, ...parsed.anchor };
           }
@@ -2982,10 +4216,10 @@
           if (typeof parsed.viewedRepYear === "number" && Number.isFinite(parsed.viewedRepYear)) {
             state.viewedRepYear = Math.trunc(parsed.viewedRepYear);
           }
-          if (typeof parsed.pontifexWindowStart === "number" && parsed.pontifexWindowStart >= 1) {
+          if (typeof parsed.pontifexWindowStart === "number" && Number.isFinite(parsed.pontifexWindowStart)) {
             state.pontifexWindowStart = Math.trunc(parsed.pontifexWindowStart);
           }
-          if (["all", "nundinae", "feasts", "markers", "legal"].includes(parsed.tabletFilter)) {
+          if (["all", "nundinae", "feasts", "religiosi", "markers", "legal"].includes(parsed.tabletFilter)) {
             state.tabletFilter = parsed.tabletFilter;
           }
           if (["auto", "mobile", "desktop"].includes(parsed.viewMode)) {
@@ -2994,13 +4228,11 @@
           if (typeof parsed.uiScale === "number" && parsed.uiScale >= 60 && parsed.uiScale <= 150) {
             state.uiScale = Math.round(parsed.uiScale);
           }
-        } catch (e) {
-          // Bei fehlerhaftem Cache sauber auf Werkseinstellungen bleiben
-        }
+        } catch (e) {}
       }
 
       /* =========================================================================
-       * 6. REPUBLIKANISCHE ZYKLUS-ENGINE (BELIEBIGER JAHRESANFANG + 24J-ZYKLUS)
+       * 6. KALENDER-ENGINES (REPUBLIKANISCH & JULIANISCH)
        * ========================================================================= */
       function getStandardYearLength(repYear) {
         const pos = ((repYear - 1) % 24 + 24) % 24;
@@ -3067,25 +4299,190 @@
         for (let offset = 0; offset < 12; offset++) {
           const baseIdx = (startIdx + offset) % 12;
           const mDisp = getMonthDisplay(MONTHS[baseIdx]);
-          const len = isInterc ? mDisp.lengthInterc : mDisp.lengthCommon;
+          let len = isInterc ? mDisp.lengthInterc : mDisp.lengthCommon;
+          if (isInterc && baseIdx === 11 && state.intercalaryMode === "fixed_27") {
+            len = yLen === 378 ? 24 : 23;
+          }
           list.push({
             ...mDisp,
             baseIndex: baseIdx,
             yearPos: list.length,
-            length: len
+            length: len,
+            isJulianLeapFeb: false
           });
           if (isInterc && baseIdx === 11) {
             const m13Disp = getMonthDisplay(MONTHS[12]);
-            const len13 = yLen === 378 ? 28 : 27;
+            const len13 = (state.intercalaryMode === "fixed_27")
+              ? 27
+              : (yLen === 378 ? 28 : 27);
             list.push({
               ...m13Disp,
               baseIndex: 12,
               yearPos: list.length,
-              length: len13
+              length: len13,
+              isJulianLeapFeb: false
             });
           }
         }
         return list;
+      }
+
+      function getIntercalaryDayInfo(day, monthLength) {
+        if (day <= 21) {
+          const ch = MONTHS[12].charsRep[day - 1] || "C";
+          const feast = day === 13 ? "Feriae Iovi · Idus Intercalares" : null;
+          const detail = day === 13
+            ? "Idus Intercalares mit monatlichem Feriae Iovi (Opfer an Jupiter)"
+            : null;
+          return { dayChar: ch, feast, detail, isReligiosus: false };
+        }
+        const rem = monthLength - day;
+        if (monthLength === 28 && day === 22) {
+          return { dayChar: "C", feast: null, detail: null, isReligiosus: false };
+        }
+        switch (rem) {
+          case 5:
+            return {
+              dayChar: "QRCF",
+              feast: "QRCF (a. d. VII Kal. Mart.)",
+              detail: "Quando Rex Comitiavit Fas (entspricht der Einberufung der Comitia Calata)",
+              isReligiosus: false
+            };
+          case 4:
+            return {
+              dayChar: "N",
+              feast: "Regifugium · 5 Resttage",
+              detail: "Beginn der fünf Resttage des Terminalius/Februarius (a. d. VI Kal. Mart.) · Regifugium",
+              isReligiosus: false
+            };
+          case 3:
+            return {
+              dayChar: "QRCF",
+              feast: "QRCF (a. d. V Kal. Mart.)",
+              detail: "Quando Rex Comitiavit Fas (entspricht dem 24. Terminalius/Februarius)",
+              isReligiosus: false
+            };
+          case 2:
+            return {
+              dayChar: "EN",
+              feast: null,
+              detail: "Endotercisus (entspricht dem 26. Terminalius/Februarius des Gemeinjahres)",
+              isReligiosus: false
+            };
+          case 1:
+            return {
+              dayChar: "NP",
+              feast: "Equirria (Mars)",
+              detail: "Feriae Equirria zu Ehren des Mars (a. d. III Kal. Mart.)",
+              isReligiosus: false
+            };
+          default:
+            return { dayChar: "C", feast: null, detail: null, isReligiosus: false };
+        }
+      }
+
+      function getRepDayDetails(monthObj, day) {
+        if (monthObj.baseIndex === 12) {
+          return getIntercalaryDayInfo(day, monthObj.length);
+        }
+        if (monthObj.baseIndex === 11 && monthObj.length === 24 && day === 24) {
+          return {
+            dayChar: "N",
+            feast: "Schalttag nach Terminalia",
+            detail: "Zusätzlicher 24. Tag im Terminalius/Februarius bei 27-tägigem Mensis Intercalaris (378-Tage-Jahr)",
+            isReligiosus: false
+          };
+        }
+        const dayChar = monthObj.charsRep[day - 1] || "C";
+        const feast = (monthObj.feastsRep && monthObj.feastsRep[day]) || null;
+        const detail = (monthObj.detailsRep && monthObj.detailsRep[day]) || feast;
+        const isReligiosus = Array.isArray(monthObj.diesRelRep) && monthObj.diesRelRep.includes(day);
+        return { dayChar, feast, detail, isReligiosus };
+      }
+
+      /* --- Julianische Engine (Gregorianisch synchronisiert oder Authentisch Julianisch) --- */
+      function getJulianBasisHelpers() {
+        if (state.julianBasis === "authentic_julian") {
+          return {
+            isLeapYear: isJulianLeapYear,
+            toJdn: julianToJdn,
+            fromJdn: jdnToJulian
+          };
+        }
+        return {
+          isLeapYear: isGregorianLeapYear,
+          toJdn: gregorianToJdn,
+          fromJdn: jdnToGregorian
+        };
+      }
+
+      function julMFromBaseIndex(baseIdx) {
+        return ((baseIdx + 2) % 12) + 1;
+      }
+
+      function baseIndexFromJulM(julM) {
+        return (julM + 9) % 12;
+      }
+
+      function getStartJdnOfJulianYear(calYearAstro) {
+        const h = getJulianBasisHelpers();
+        const startJulM = julMFromBaseIndex(state.yearStartMonth);
+        return h.toJdn(calYearAstro, startJulM, 1);
+      }
+
+      function getJulianYearLength(calYearAstro) {
+        return getStartJdnOfJulianYear(calYearAstro + 1) - getStartJdnOfJulianYear(calYearAstro);
+      }
+
+      function getMonthsForJulianYear(calYearAstro) {
+        const h = getJulianBasisHelpers();
+        const startJulM = julMFromBaseIndex(state.yearStartMonth);
+        const startIdx = state.yearStartMonth;
+        const list = [];
+
+        for (let offset = 0; offset < 12; offset++) {
+          const baseIdx = (startIdx + offset) % 12;
+          const mJulM = julMFromBaseIndex(baseIdx);
+          const julY = mJulM >= startJulM ? calYearAstro : calYearAstro + 1;
+          const isLeapFeb = baseIdx === 11 && h.isLeapYear(julY);
+          const mDisp = getMonthDisplay(MONTHS[baseIdx]);
+          const len = isLeapFeb ? mDisp.lengthJulLeap : mDisp.lengthJulCommon;
+          list.push({
+            ...mDisp,
+            baseIndex: baseIdx,
+            yearPos: list.length,
+            length: len,
+            julianYearOfMonth: julY,
+            isJulianLeapFeb: isLeapFeb
+          });
+        }
+        return list;
+      }
+
+      function getJulianDayDetails(monthObj, day) {
+        if (monthObj.baseIndex === 11 && monthObj.isJulianLeapFeb) {
+          if (day === 25) {
+            return {
+              dayChar: "N",
+              feast: "Dies bissextus (Schalttag)",
+              detail: "Eingeschobener Schalttag nach dem 24. Februarius (ante diem bis sextum Kalendas Martias)",
+              isReligiosus: false
+            };
+          }
+          if (day > 25) {
+            const mappedDay = day - 1;
+            const dayChar = monthObj.charsJul[mappedDay - 1] || "C";
+            const feast = (monthObj.feastsJul && monthObj.feastsJul[mappedDay]) || null;
+            const detail = (monthObj.detailsJul && monthObj.detailsJul[mappedDay]) || feast;
+            const isReligiosus = Array.isArray(monthObj.diesRelJul) && monthObj.diesRelJul.includes(mappedDay);
+            return { dayChar, feast, detail, isReligiosus };
+          }
+        }
+        const dayChar = monthObj.charsJul[day - 1] || "C";
+        const feast = (monthObj.feastsJul && monthObj.feastsJul[day]) || null;
+        const detail = (monthObj.detailsJul && monthObj.detailsJul[day]) || feast;
+        const isReligiosus = Array.isArray(monthObj.diesRelJul) && monthObj.diesRelJul.includes(day);
+        return { dayChar, feast, detail, isReligiosus };
       }
 
       function isMonthAfterIustitius(baseMonthIndex) {
@@ -3125,15 +4522,16 @@
 
         const nundIdx = (((jdn - state.anchor.jdn) % 8) + 8) % 8;
         const nundinal = NUNDINAL_LETTERS[nundIdx];
-        const dayChar = monthObj.chars[day - 1] || "C";
-        const feast = (monthObj.feasts && monthObj.feasts[day]) || null;
+        const info = getRepDayDetails(monthObj, day);
 
-        const latin = formatRomanDateGrammar(day, monthObj, nextMonthBaseObj);
+        const latin = formatRomanDateGrammar(day, monthObj, nextMonthBaseObj, { isJulianLeapFeb: false });
         const nominalAstroYear = getNominalAstroYear(repYear);
         const eras = computeEras(repYear, nominalAstroYear, monthObj.baseIndex);
 
         return {
+          system: "republican",
           jdn,
+          calYear: repYear,
           repYear,
           cyclePos: getCyclePosition(repYear),
           yearLength,
@@ -3146,8 +4544,10 @@
           day,
           dayOfYear: dayOfYear + 1,
           nundinal,
-          dayChar,
-          feast,
+          dayChar: info.dayChar,
+          feast: info.feast,
+          feastDetail: info.detail,
+          isReligiosus: info.isReligiosus,
           latinFullDate: latin.full,
           latinAbbrDate: latin.abbr,
           latinStoneDate: latin.stone,
@@ -3156,6 +4556,71 @@
           nominalAstroYear,
           eras
         };
+      }
+
+      function jdnToJulianSystem(jdn) {
+        const h = getJulianBasisHelpers();
+        const calObj = h.fromJdn(jdn);
+        const startJulM = julMFromBaseIndex(state.yearStartMonth);
+        const calYearAstro = calObj.month >= startJulM ? calObj.year : calObj.year - 1;
+        const yearStartJdn = getStartJdnOfJulianYear(calYearAstro);
+        const yearLength = getJulianYearLength(calYearAstro);
+        const dayOfYear = jdn - yearStartJdn;
+        const months = getMonthsForJulianYear(calYearAstro);
+
+        const baseIdx = baseIndexFromJulM(calObj.month);
+        const monthObj = months.find((m) => m.baseIndex === baseIdx) || months[0];
+        const day = calObj.day;
+        const nextMonthBaseObj = months[(monthObj.yearPos + 1) % months.length];
+
+        const nundIdx = (((jdn - state.anchor.jdn) % 8) + 8) % 8;
+        const nundinal = NUNDINAL_LETTERS[nundIdx];
+        const info = getJulianDayDetails(monthObj, day);
+
+        const latin = formatRomanDateGrammar(day, monthObj, nextMonthBaseObj, {
+          isJulianLeapFeb: monthObj.isJulianLeapFeb
+        });
+        const anchorObj = h.fromJdn(state.anchor.jdn);
+        const anchorStartCalYear = anchorObj.month >= startJulM ? anchorObj.year : anchorObj.year - 1;
+        const relYear = calYearAstro - anchorStartCalYear + 1;
+        const eras = computeEras(relYear, calYearAstro, monthObj.baseIndex);
+
+        return {
+          system: "julian",
+          jdn,
+          calYear: calYearAstro,
+          repYear: relYear,
+          cyclePos: (((calYearAstro % 4) + 4) % 4) + 1,
+          yearLength,
+          isIntercalary: yearLength === 366,
+          isOverridden: false,
+          baseIndex: monthObj.baseIndex,
+          yearPos: monthObj.yearPos,
+          monthObj,
+          nextMonthObj: nextMonthBaseObj,
+          day,
+          dayOfYear: dayOfYear + 1,
+          nundinal,
+          dayChar: info.dayChar,
+          feast: info.feast,
+          feastDetail: info.detail,
+          isReligiosus: info.isReligiosus,
+          latinFullDate: latin.full,
+          latinAbbrDate: latin.abbr,
+          latinStoneDate: latin.stone,
+          grammarExplain: latin.explain,
+          isMarker: latin.isMarker,
+          nominalAstroYear: calYearAstro,
+          eras
+        };
+      }
+
+      function jdnToActiveSystem(jdn) {
+        return state.calendarSystem === "julian" ? jdnToJulianSystem(jdn) : jdnToRepublican(jdn);
+      }
+
+      function jdnToOtherSystem(jdn) {
+        return state.calendarSystem === "julian" ? jdnToRepublican(jdn) : jdnToJulianSystem(jdn);
       }
 
       function republicanToJdn(repYear, baseMonthIndex, day) {
@@ -3170,13 +4635,48 @@
         return getStartJdnOfRepYear(repYear) + offset + (day - 1);
       }
 
+      function julianSystemToJdn(calYearAstro, baseMonthIndex, day) {
+        const h = getJulianBasisHelpers();
+        const months = getMonthsForJulianYear(calYearAstro);
+        const m = months.find((item) => item.baseIndex === baseMonthIndex);
+        if (!m) return null;
+        if (day < 1 || day > m.length) return null;
+        const mJulM = julMFromBaseIndex(baseMonthIndex);
+        return h.toJdn(m.julianYearOfMonth, mJulM, day);
+      }
+
+      function getMonthsForActiveYear(targetYear) {
+        return state.calendarSystem === "julian"
+          ? getMonthsForJulianYear(targetYear)
+          : getMonthsForRepYear(targetYear);
+      }
+
+      function getStartJdnOfActiveYear(targetYear) {
+        return state.calendarSystem === "julian"
+          ? getStartJdnOfJulianYear(targetYear)
+          : getStartJdnOfRepYear(targetYear);
+      }
+
+      function getActiveYearLength(targetYear) {
+        return state.calendarSystem === "julian"
+          ? getJulianYearLength(targetYear)
+          : getYearLength(targetYear);
+      }
+
+      function getDayDetailsForActiveSystem(monthObj, day) {
+        return state.calendarSystem === "julian"
+          ? getJulianDayDetails(monthObj, day)
+          : getRepDayDetails(monthObj, day);
+      }
+
       /* =========================================================================
        * 7. DREI OFFIZIELLE LATEINISCHE SCHREIBWEISEN (STEIN, VOLLFORM, BUCHSCHRIFT)
        * ========================================================================= */
-      function formatRomanDateGrammar(day, monthObj, nextMonthObj) {
+      function formatRomanDateGrammar(day, monthObj, nextMonthObj, options = {}) {
         const non = monthObj.nones;
         const id = monthObj.ides;
         const len = monthObj.length;
+        const isJulLeapFeb = Boolean(options.isJulianLeapFeb && monthObj.baseIndex === 11 && len === 29);
 
         if (day === 1) {
           const full = `Kalendis ${monthObj.ablPl}`;
@@ -3255,6 +4755,42 @@
             stone: toLapidaryText(abbr),
             explain: `Direkter Stichtag: Die Iden (${id}. Tag) des Monats ${monthObj.name}.`,
             isMarker: true
+          };
+        }
+
+        if (isJulLeapFeb) {
+          if (day === 25) {
+            const full = `ante diem bis sextum Kalendas ${nextMonthObj.accPl}`;
+            const abbr = `a. d. bis VI Kal. ${nextMonthObj.abbr}`;
+            return {
+              full,
+              abbr,
+              stone: toLapidaryText(abbr),
+              explain: `Julianischer Schalttag (Dies bissextus): Verdoppelter 6. Tag vor den Kalenden des ${nextMonthObj.name} nach dem 24. ${monthObj.name}.`,
+              isMarker: false
+            };
+          }
+          const effectiveDay = day > 25 ? day - 1 : day;
+          const diff = 28 - effectiveDay + 2;
+          if (diff === 2) {
+            const full = `pridie Kalendas ${nextMonthObj.accPl}`;
+            const abbr = `prid. Kal. ${nextMonthObj.abbr}`;
+            return {
+              full,
+              abbr,
+              stone: toLapidaryText(abbr),
+              explain: `Letzter Tag des Schaltmonats ${monthObj.name} (29. Tag), also 1 Tag vor den Kalenden des ${nextMonthObj.name}.`,
+              isMarker: false
+            };
+          }
+          const full = `ante diem ${LATIN_ORDINALS_ACC[diff]} Kalendas ${nextMonthObj.accPl}`;
+          const abbr = `a. d. ${ROMAN_NUMERALS[diff]} Kal. ${nextMonthObj.abbr}`;
+          return {
+            full,
+            abbr,
+            stone: toLapidaryText(abbr),
+            explain: `Julianisches Schaltjahr: Nach bzw. vor dem Schalttag (25. ${monthObj.name}) wird auf 28-Tage-Basis weitergezählt (${LATIN_ORDINALS_ACC[diff]} Kalendas ${nextMonthObj.accPl}).`,
+            isMarker: false
           };
         }
 
@@ -3373,7 +4909,6 @@
           };
         }
 
-        // Christliche Ära (default)
         if (eras.nominalAstroYear > 0) {
           return {
             stone: `P·CHR·N·${romanChristian}`,
@@ -3458,7 +4993,15 @@
         }
       }
 
-      function resolveRepYearFromEraInput(eraYearNum, bcAd, baseMonthIndex) {
+      function formatModernDateHeading(day, monthName, eras) {
+        const eraShort = formatModernEraShort(eras);
+        if (state.eraKey === "consuls" || state.eraKey === "custom") {
+          return `${day}. ${monthName} · ${eraShort}`;
+        }
+        return `${day}. ${monthName} ${eraShort}`;
+      }
+
+      function resolveTargetYearFromEraInput(eraYearNum, bcAd, baseMonthIndex) {
         let nominalAstroYear;
         switch (state.eraKey) {
           case "consuls":
@@ -3486,11 +5029,14 @@
           default:
             nominalAstroYear = eraYearNum;
         }
+        if (state.calendarSystem === "julian") {
+          return nominalAstroYear;
+        }
         return getRepYearFromNominalAstroYear(nominalAstroYear);
       }
 
-      function getEraYearInputForRepDate(repDate) {
-        const eras = repDate.eras;
+      function getEraYearInputForDate(dateObj) {
+        const eras = dateObj.eras;
         switch (state.eraKey) {
           case "consuls":
             return { value: eras.consuls ? eras.nominalAstroYear : null, bcAd: "AD" };
@@ -3512,10 +5058,20 @@
        * 9. DOM-REFERENZEN UND AUSWAHLLISTEN
        * ========================================================================= */
       const el = {
+        btnSysRepHeader: document.getElementById("btnSysRepHeader"),
+        btnSysJulHeader: document.getElementById("btnSysJulHeader"),
+        btnSysRepMini: document.getElementById("btnSysRepMini"),
+        btnSysJulMini: document.getElementById("btnSysJulMini"),
+
         paramViewMode: document.getElementById("paramViewMode"),
         paramScaleInput: document.getElementById("paramScaleInput"),
         quickStatusSummary: document.getElementById("quickStatusSummary"),
 
+        paramCalendarSystem: document.getElementById("paramCalendarSystem"),
+        intercalaryModeWrap: document.getElementById("intercalaryModeWrap"),
+        paramIntercalaryMode: document.getElementById("paramIntercalaryMode"),
+        julianBasisWrap: document.getElementById("julianBasisWrap"),
+        paramJulianBasis: document.getElementById("paramJulianBasis"),
         anchorBoxHeading: document.getElementById("anchorBoxHeading"),
         anchorDay: document.getElementById("anchorDay"),
         anchorMonth: document.getElementById("anchorMonth"),
@@ -3535,6 +5091,7 @@
         paramNormalCal: document.getElementById("paramNormalCal"),
 
         heroModeBadge: document.getElementById("heroModeBadge"),
+        heroSystemBadge: document.getElementById("heroSystemBadge"),
         heroWeekdayGreg: document.getElementById("heroWeekdayGreg"),
         heroRepModern: document.getElementById("heroRepModern"),
         heroModernTag: document.getElementById("heroModernTag"),
@@ -3542,6 +5099,7 @@
         heroLatinFull: document.getElementById("heroLatinFull"),
         heroLatinAbbr: document.getElementById("heroLatinAbbr"),
         heroGrammarNote: document.getElementById("heroGrammarNote"),
+        heroCounterpartNote: document.getElementById("heroCounterpartNote"),
         heroConsulsBanner: document.getElementById("heroConsulsBanner"),
         heroConsulsTitle: document.getElementById("heroConsulsTitle"),
         heroConsulsNames: document.getElementById("heroConsulsNames"),
@@ -3555,6 +5113,7 @@
         heroAucCycle: document.getElementById("heroAucCycle"),
         heroDiocCustom: document.getElementById("heroDiocCustom"),
 
+        convNormTitle: document.getElementById("convNormTitle"),
         normDay: document.getElementById("normDay"),
         normMonth: document.getElementById("normMonth"),
         normYear: document.getElementById("normYear"),
@@ -3563,7 +5122,10 @@
         normInputWarn: document.getElementById("normInputWarn"),
         normToRepResult: document.getElementById("normToRepResult"),
 
+        convRepTitle: document.getElementById("convRepTitle"),
+        repDayLabel: document.getElementById("repDayLabel"),
         repDay: document.getElementById("repDay"),
+        repMonthLabel: document.getElementById("repMonthLabel"),
         repMonth: document.getElementById("repMonth"),
         repYearNumericWrap: document.getElementById("repYearNumericWrap"),
         repYearLabel: document.getElementById("repYearLabel"),
@@ -3575,12 +5137,18 @@
         repInputWarn: document.getElementById("repInputWarn"),
         repToNormResult: document.getElementById("repToNormResult"),
 
+        pontifexPanelTitle: document.getElementById("pontifexPanelTitle"),
         btnPontifexWindowPrev: document.getElementById("btnPontifexWindowPrev"),
+        btnPontifexReset: document.getElementById("btnPontifexReset"),
+        pontifexJulianNotice: document.getElementById("pontifexJulianNotice"),
         pontifexStats: document.getElementById("pontifexStats"),
+        pontifexLegendRow: document.getElementById("pontifexLegendRow"),
+        pontifexHelpHint: document.getElementById("pontifexHelpHint"),
         pontifexExportStatus: document.getElementById("pontifexExportStatus"),
         pontifexGrid: document.getElementById("pontifexGrid"),
         importPontifexFile: document.getElementById("importPontifexFile"),
 
+        fastiSectionTitle: document.getElementById("fastiSectionTitle"),
         tabletsYearTitle: document.getElementById("tabletsYearTitle"),
         tabletsYearSub: document.getElementById("tabletsYearSub"),
         tabletFilterChips: document.getElementById("tabletFilterChips"),
@@ -3624,11 +5192,13 @@
           el.repMonth.appendChild(opt);
         }
 
-        const intercDisp = getMonthDisplay(MONTHS[12]);
-        const opt13 = document.createElement("option");
-        opt13.value = "12";
-        opt13.textContent = `Schaltmonat: ${intercDisp.name} (nach Terminalius bzw. Februarius)`;
-        el.repMonth.appendChild(opt13);
+        if (state.calendarSystem === "republican") {
+          const intercDisp = getMonthDisplay(MONTHS[12]);
+          const opt13 = document.createElement("option");
+          opt13.value = "12";
+          opt13.textContent = `Schaltmonat: ${intercDisp.name} (nach Terminalius bzw. Februarius)`;
+          el.repMonth.appendChild(opt13);
+        }
 
         if (previousVal !== "" && el.repMonth.querySelector(`option[value="${previousVal}"]`)) {
           el.repMonth.value = previousVal;
@@ -3653,28 +5223,86 @@
 
       function renderLegendMonths() {
         el.legendMonthsList.innerHTML = "";
+        const isJul = state.calendarSystem === "julian";
+
         for (let offset = 0; offset < 12; offset++) {
           const baseIdx = (state.yearStartMonth + offset) % 12;
           const disp = getMonthDisplay(MONTHS[baseIdx]);
           const li = document.createElement("li");
-          const lenText = baseIdx === 11
-            ? "28 Tage (<strong>23 Tage</strong> im Schaltjahr)"
-            : `${disp.lengthCommon} Tage`;
+          let lenText;
+          if (isJul) {
+            lenText = baseIdx === 11
+              ? "28 Tage (<strong>29 Tage</strong> im Schaltjahr mit <em>a. d. bis VI Kal. Mart.</em>)"
+              : `${disp.lengthJulCommon} Tage`;
+          } else {
+            if (baseIdx === 11) {
+              lenText = state.intercalaryMode === "fixed_27"
+                ? "28 Tage (<strong>23</strong> oder <strong>24 Tage</strong> im Schaltjahr)"
+                : "28 Tage (<strong>23 Tage</strong> im Schaltjahr)";
+            } else {
+              lenText = `${disp.lengthCommon} Tage`;
+            }
+          }
           li.innerHTML = `<strong>${offset + 1}. ${disp.name}</strong> (${disp.altLabel} ${disp.altName}): ${lenText} (Nonen ${disp.nones}., Iden ${disp.ides}.)`;
           el.legendMonthsList.appendChild(li);
         }
-        const m13 = getMonthDisplay(MONTHS[12]);
-        const li13 = document.createElement("li");
-        li13.innerHTML = `<strong>Schaltmonat ${m13.name}</strong>: <strong>27</strong> oder <strong>28</strong> Tage (folgt im Schaltjahr immer direkt auf den 23. ${getMonthDisplay(MONTHS[11]).name})`;
-        el.legendMonthsList.appendChild(li13);
+
+        if (!isJul) {
+          const m13 = getMonthDisplay(MONTHS[12]);
+          const li13 = document.createElement("li");
+          li13.innerHTML = state.intercalaryMode === "fixed_27"
+            ? `<strong>Schaltmonat ${m13.name}</strong>: stets <strong>27 Tage</strong> (folgt im Schaltjahr immer direkt auf den 23. bzw. 24. ${getMonthDisplay(MONTHS[11]).name})`
+            : `<strong>Schaltmonat ${m13.name}</strong>: <strong>27</strong> oder <strong>28 Tage</strong> (folgt im Schaltjahr immer direkt auf den 23. ${getMonthDisplay(MONTHS[11]).name})`;
+          el.legendMonthsList.appendChild(li13);
+        }
       }
 
       /* =========================================================================
-       * 10. ANKER-VERWALTUNG UND PARAMETER-RENDERING
+       * 10. SYSTEMWECHSEL, ANKER-VERWALTUNG UND PARAMETER-RENDERING
        * ========================================================================= */
+      function switchCalendarSystem(targetSystem) {
+        if (targetSystem !== "republican" && targetSystem !== "julian") return;
+        if (state.calendarSystem === targetSystem) return;
+        state.calendarSystem = targetSystem;
+        state.viewedRepYear = null;
+        state.pontifexWindowStart = null;
+        syncConfigControlsFromState();
+        refreshAllViews(true);
+      }
+
+      function updateSystemVisuals() {
+        const isJul = state.calendarSystem === "julian";
+        document.body.classList.toggle("system-julian", isJul);
+        document.body.classList.toggle("system-republican", !isJul);
+
+        el.btnSysRepHeader.classList.toggle("active", !isJul);
+        el.btnSysJulHeader.classList.toggle("active", isJul);
+        el.btnSysRepMini.classList.toggle("active", !isJul);
+        el.btnSysJulMini.classList.toggle("active", isJul);
+
+        el.paramCalendarSystem.value = state.calendarSystem;
+        el.paramIntercalaryMode.value = state.intercalaryMode;
+        el.paramJulianBasis.value = state.julianBasis;
+        el.intercalaryModeWrap.classList.toggle("hidden", isJul);
+        el.julianBasisWrap.classList.toggle("hidden", !isJul);
+
+        el.convNormTitle.textContent = isJul
+          ? "⇄ Normal zu Julianisch"
+          : "⇄ Normal zu Republikanisch";
+        el.convRepTitle.textContent = isJul
+          ? "⇄ Julianisch zu Normal"
+          : "⇄ Republikanisch zu Normal";
+        el.pontifexPanelTitle.textContent = isJul
+          ? "👑 Julianischer Schaltzyklus · Jahresübersicht (365 / 366 Tage)"
+          : "👑 Pontifex Maximus · Schaltjahre selbst festlegen";
+        el.fastiSectionTitle.textContent = isJul
+          ? "👑 Fasti Iuliani · Vollständige Jahrestafeln"
+          : "🏛 Fasti Rei Publicae · Vollständige Jahrestafeln";
+      }
+
       function renderAnchorStatus(errorMessage) {
         const startDisp = getMonthDisplay(MONTHS[state.yearStartMonth]);
-        el.anchorBoxHeading.textContent = `1. Startanker (1. ${startDisp.name} des Jahres 1 = Marktbuchstabe A)`;
+        el.anchorBoxHeading.textContent = `1. Kalendersystem, Startanker (1. ${startDisp.name} Jahr 1 = A) & Schaltregel`;
 
         if (errorMessage) {
           el.anchorStatusNote.className = "status-note warn";
@@ -3686,18 +5314,27 @@
         const jul = jdnToJulian(a.jdn);
         const diff = gregorianToJdn(jul.year, jul.month, jul.day) - a.jdn;
 
+        let ruleInfo;
+        if (state.calendarSystem === "julian") {
+          ruleInfo = state.julianBasis === "authentic_julian"
+            ? " · Julianische Basis: <strong>Authentisch Julianisch (1900 Schaltjahr)</strong>"
+            : " · Julianische Basis: <strong>Gregorianisch synchronisiert (1900 kein Schaltjahr)</strong>";
+        } else {
+          ruleInfo = ` · Schaltregel: <strong>${state.intercalaryMode === "fixed_27" ? "Schaltmonat 27 T. / Feb. 23–24 T." : "Schaltmonat 27–28 T. / Feb. 23 T."}</strong>`;
+        }
+
         el.anchorStatusNote.className = "status-note ok";
         if (a.calType === "gregorian") {
           const gDiff = gregorianToJdn(greg.year, greg.month, greg.day) - julianToJdn(greg.year, greg.month, greg.day);
           el.anchorStatusNote.innerHTML =
             `Aktiver Startanker (1. ${startDisp.name} Jahr 1): <strong>${formatLongDateDe(greg)} (Gregorianisch)</strong> · ` +
-            `entspricht <strong>${formatLongDateDe(jul)} (Julianisch)</strong> · ` +
-            `System-Versatz an diesem Datum: ${gDiff === 0 ? "0 Tage" : (gDiff > 0 ? "+" + gDiff : gDiff) + " Tage"}.`;
+            `entspricht <strong>${formatLongDateDe(jul)} (hist. Julianisch)</strong> · ` +
+            `System-Versatz: ${gDiff === 0 ? "0 Tage" : (gDiff > 0 ? "+" + gDiff : gDiff) + " Tage"}${ruleInfo}.`;
         } else {
           el.anchorStatusNote.innerHTML =
-            `Aktiver Startanker (1. ${startDisp.name} Jahr 1): <strong>${formatLongDateDe(jul)} (Julianisch)</strong> · ` +
+            `Aktiver Startanker (1. ${startDisp.name} Jahr 1): <strong>${formatLongDateDe(jul)} (hist. Julianisch)</strong> · ` +
             `entspricht <strong>${formatLongDateDe(greg)} (Gregorianisch)</strong> · ` +
-            `System-Versatz an diesem Datum: ${diff === 0 ? "0 Tage" : (diff > 0 ? "+" + diff : diff) + " Tage"}.`;
+            `System-Versatz: ${diff === 0 ? "0 Tage" : (diff > 0 ? "+" + diff : diff) + " Tage"}${ruleInfo}.`;
         }
       }
 
@@ -3743,7 +5380,7 @@
           if (Number(k) < 1) delete state.overrides[k];
         }
 
-        state.pontifexWindowStart = 1;
+        state.pontifexWindowStart = null;
         renderAnchorStatus(null);
         refreshAllViews(true);
         return true;
@@ -3755,7 +5392,7 @@
           auc: "Ab Urbe Condita: Römische Jahreszählung seit der traditionellen Gründung Roms 753 v. Chr. (Standard-Werkseinstellung).",
           consuls: "Zeigt für die Jahre 1900–2099 authentisch alle 200 ordentlichen Konsulpaare der Jahre 200–1 v. Chr. und erlaubt direkte Auswahl per Konsulpaar.",
           diocletian: `Diokletianische Ära (Start 284 n. Chr.): Der Jahreswechsel erfolgt an den Kalenden des 1. ${iustName}.`,
-          christian: "Klassische christliche Jahreszählung (v. Chr. bzw. n. Chr. ohne Jahr 0), verknüpft mit Ihrem Startanker.",
+          christian: "Klassische christliche Jahreszählung (v. Chr. bzw. n. Chr. ohne Jahr 0).",
           custom: "Sie legen ein beliebiges Jahr als Jahr 1 fest. Unmittelbar davor liegt in dieser Zählung das Jahr 0 (entspricht 1 Jahr vor Jahr 1)."
         };
         el.eraHint.textContent = eraHints[state.eraKey] || "";
@@ -3783,12 +5420,16 @@
           christian: "Christlich",
           custom: `Eigene Ära (Jahr 1 = ${formatAstroYearDe(state.customEraYear1Astro)})`
         };
+        const sysName = state.calendarSystem === "julian"
+          ? (state.julianBasis === "authentic_julian" ? "Julianisch (auth.)" : "Julianisch (greg.)")
+          : "Republikanisch";
 
         el.quickStatusSummary.innerHTML =
+          `<span>System: <strong>${sysName}</strong></span>` +
           `<span>Anker: <strong>${anchorDisp}</strong></span>` +
           `<span>Anfang: <strong>${startDisp}</strong></span>` +
           `<span>Ära: <strong>${eraNames[state.eraKey]}</strong></span>` +
-          `<span>Pontifex: <strong>${overrideCount}</strong></span>`;
+          (state.calendarSystem === "republican" ? `<span>Pontifex: <strong>${overrideCount}</strong></span>` : "");
       }
 
       /* =========================================================================
@@ -3796,75 +5437,107 @@
        * ========================================================================= */
       function renderHero() {
         const jdn = state.activeJdn;
-        const rep = jdnToRepublican(jdn);
+        const cur = jdnToActiveSystem(jdn);
+        const other = jdnToOtherSystem(jdn);
         const greg = jdnToGregorian(jdn);
         const jul = jdnToJulian(jdn);
         const weekday = getWeekdayFromJdn(jdn);
-        const eraForms = buildLatinEraForms(rep.eras);
+        const eraForms = buildLatinEraForms(cur.eras);
+        const otherEraForms = buildLatinEraForms(other.eras);
 
         const isToday = jdn === TODAY_JDN;
         el.heroModeBadge.textContent = isToday ? "HEUTIGES DATUM" : "GEWÄHLTES DATUM";
+        el.heroSystemBadge.textContent = cur.system === "julian"
+          ? (state.julianBasis === "authentic_julian" ? "JULIANISCH · AUTHENTISCH" : "JULIANISCH · GREG. SYNCHRON")
+          : "REPUBLIKANISCH";
         el.heroWeekdayGreg.textContent = `${weekday}, ${formatLongDateDe(greg)} (Greg.)`;
 
-        el.heroRepModern.textContent = `${rep.day}. ${rep.monthObj.name} (${formatModernEraShort(rep.eras)})`;
-        el.heroModernTag.textContent = `Republikanisches Jahr ${rep.repYear} · ${rep.monthObj.altLabel} ${rep.monthObj.altName}`;
+        el.heroRepModern.textContent = formatModernDateHeading(cur.day, cur.monthObj.name, cur.eras);
+        el.heroModernTag.textContent = cur.system === "julian"
+          ? `Julianischer Kalender · ${cur.monthObj.altLabel} ${cur.monthObj.altName}`
+          : `Republikanisches Jahr ${cur.repYear} · ${cur.monthObj.altLabel} ${cur.monthObj.altName}`;
 
-        el.heroLatinStone.textContent = `${rep.latinStoneDate}·${eraForms.stone}`;
-        el.heroLatinFull.textContent = `${rep.latinFullDate}, ${eraForms.full}`;
-        el.heroLatinAbbr.textContent = `${rep.latinAbbrDate}, ${eraForms.abbr}`;
+        el.heroLatinStone.textContent = `${cur.latinStoneDate}·${eraForms.stone}`;
+        el.heroLatinFull.textContent = `${cur.latinFullDate}, ${eraForms.full}`;
+        el.heroLatinAbbr.textContent = `${cur.latinAbbrDate}, ${eraForms.abbr}`;
+
+        const relText = cur.isReligiosus ? " · Status: Dies religiosus / ater" : "";
+        const feastHtml = cur.feastDetail
+          ? ` · Fest/Eintrag: <strong>${cur.feastDetail}</strong>`
+          : (cur.feast ? ` · Festtag: <strong>${cur.feast}</strong>` : "");
 
         el.heroGrammarNote.innerHTML =
-          `<strong>Inklusivzählung und Charakter:</strong> ${rep.grammarExplain} ` +
-          `Tagescharakter <strong>${rep.dayChar}</strong>: ${CHAR_MEANINGS[rep.dayChar] || ""}` +
-          (rep.feast ? ` · Festtag: <strong>${rep.feast}</strong>` : "");
+          `<strong>Inklusivzählung und Charakter:</strong> ${cur.grammarExplain} ` +
+          `Tagescharakter <strong>${cur.dayChar}</strong>: ${CHAR_MEANINGS[cur.dayChar] || ""}` +
+          relText + feastHtml;
 
-        if (rep.eras.consuls) {
+        const otherLabel = other.system === "julian" ? "Julianischer Kalender" : "Republikanischer Kalender";
+        el.heroCounterpartNote.innerHTML =
+          `<strong>Gegenstück (${otherLabel}):</strong> ${formatModernDateHeading(other.day, other.monthObj.name, other.eras)} · ` +
+          `<em>${other.latinAbbrDate}, ${otherEraForms.abbr}</em>` +
+          (other.feast ? ` · Fest: ${other.feast}` : "");
+
+        if (cur.eras.consuls) {
           el.heroConsulsBanner.classList.remove("hidden");
-          el.heroConsulsTitle.textContent = `RÖMISCHE KONSULN (${rep.eras.consuls.bcYear} v. Chr., entspricht ${rep.eras.consuls.gregYear})`;
-          el.heroConsulsNames.textContent = `${rep.eras.consuls.displayPair} (${rep.eras.consuls.latinAblAbbr})`;
+          el.heroConsulsTitle.textContent = `RÖMISCHE KONSULN (${cur.eras.consuls.bcYear} v. Chr., entspricht ${cur.eras.consuls.gregYear})`;
+          el.heroConsulsNames.textContent = `${cur.eras.consuls.displayPair} (${cur.eras.consuls.latinAblAbbr})`;
         } else {
           el.heroConsulsBanner.classList.add("hidden");
         }
 
-        const pct = Math.min(100, Math.max(0, (rep.dayOfYear / rep.yearLength) * 100));
-        const remaining = rep.yearLength - rep.dayOfYear;
+        const pct = Math.min(100, Math.max(0, (cur.dayOfYear / cur.yearLength) * 100));
+        const remaining = cur.yearLength - cur.dayOfYear;
         const startMName = getMonthDisplay(MONTHS[state.yearStartMonth]).name;
-        el.heroProgressText.textContent = `Jahresfortschritt: Tag ${rep.dayOfYear} von ${rep.yearLength} (Republikanisches Jahr ${rep.repYear})`;
+        const yrLabel = cur.system === "julian"
+          ? `Julianisches Jahr ${formatAstroYearDe(cur.calYear)}`
+          : `Republikanisches Jahr ${cur.repYear}`;
+        el.heroProgressText.textContent = `Jahresfortschritt: Tag ${cur.dayOfYear} von ${cur.yearLength} (${yrLabel})`;
         el.heroProgressRemain.textContent = remaining === 0 ? "Letzter Tag des Jahres" : `Noch ${remaining} Tage bis zum 1. ${startMName}`;
         el.heroProgressFill.style.width = `${pct.toFixed(1)}%`;
 
-        el.heroEraValue.textContent = formatSelectedEraDisplay(rep.eras);
-        el.heroNundChar.textContent = `Markt ${rep.nundinal}${rep.nundinal === "A" ? " (Nundinae)" : ""} · ${rep.dayChar}${rep.feast ? " (" + rep.feast + ")" : ""}`;
+        el.heroEraValue.textContent = formatSelectedEraDisplay(cur.eras);
+        el.heroNundChar.textContent = `Markt ${cur.nundinal}${cur.nundinal === "A" ? " (Nundinae)" : ""} · ${cur.dayChar}${cur.isReligiosus ? " [relig.]" : ""}${cur.feast ? " (" + cur.feast + ")" : ""}`;
         el.heroGregDate.textContent = formatLongDateDe(greg);
         el.heroJulDate.textContent = formatLongDateDe(jul);
-        el.heroAucCycle.textContent = `${rep.eras.auc} a.u.c. (${toRomanYear(rep.eras.auc)}) · Zyklus ${rep.cyclePos}/24 (${rep.yearLength} T.)`;
-        el.heroDiocCustom.textContent = `${rep.eras.diocletian} Diokl. · Eigene Ära: Jahr ${rep.eras.customYear}`;
+        el.heroAucCycle.textContent = cur.system === "julian"
+          ? `${cur.eras.auc} a.u.c. (${toRomanYear(cur.eras.auc)}) · ${state.julianBasis === "authentic_julian" ? "Auth. Jul." : "Greg. Synchr."} (${cur.yearLength} T.)`
+          : `${cur.eras.auc} a.u.c. (${toRomanYear(cur.eras.auc)}) · Zyklus ${cur.cyclePos}/24 (${cur.yearLength} T.)`;
+        el.heroDiocCustom.textContent = `${cur.eras.diocletian} Diokl. · Eigene Ära: Jahr ${cur.eras.customYear}`;
       }
 
       function renderNormToRepOutput(jdn) {
-        const rep = jdnToRepublican(jdn);
+        const cur = jdnToActiveSystem(jdn);
+        const other = jdnToOtherSystem(jdn);
         const greg = jdnToGregorian(jdn);
         const jul = jdnToJulian(jdn);
         const weekday = getWeekdayFromJdn(jdn);
-        const eraForms = buildLatinEraForms(rep.eras);
+        const eraForms = buildLatinEraForms(cur.eras);
+        const otherEraForms = buildLatinEraForms(other.eras);
+
+        const yrDesc = cur.system === "julian"
+          ? `Julianisches Jahr ${formatAstroYearDe(cur.calYear)} (${state.julianBasis === "authentic_julian" ? "authentisch julianisch" : "gregorianisch synchronisiert"}, ${cur.yearLength} Tage)`
+          : `Jahr ${cur.repYear} ab Anker (Zyklus-Pos. ${cur.cyclePos}/24, ${cur.yearLength} Tage${cur.isOverridden ? ", Pontifex-Eingriff" : ""})`;
+        const otherSysName = other.system === "julian" ? "Julianischer Kalender" : "Republikanischer Kalender";
 
         el.normToRepResult.innerHTML = `
-          <div class="conv-result-head">${rep.day}. ${rep.monthObj.name} (${formatModernEraShort(rep.eras)})</div>
-          <div class="conv-stone-line">${rep.latinStoneDate}·${eraForms.stone}</div>
-          <div class="conv-result-sub">${rep.latinFullDate}, ${eraForms.full}</div>
+          <div class="conv-result-head">${formatModernDateHeading(cur.day, cur.monthObj.name, cur.eras)}</div>
+          <div class="conv-stone-line">${cur.latinStoneDate}·${eraForms.stone}</div>
+          <div class="conv-result-sub">${cur.latinFullDate}, ${eraForms.full}</div>
           <div class="conv-kv">
             <div class="conv-k">Buchschrift kurz</div>
-            <div class="conv-v">${rep.latinAbbrDate}, ${eraForms.abbr}</div>
+            <div class="conv-v">${cur.latinAbbrDate}, ${eraForms.abbr}</div>
             <div class="conv-k">Gewählte Ära</div>
-            <div class="conv-v">${formatSelectedEraDisplay(rep.eras)}</div>
+            <div class="conv-v">${formatSelectedEraDisplay(cur.eras)}</div>
             <div class="conv-k">Marktwoche und Typ</div>
-            <div class="conv-v">Nundinalbuchstabe <strong>${rep.nundinal}</strong>${rep.nundinal === "A" ? " (Markttag)" : ""} · Charakter <strong>${rep.dayChar}</strong> (${CHAR_MEANINGS[rep.dayChar] || ""})${rep.feast ? " · Fest: <em>" + rep.feast + "</em>" : ""}</div>
-            <div class="conv-k">Rep. Jahr und Länge</div>
-            <div class="conv-v">Jahr ${rep.repYear} ab Anker (Zyklus-Pos. ${rep.cyclePos}/24, ${rep.yearLength} Tage${rep.isOverridden ? ", Pontifex-Eingriff" : ""})</div>
+            <div class="conv-v">Nundinalbuchstabe <strong>${cur.nundinal}</strong>${cur.nundinal === "A" ? " (Markttag)" : ""} · Charakter <strong>${cur.dayChar}</strong> (${CHAR_MEANINGS[cur.dayChar] || ""})${cur.isReligiosus ? " · <em>Dies religiosus / ater</em>" : ""}${cur.feastDetail ? " · Fest/Eintrag: <em>" + cur.feastDetail + "</em>" : ""}</div>
+            <div class="conv-k">Jahr und Länge</div>
+            <div class="conv-v">${yrDesc}</div>
+            <div class="conv-k">${otherSysName}</div>
+            <div class="conv-v">${formatModernDateHeading(other.day, other.monthObj.name, other.eras)} · ${other.latinAbbrDate}, ${otherEraForms.abbr}</div>
             <div class="conv-k">Alle 5 Ären</div>
-            <div class="conv-v">${rep.eras.auc} a.u.c. · Christl.: ${rep.eras.christian} · Diokl.: ${rep.eras.diocletian} · Eigene Ära: ${rep.eras.customYear}${rep.eras.consuls ? " · Coss.: " + rep.eras.consuls.displayPair : ""}</div>
-            <div class="conv-k">Greg. und Julianisch</div>
-            <div class="conv-v">${weekday}, ${formatLongDateDe(greg)} (Greg.) | ${formatLongDateDe(jul)} (Jul.)</div>
+            <div class="conv-v">${cur.eras.auc} a.u.c. · Christl.: ${cur.eras.christian} · Diokl.: ${cur.eras.diocletian} · Eigene Ära: ${cur.eras.customYear}${cur.eras.consuls ? " · Coss.: " + cur.eras.consuls.displayPair : ""}</div>
+            <div class="conv-k">Greg. und hist. Jul.</div>
+            <div class="conv-v">${weekday}, ${formatLongDateDe(greg)} (Greg.) | ${formatLongDateDe(jul)} (hist. Jul.)</div>
           </div>
         `;
       }
@@ -3885,10 +5558,12 @@
       }
 
       function syncRepConverterFromActive() {
-        const rep = jdnToRepublican(state.activeJdn);
-        el.repDay.value = String(rep.day);
-        el.repMonth.value = String(rep.baseIndex);
-        const eraInfo = getEraYearInputForRepDate(rep);
+        const cur = jdnToActiveSystem(state.activeJdn);
+        el.repDay.value = String(cur.day);
+        if (el.repMonth.querySelector(`option[value="${cur.baseIndex}"]`)) {
+          el.repMonth.value = String(cur.baseIndex);
+        }
+        const eraInfo = getEraYearInputForDate(cur);
 
         if (state.eraKey === "consuls") {
           if (eraInfo.value !== null) {
@@ -3903,19 +5578,21 @@
           el.repYearInput.value = String(eraInfo.value);
           el.repYearBcAd.value = eraInfo.bcAd;
         }
-        renderRepToNormOutput(rep.repYear, rep.baseIndex, rep.day);
+        renderRepToNormOutput(cur.calYear, cur.baseIndex, cur.day);
       }
 
-      function renderRepToNormOutput(repYear, baseMonthIndex, day) {
-        const months = getMonthsForRepYear(repYear);
+      function renderRepToNormOutput(targetYear, baseMonthIndex, day) {
+        const months = getMonthsForActiveYear(targetYear);
         el.repInputWarn.classList.add("hidden");
         el.repInputWarn.textContent = "";
 
         const targetMonth = months.find((m) => m.baseIndex === baseMonthIndex);
         if (!targetMonth) {
           el.repInputWarn.classList.remove("hidden");
-          el.repInputWarn.textContent = `Hinweis: Das gewählte republikanische Jahr (${repYear}, ${getYearLength(repYear)} Tage) ist ein Gemeinjahr und besitzt keinen Schaltmonat (Mensis Intercalaris).`;
-          el.repToNormResult.innerHTML = `<div class="conv-result-sub">Kein gültiges Datum in diesem Gemeinjahr (355 Tage).</div>`;
+          el.repInputWarn.textContent = state.calendarSystem === "julian"
+            ? "Hinweis: Im Julianischen Kalender gibt es keinen Mensis Intercalaris."
+            : `Hinweis: Das gewählte republikanische Jahr (${targetYear}, ${getYearLength(targetYear)} Tage) ist ein Gemeinjahr und besitzt keinen Schaltmonat (Mensis Intercalaris).`;
+          el.repToNormResult.innerHTML = `<div class="conv-result-sub">Kein gültiges Datum in diesem Jahr.</div>`;
           return null;
         }
 
@@ -3926,42 +5603,54 @@
           return null;
         }
 
-        const jdn = republicanToJdn(repYear, baseMonthIndex, day);
-        const rep = jdnToRepublican(jdn);
+        const jdn = state.calendarSystem === "julian"
+          ? julianSystemToJdn(targetYear, baseMonthIndex, day)
+          : republicanToJdn(targetYear, baseMonthIndex, day);
+
+        const cur = jdnToActiveSystem(jdn);
+        const other = jdnToOtherSystem(jdn);
         const greg = jdnToGregorian(jdn);
         const jul = jdnToJulian(jdn);
         const weekday = getWeekdayFromJdn(jdn);
-        const eraForms = buildLatinEraForms(rep.eras);
+        const eraForms = buildLatinEraForms(cur.eras);
+        const otherEraForms = buildLatinEraForms(other.eras);
+        const otherSysName = other.system === "julian" ? "Julianischer Kalender" : "Republikanischer Kalender";
 
         el.repToNormResult.innerHTML = `
           <div class="conv-result-head">${weekday}, ${formatLongDateDe(greg)}</div>
-          <div class="conv-stone-line">${rep.latinStoneDate}·${eraForms.stone}</div>
-          <div class="conv-result-sub">${rep.latinFullDate}, ${eraForms.full}</div>
+          <div class="conv-stone-line">${cur.latinStoneDate}·${eraForms.stone}</div>
+          <div class="conv-result-sub">${cur.latinFullDate}, ${eraForms.full}</div>
           <div class="conv-kv">
             <div class="conv-k">Gregorianisch</div>
             <div class="conv-v">${formatLongDateDe(greg)} (${formatShortDate(greg)})</div>
-            <div class="conv-k">Julianisch</div>
+            <div class="conv-k">Hist. Julianisch</div>
             <div class="conv-v">${formatLongDateDe(jul)} (${formatShortDate(jul)})</div>
             <div class="conv-k">Buchschrift kurz</div>
-            <div class="conv-v">${rep.latinAbbrDate}, ${eraForms.abbr}</div>
+            <div class="conv-v">${cur.latinAbbrDate}, ${eraForms.abbr}</div>
             <div class="conv-k">Marktwoche und Typ</div>
-            <div class="conv-v">Nundinalbuchstabe <strong>${rep.nundinal}</strong>${rep.nundinal === "A" ? " (Markttag)" : ""} · Charakter <strong>${rep.dayChar}</strong> (${CHAR_MEANINGS[rep.dayChar] || ""})</div>
+            <div class="conv-v">Nundinalbuchstabe <strong>${cur.nundinal}</strong>${cur.nundinal === "A" ? " (Markttag)" : ""} · Charakter <strong>${cur.dayChar}</strong> (${CHAR_MEANINGS[cur.dayChar] || ""})${cur.isReligiosus ? " · <em>Dies religiosus / ater</em>" : ""}${cur.feastDetail ? " · Fest/Eintrag: <em>" + cur.feastDetail + "</em>" : ""}</div>
+            <div class="conv-k">${otherSysName}</div>
+            <div class="conv-v">${formatModernDateHeading(other.day, other.monthObj.name, other.eras)} · ${other.latinAbbrDate}, ${otherEraForms.abbr}</div>
             <div class="conv-k">Jahresära</div>
-            <div class="conv-v">${formatSelectedEraDisplay(rep.eras)}</div>
+            <div class="conv-v">${formatSelectedEraDisplay(cur.eras)}</div>
             <div class="conv-k">Konsuln</div>
-            <div class="conv-v">${rep.eras.consuls ? rep.eras.consuls.displayPair + " (" + rep.eras.consuls.bcYear + " v. Chr.)" : "Nur im Bereich 1900–2099 (200–1 v. Chr.) definiert"}</div>
+            <div class="conv-v">${cur.eras.consuls ? cur.eras.consuls.displayPair + " (" + cur.eras.consuls.bcYear + " v. Chr.)" : "Nur im Bereich 1900–2099 (200–1 v. Chr.) definiert"}</div>
           </div>
         `;
         return jdn;
       }
 
       /* =========================================================================
-       * 12. PONTIFEX MAXIMUS
+       * 12. PONTIFEX MAXIMUS & JULIANISCHE SCHALTZYKLUS-ÜBERSICHT
        * ========================================================================= */
       function computeCenterPontifexWindow(repYear) {
         if (repYear < 1) return 1;
         const pos = (repYear - 1) % 24;
         return Math.max(1, repYear - pos);
+      }
+
+      function computeCenterJulianWindow(calYear) {
+        return Math.floor(calYear / 24) * 24;
       }
 
       function getPontifexSummaryData() {
@@ -3988,6 +5677,88 @@
       }
 
       function renderPontifexPanel() {
+        const isJul = state.calendarSystem === "julian";
+        const overrideKeys = Object.keys(state.overrides).map(Number).filter((y) => y >= 1);
+
+        el.btnPontifexReset.classList.toggle("hidden", isJul);
+        el.pontifexJulianNotice.classList.toggle("hidden", !isJul);
+
+        if (isJul) {
+          const activeJul = jdnToJulianSystem(state.activeJdn);
+          if (state.pontifexWindowStart === null) {
+            state.pontifexWindowStart = computeCenterJulianWindow(activeJul.calYear);
+          }
+          const winStart = state.pontifexWindowStart;
+          el.btnPontifexWindowPrev.disabled = false;
+
+          const h = getJulianBasisHelpers();
+          const year1900Len = getJulianYearLength(1900);
+          let leapCount = 0;
+          for (let i = 0; i < 24; i++) {
+            if (getJulianYearLength(winStart + i) === 366) leapCount++;
+          }
+
+          el.pontifexJulianNotice.innerHTML =
+            state.julianBasis === "authentic_julian"
+              ? `<strong>Modus „Authentisch Julianisch“:</strong> Es gilt ausnahmslos der feste 4-jährige Schaltzyklus (alle 4 Jahre 366 Tage, inklusive 1900). Ihre ${overrideKeys.length} gespeicherten Pontifex-Eingriffe für den Republikanischen Kalender bleiben im Hintergrund vollständig erhalten.`
+              : `<strong>Modus „Gregorianisch synchronisiert“ (Standard):</strong> Der Julianische Kalender übernimmt die gregorianische Schaltregel (Jahr 1900 = 365 Tage, 2000 = 366 Tage), sodass Daten ohne Versatz direkt übereinstimmen. Ihre ${overrideKeys.length} gespeicherten Pontifex-Eingriffe für den Republikanischen Kalender bleiben im Hintergrund vollständig erhalten.`;
+
+          el.pontifexStats.innerHTML = `
+            <span class="stat-pill gold">Schaltbasis: <strong>${state.julianBasis === "authentic_julian" ? "Authentisch Julianisch" : "Gregorianisch synchron"}</strong></span>
+            <span class="stat-pill">Schaltjahre in diesem 24-J.-Fenster: <strong>${leapCount} von 24</strong></span>
+            <span class="stat-pill">Referenzjahr 1900: <strong>${year1900Len} Tage</strong></span>
+            <span class="stat-pill">Gespeicherte rep. Pontifex-Eingriffe: <strong>${overrideKeys.length}</strong></span>
+          `;
+
+          el.pontifexLegendRow.innerHTML = `
+            <span class="p-swatch std-355">Gemeinjahr (365 T.)</span>
+            <span class="p-swatch std-378" style="border-color:var(--porphyry-bright); color:#ffd5e1; background:rgba(143,57,84,0.2);">Schaltjahr mit Dies bissextus (366 T.)</span>
+            <span class="p-swatch active-yr">Aktives Stichtag-Jahr</span>
+          `;
+
+          el.pontifexHelpHint.innerHTML =
+            `Vorschau des <strong>Julianischen Schaltzyklus</strong> rund um das aktive Jahr (${formatAstroYearDe(winStart)} bis ${formatAstroYearDe(winStart + 23)}). Um manuelle Pontifex-Schaltungen vorzunehmen, wechseln Sie oben auf den <strong>Republikanischen Kalender</strong>.`;
+
+          el.pontifexGrid.innerHTML = "";
+          for (let i = 0; i < 24; i++) {
+            const yr = winStart + i;
+            const yLen = getJulianYearLength(yr);
+            const isLeap = yLen === 366;
+            const consul = getConsulForNominalYear(yr);
+
+            let cardClass = "pontifex-card";
+            if (isLeap) cardClass += " type-jul-leap";
+            if (yr === activeJul.calYear) cardClass += " current-year";
+
+            const card = document.createElement("div");
+            card.className = cardClass;
+
+            const top = document.createElement("div");
+            top.className = "pontifex-card-top";
+            top.innerHTML = `<span>${formatAstroYearDe(yr)}</span><span class="diff-badge ${isLeap ? "leap" : "std"}">${yLen} T.</span>`;
+
+            const meta = document.createElement("div");
+            meta.className = "pontifex-card-meta";
+            const consulPart = consul
+              ? ` · Coss. ${shortenConsulName(consul.c1)} et ${shortenConsulName(consul.c2)}`
+              : "";
+            meta.textContent = `${yr + 753} a.u.c. · ${isLeap ? "Schaltjahr (29. Febr. / bis VI Kal. Mart.)" : "Gemeinjahr (28. Febr.)"}${consulPart}`;
+
+            const note = document.createElement("div");
+            note.className = "pontifex-card-note";
+            note.textContent = h.isLeapYear(yr) && !isLeap
+              ? "Februar im nächsten Kalenderjahr"
+              : (isLeap ? "Enthält Dies bissextus (25. Febr.)" : "Feste 365-Tage-Regel");
+
+            card.appendChild(top);
+            card.appendChild(meta);
+            card.appendChild(note);
+            el.pontifexGrid.appendChild(card);
+          }
+          return;
+        }
+
+        /* Republikanischer Modus */
         const activeRep = jdnToRepublican(state.activeJdn);
         if (state.pontifexWindowStart === null || state.pontifexWindowStart < 1) {
           state.pontifexWindowStart = computeCenterPontifexWindow(activeRep.repYear);
@@ -3995,7 +5766,6 @@
         const winStart = state.pontifexWindowStart;
         el.btnPontifexWindowPrev.disabled = winStart <= 1;
 
-        const overrideKeys = Object.keys(state.overrides).map(Number).filter((y) => y >= 1);
         let netOverrideToActive = 0;
         for (const oy of overrideKeys) {
           if (activeRep.repYear > 1 && oy < activeRep.repYear) {
@@ -4023,6 +5793,23 @@
           <span class="stat-pill ${toActiveClass}">Versatz bis Jahr ${activeRep.repYear}: <strong>${netOverrideToActive >= 0 ? "+" : ""}${netOverrideToActive} Tage</strong></span>
           <span class="stat-pill">1. ${startMName} gegen Jahresanker: <strong>${driftVsAnchorSeason >= 0 ? "+" : ""}${driftVsAnchorSeason} Tage</strong></span>
         `;
+
+        el.pontifexLegendRow.innerHTML = `
+          <span class="p-swatch std-355">Gemeinjahr (355 T.)</span>
+          <span class="p-swatch std-377">Kl. Schaltjahr (377 T.)</span>
+          <span class="p-swatch std-378">Gr. Schaltjahr (378 T.)</span>
+          <span class="p-swatch mod-longer">Pontifex: Verlängert (+ Tage)</span>
+          <span class="p-swatch mod-shorter">Pontifex: Verkürzt (− Tage)</span>
+          <span class="p-swatch active-yr">Aktives Stichtag-Jahr</span>
+        `;
+
+        el.pontifexHelpHint.innerHTML =
+          `Als <strong>Pontifex Maximus</strong> dürfen Sie jedes Jahr <strong>ab Beginn des Startankers (Jahr 1 und alle Folgejahre)</strong> beliebig vom 24-Jahres-Standardzyklus abweichend als Gemeinjahr (355 Tage), kleines Schaltjahr (377 Tage) oder großes Schaltjahr (378 Tage) festlegen. Jahre vor dem Startanker bleiben historisch unveränderbar.`;
+
+        const opt377Label = "Kleines Schaltjahr (377 T. · 23 Feb / 27 Int.)";
+        const opt378Label = state.intercalaryMode === "fixed_27"
+          ? "Großes Schaltjahr (378 T. · 24 Feb / 27 Int.)"
+          : "Großes Schaltjahr (378 T. · 23 Feb / 28 Int.)";
 
         el.pontifexGrid.innerHTML = "";
         for (let i = 0; i < 24; i++) {
@@ -4066,8 +5853,8 @@
           sel.innerHTML = `
             <option value="std">Standard (${stdLen} Tage · ${stdLabel})</option>
             <option value="355">Gemeinjahr (355 Tage)</option>
-            <option value="377">Kleines Schaltjahr (377 Tage · 27 Int.)</option>
-            <option value="378">Großes Schaltjahr (378 Tage · 28 Int.)</option>
+            <option value="377">${opt377Label}</option>
+            <option value="378">${opt378Label}</option>
           `;
           sel.value = isOverridden ? String(curLen) : "std";
 
@@ -4109,10 +5896,11 @@
       /* =========================================================================
        * 13. VOLLSTÄNDIGE 12 / 13 FASTI-TAFELN (GLEICHE ZEILENHÖHE, KEINE KÜRZUNG)
        * ========================================================================= */
-      function doesRowMatchFilter(filterKey, nund, dayChar, feast, isMarker) {
+      function doesRowMatchFilter(filterKey, nund, dayChar, feast, isMarker, isReligiosus) {
         switch (filterKey) {
           case "nundinae": return nund === "A";
           case "feasts": return Boolean(feast);
+          case "religiosi": return Boolean(isReligiosus);
           case "markers": return isMarker;
           case "legal": return dayChar === "F" || dayChar === "C";
           default: return true;
@@ -4120,32 +5908,44 @@
       }
 
       function renderTablets() {
-        const repYear = state.viewedRepYear;
-        const yearLen = getYearLength(repYear);
-        const isInterc = yearLen > 355;
-        const isOverridden = repYear >= 1 && Object.prototype.hasOwnProperty.call(state.overrides, repYear);
-        const startJdn = getStartJdnOfRepYear(repYear);
+        const isJul = state.calendarSystem === "julian";
+        const targetYear = state.viewedRepYear;
+        const yearLen = getActiveYearLength(targetYear);
+        const isInterc = isJul ? (yearLen === 366) : (yearLen > 355);
+        const isOverridden = !isJul && targetYear >= 1 && Object.prototype.hasOwnProperty.call(state.overrides, targetYear);
+        const startJdn = getStartJdnOfActiveYear(targetYear);
         const endJdn = startJdn + yearLen - 1;
         const startGreg = jdnToGregorian(startJdn);
         const endGreg = jdnToGregorian(endJdn);
-        const nomAstro = getNominalAstroYear(repYear);
-        const eras = computeEras(repYear, nomAstro, state.yearStartMonth);
+        const nomAstro = isJul ? targetYear : getNominalAstroYear(targetYear);
+        const eras = computeEras(isJul ? 1 : targetYear, nomAstro, state.yearStartMonth);
 
         const consulPart = eras.consuls
           ? ` · Coss. ${eras.consuls.displayPair} (${eras.consuls.bcYear} v. Chr.)`
           : "";
 
-        el.tabletsYearTitle.textContent =
-          `Republikanisches Jahr ${repYear} (${formatAstroYearDe(nomAstro)} · ${eras.auc} a.u.c. · ${toRomanYear(eras.auc)})`;
+        if (isJul) {
+          const basisLabel = state.julianBasis === "authentic_julian"
+            ? "authentisch julianisch"
+            : "gregorianisch synchron";
+          el.tabletsYearTitle.textContent =
+            `Julianisches Jahr ${formatAstroYearDe(nomAstro)} · ${eras.auc} a.u.c. (${toRomanYear(eras.auc)})`;
+          el.tabletsYearSub.textContent =
+            `12 Tafeln (${isInterc ? "Schaltjahr mit Dies bissextus: 366 Tage" : "Gemeinjahr: 365 Tage"}, ${basisLabel})` +
+            ` · ${formatShortDate(startGreg)} bis ${formatShortDate(endGreg)} Greg.` +
+            consulPart;
+        } else {
+          el.tabletsYearTitle.textContent =
+            `Republikanisches Jahr ${targetYear} · ${formatAstroYearDe(nomAstro)} · ${eras.auc} a.u.c. (${toRomanYear(eras.auc)})`;
+          el.tabletsYearSub.textContent =
+            `${isInterc ? "13 Tafeln (Schaltjahr: " + yearLen + " Tage)" : "12 Tafeln (Gemeinjahr: 355 Tage)"}` +
+            ` · Zyklus ${getCyclePosition(targetYear)}/24` +
+            `${isOverridden ? " · Pontifex-Eingriff aktiv" : ""}` +
+            ` · ${formatShortDate(startGreg)} bis ${formatShortDate(endGreg)} Greg.` +
+            consulPart;
+        }
 
-        el.tabletsYearSub.textContent =
-          `${isInterc ? "13 Tafeln (Schaltjahr: " + yearLen + " Tage)" : "12 Tafeln (Gemeinjahr: 355 Tage)"}` +
-          ` · Zyklus ${getCyclePosition(repYear)}/24` +
-          `${isOverridden ? " · Pontifex-Eingriff aktiv" : ""}` +
-          ` · ${formatShortDate(startGreg)} bis ${formatShortDate(endGreg)} Greg.` +
-          consulPart;
-
-        const months = getMonthsForRepYear(repYear);
+        const months = getMonthsForActiveYear(targetYear);
         el.tabletsGrid.innerHTML = "";
 
         let curJdn = startJdn;
@@ -4166,7 +5966,7 @@
           head.className = "tablet-head";
           head.innerHTML = `
             <div>
-              <div class="tablet-month-num">TABULA ${toRomanBasic(idxInYear + 1)} (${m.numRoman})${m.baseIndex === 12 ? " · SCHALTMONAT" : ""}</div>
+              <div class="tablet-month-num">TABULA ${toRomanBasic(idxInYear + 1)} (${m.numRoman})${m.baseIndex === 12 ? " · SCHALTMONAT" : (m.isJulianLeapFeb ? " · SCHALTJAHR" : "")}</div>
               <div class="tablet-month-name">${m.name}</div>
               <div class="tablet-month-sub">${m.altLabel} ${m.altName} · Nonen ${m.nones}. · Iden ${m.ides}.</div>
             </div>
@@ -4186,8 +5986,8 @@
             <span>Markt</span>
             <span>Typ</span>
             <span>Röm. Datierung</span>
-            <span>Markttag und Festtag (Feriae)</span>
-            <span>Normaldatum</span>
+            <span>Markttag und Festtag (Feriae &amp; Ludi)</span>
+            <span>Gregorianisch</span>
           `;
 
           const rowsWrap = document.createElement("div");
@@ -4198,20 +5998,22 @@
             const jdn = curJdn++;
             const nundIdx = (((jdn - state.anchor.jdn) % 8) + 8) % 8;
             const nund = NUNDINAL_LETTERS[nundIdx];
-            const ch = m.chars[d - 1] || "C";
-            const feast = (m.feasts && m.feasts[d]) || null;
-            const latin = formatRomanDateGrammar(d, m, nextM);
+            const info = getDayDetailsForActiveSystem(m, d);
+            const ch = info.dayChar;
+            const feast = info.feast;
+            const latin = formatRomanDateGrammar(d, m, nextM, { isJulianLeapFeb: m.isJulianLeapFeb });
             const greg = jdnToGregorian(jdn);
             const isActive = jdn === state.activeJdn;
             if (isActive) tabletHasActive = true;
 
-            const matches = doesRowMatchFilter(state.tabletFilter, nund, ch, feast, latin.isMarker);
+            const matches = doesRowMatchFilter(state.tabletFilter, nund, ch, feast, latin.isMarker, info.isReligiosus);
             if (matches) matchingRows++;
 
             const row = document.createElement("div");
             row.className =
               "fasti-row" +
               (latin.isMarker ? " is-marker" : "") +
+              (info.isReligiosus ? " is-religiosus" : "") +
               (isActive ? " is-active" : "") +
               (state.tabletFilter !== "all" && !matches ? " is-dimmed" : "");
 
@@ -4219,7 +6021,10 @@
               row.id = "activeFastiDay";
             }
 
-            row.title = `${d}. ${m.name} (${latin.full}) · ${formatLongDateDe(greg)} Greg. · Marktbuchstabe ${nund}${nund === "A" ? " (Markttag / Nundinae)" : ""} · ${CHAR_MEANINGS[ch] || ch}${feast ? " · Fest: " + feast : ""}`;
+            row.title =
+              `${d}. ${m.name} (${latin.full}) · ${formatLongDateDe(greg)} Greg. · Marktbuchstabe ${nund}${nund === "A" ? " (Markttag / Nundinae)" : ""} · ${CHAR_MEANINGS[ch] || ch}` +
+              (info.isReligiosus ? " · Dies religiosus / ater" : "") +
+              (info.detail ? ` · ${info.detail}` : "");
 
             const dayNumEl = document.createElement("span");
             dayNumEl.className = "col-daynum";
@@ -4245,6 +6050,23 @@
               nundBadge.className = "tag-nund";
               nundBadge.textContent = "Markt";
               commentEl.appendChild(nundBadge);
+            }
+
+            if (info.isReligiosus) {
+              const relBadge = document.createElement("span");
+              relBadge.className = "tag-relig";
+              relBadge.textContent = "relig.";
+              commentEl.appendChild(relBadge);
+            }
+
+            if (m.baseIndex === 6 && d === 1 && state.eraKey === "diocletian") {
+              const diocBadge = document.createElement("span");
+              diocBadge.className = "tag-relig";
+              diocBadge.style.color = "var(--gold-bright)";
+              diocBadge.style.borderColor = "var(--gold)";
+              diocBadge.style.background = "rgba(226, 184, 87, 0.14)";
+              diocBadge.textContent = "Diokl. Neujahr";
+              commentEl.appendChild(diocBadge);
             }
 
             if (feast) {
@@ -4308,6 +6130,7 @@
 
       function syncConfigControlsFromState() {
         applyViewSettings();
+        updateSystemVisuals();
         el.anchorDay.value = String(state.anchor.day);
         el.anchorMonth.value = String(state.anchor.month);
         el.anchorYear.value = String(state.anchor.yearRaw);
@@ -4352,10 +6175,11 @@
       }
 
       function refreshAllViews(resetViewedYear = true) {
-        const activeRep = jdnToRepublican(state.activeJdn);
+        const activeCur = jdnToActiveSystem(state.activeJdn);
         if (resetViewedYear || state.viewedRepYear === null) {
-          state.viewedRepYear = activeRep.repYear;
+          state.viewedRepYear = activeCur.calYear;
         }
+        updateSystemVisuals();
         renderAnchorStatus(null);
         renderQuickStatus();
         renderParameterHints();
@@ -4372,6 +6196,27 @@
       /* =========================================================================
        * 15. EVENT-LISTENER
        * ========================================================================= */
+      el.btnSysRepHeader.addEventListener("click", () => switchCalendarSystem("republican"));
+      el.btnSysJulHeader.addEventListener("click", () => switchCalendarSystem("julian"));
+      el.btnSysRepMini.addEventListener("click", () => switchCalendarSystem("republican"));
+      el.btnSysJulMini.addEventListener("click", () => switchCalendarSystem("julian"));
+
+      el.paramCalendarSystem.addEventListener("change", () => {
+        switchCalendarSystem(el.paramCalendarSystem.value);
+      });
+
+      el.paramIntercalaryMode.addEventListener("change", () => {
+        state.intercalaryMode = el.paramIntercalaryMode.value;
+        refreshAllViews(false);
+      });
+
+      el.paramJulianBasis.addEventListener("change", () => {
+        state.julianBasis = el.paramJulianBasis.value;
+        state.viewedRepYear = null;
+        state.pontifexWindowStart = null;
+        refreshAllViews(true);
+      });
+
       document.getElementById("btnApplyAnchor").addEventListener("click", () => {
         applyAnchorFromInputs();
       });
@@ -4428,9 +6273,9 @@
       });
 
       document.getElementById("btnScrollGlow").addEventListener("click", () => {
-        const activeRep = jdnToRepublican(state.activeJdn);
-        if (state.viewedRepYear !== activeRep.repYear) {
-          state.viewedRepYear = activeRep.repYear;
+        const activeCur = jdnToActiveSystem(state.activeJdn);
+        if (state.viewedRepYear !== activeCur.calYear) {
+          state.viewedRepYear = activeCur.calYear;
           saveState();
           renderTablets();
         }
@@ -4522,25 +6367,29 @@
         }
 
         const bcAd = el.repYearBcAd.value;
-        const repYear = resolveRepYearFromEraInput(eraYearNum, bcAd, baseMonthIndex);
-        const jdn = renderRepToNormOutput(repYear, baseMonthIndex, day);
+        const targetYear = resolveTargetYearFromEraInput(eraYearNum, bcAd, baseMonthIndex);
+        const jdn = renderRepToNormOutput(targetYear, baseMonthIndex, day);
 
         if (jdn !== null) {
           state.activeJdn = jdn;
-          state.viewedRepYear = repYear;
+          state.viewedRepYear = targetYear;
           state.pontifexWindowStart = null;
           syncInputsFromActiveJdn();
           refreshAllViews(false);
         } else {
-          state.viewedRepYear = repYear;
+          state.viewedRepYear = targetYear;
           saveState();
           renderTablets();
         }
       });
 
-      /* Pontifex-Navigation */
+      /* Schaltzyklus-/Pontifex-Navigation */
       el.btnPontifexWindowPrev.addEventListener("click", () => {
-        state.pontifexWindowStart = Math.max(1, state.pontifexWindowStart - 24);
+        if (state.calendarSystem === "julian") {
+          state.pontifexWindowStart -= 24;
+        } else {
+          state.pontifexWindowStart = Math.max(1, state.pontifexWindowStart - 24);
+        }
         saveState();
         renderPontifexPanel();
       });
@@ -4600,6 +6449,7 @@
       document.getElementById("btnConfirmMasterReset").addEventListener("click", () => {
         try {
           localStorage.removeItem(STORAGE_KEY);
+          for (const lk of LEGACY_KEYS) localStorage.removeItem(lk);
         } catch (e) {}
         state = createDefaultState();
         el.masterResetModalBackdrop.classList.add("hidden");
@@ -4622,6 +6472,13 @@
           : `${formatLongDateDe(jdnToJulian(state.anchor.jdn))} (Julianisch)`;
         const startMonthDisp = getMonthDisplay(MONTHS[state.yearStartMonth]).name;
         const namingDisp = state.monthNaming === "traditional" ? "Traditionell römisch" : "Eigene Version";
+        const sysDisp = state.calendarSystem === "julian" ? "Julianisch" : "Republikanisch";
+        const intercModeDisp = state.intercalaryMode === "fixed_27"
+          ? "Schaltmonat immer 27 T., Feb. 23/24 T."
+          : "Schaltmonat 27/28 T., Feb. immer 23 T.";
+        const julBasisDisp = state.julianBasis === "authentic_julian"
+          ? "Authentisch Julianisch (1900 Schaltjahr)"
+          : "Gregorianisch synchronisiert (1900 kein Schaltjahr)";
         const eraLabels = {
           auc: "Ab Urbe Condita (a.u.c.)",
           consuls: "Konsul-Jahreszählung (200–1 v. Chr.)",
@@ -4629,8 +6486,11 @@
           christian: "Christliche Ära",
           custom: `Selbstdefinierte Ära (Jahr 1 = ${formatAstroYearDe(state.customEraYear1Astro)})`
         };
-        const activeRep = jdnToRepublican(state.activeJdn);
+        const activeCur = jdnToActiveSystem(state.activeJdn);
         return {
+          sysDisp,
+          intercModeDisp,
+          julBasisDisp,
           anchorDisp,
           startMonthDisp,
           namingDisp,
@@ -4638,33 +6498,78 @@
           normalCalDisp: state.normalCal === "gregorian" ? "Gregorianisch" : "Julianisch",
           viewModeDisp: state.viewMode === "desktop" ? "Desktop-Site" : (state.viewMode === "mobile" ? "Mobil" : "Automatisch"),
           uiScaleDisp: `${state.uiScale} %`,
-          activeDateDisp: `${activeRep.day}. ${activeRep.monthObj.name} (${formatSelectedEraDisplay(activeRep.eras)}) | ${formatLongDateDe(jdnToGregorian(state.activeJdn))} Greg.`
+          activeDateDisp: `${formatModernDateHeading(activeCur.day, activeCur.monthObj.name, activeCur.eras)} | ${formatLongDateDe(jdnToGregorian(state.activeJdn))} Greg.`
+        };
+      }
+
+      const COMPACT_ERA_CODES = ["auc", "consuls", "diocletian", "christian", "custom"];
+      const COMPACT_VIEW_CODES = ["auto", "mobile", "desktop"];
+      const COMPACT_FILTER_CODES = ["all", "nundinae", "feasts", "religiosi", "markers", "legal"];
+      const COMPACT_LEN_CODES = [355, 377, 378];
+
+      function buildAnchorFromJdn(jdn, calType) {
+        const dObj = calType === "julian" ? jdnToJulian(jdn) : jdnToGregorian(jdn);
+        const astroYear = dObj.year;
+        return {
+          day: dObj.day,
+          month: dObj.month,
+          yearRaw: astroYear > 0 ? astroYear : 1 - astroYear,
+          bcAd: astroYear > 0 ? "AD" : "BC",
+          calType,
+          astroYear,
+          jdn
         };
       }
 
       document.getElementById("btnExportPontifexJson").addEventListener("click", () => {
-        const summary = getPontifexSummaryData();
-        const payload = {
-          format: "fasti-rei-publicae-vollbackup-v3",
-          exportedAt: new Date().toISOString(),
-          settings: {
-            anchor: state.anchor,
-            yearStartMonth: state.yearStartMonth,
-            monthNaming: state.monthNaming,
-            eraKey: state.eraKey,
-            customEraYear1Astro: state.customEraYear1Astro,
-            normalCal: state.normalCal,
-            viewMode: state.viewMode,
-            uiScale: state.uiScale,
-            activeJdn: state.activeJdn,
-            viewedRepYear: state.viewedRepYear,
-            tabletFilter: state.tabletFilter
-          },
-          overrides: state.overrides,
-          overrideDetails: summary.rows
-        };
-        downloadFile("fasti-kalender-anpassungen.json", JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
-        showPontifexStatus(`Gesamt-JSON exportiert (Konfiguration, Ära, Ansicht und ${summary.rows.length} Pontifex-Schaltjahr-Anpassung(en)).`);
+        const def = createDefaultState();
+        const payload = { f: "fr6", d: state.activeJdn };
+
+        if (state.calendarSystem === "julian") payload.s = 1;
+        if (state.intercalaryMode === "fixed_27") payload.i = 1;
+        if (state.julianBasis === "authentic_julian") payload.j = 1;
+        if (state.anchor.jdn !== def.anchor.jdn || state.anchor.calType !== def.anchor.calType) {
+          payload.k = [state.anchor.jdn, state.anchor.calType === "julian" ? 1 : 0];
+        }
+        if (state.yearStartMonth !== 0) payload.m = state.yearStartMonth;
+        if (state.monthNaming === "traditional") payload.n = 1;
+
+        const eraIdx = COMPACT_ERA_CODES.indexOf(state.eraKey);
+        if (eraIdx > 0) payload.e = eraIdx;
+        if (state.customEraYear1Astro !== 1900) payload.c = state.customEraYear1Astro;
+        if (state.normalCal === "julian") payload.g = 1;
+
+        const viewIdx = COMPACT_VIEW_CODES.indexOf(state.viewMode);
+        if (viewIdx > 0) payload.r = viewIdx;
+        if (state.uiScale !== 100) payload.z = state.uiScale;
+
+        const filterIdx = COMPACT_FILTER_CODES.indexOf(state.tabletFilter);
+        if (filterIdx > 0) payload.t = filterIdx;
+
+        const activeCalYear = jdnToActiveSystem(state.activeJdn).calYear;
+        if (state.viewedRepYear !== null && state.viewedRepYear !== activeCalYear) {
+          payload.y = state.viewedRepYear;
+        }
+        if (state.pontifexWindowStart !== null) {
+          payload.p = state.pontifexWindowStart;
+        }
+
+        const overrideEntries = Object.keys(state.overrides)
+          .map(Number)
+          .filter((yr) => Number.isInteger(yr) && yr >= 1)
+          .sort((a, b) => a - b);
+        if (overrideEntries.length > 0) {
+          const compactOverrides = [];
+          overrideEntries.forEach((yr) => {
+            const lenIdx = COMPACT_LEN_CODES.indexOf(state.overrides[yr]);
+            if (lenIdx !== -1) compactOverrides.push(yr, lenIdx);
+          });
+          if (compactOverrides.length > 0) payload.o = compactOverrides;
+        }
+
+        const jsonStr = JSON.stringify(payload);
+        downloadFile("fasti-kalender-anpassungen.json", jsonStr, "application/json;charset=utf-8");
+        showPontifexStatus(`Kompaktes Backup exportiert (${jsonStr.length} Bytes · ${overrideEntries.length} Pontifex-Schaltjahr-Anpassung(en) inklusive aller Einstellungen).`);
       });
 
       document.getElementById("btnExportPontifexCsv").addEventListener("click", () => {
@@ -4672,6 +6577,9 @@
         const rep = buildAllSettingsReport();
         const lines = [
           "Bereich;Parameter;Wert;Zusatzinfo",
+          `Konfiguration;"Kalendersystem";"${rep.sysDisp}";""`,
+          `Konfiguration;"Rep. Schaltmonat-Regel";"${rep.intercModeDisp}";""`,
+          `Konfiguration;"Julianische Basis";"${rep.julBasisDisp}";""`,
           `Konfiguration;"Startanker";"${rep.anchorDisp}";"1. Tag Jahr 1 = Marktbuchstabe A"`,
           `Konfiguration;"Jahresanfang";"${rep.startMonthDisp}";"Basis-Monat ${state.yearStartMonth + 1}"`,
           `Konfiguration;"Monatsnamen";"${rep.namingDisp}";""`,
@@ -4697,7 +6605,8 @@
         const summary = getPontifexSummaryData();
         const rep = buildAllSettingsReport();
         const textLines = [
-          "FASTI REI PUBLICAE — VOLLSTÄNDIGE KALENDERANPASSUNGEN",
+          "FASTI ROMANI — VOLLSTÄNDIGE KALENDERANPASSUNGEN",
+          `Kalendersystem: ${rep.sysDisp} | Rep. Schaltregel: ${rep.intercModeDisp} | Jul. Basis: ${rep.julBasisDisp}`,
           `Startanker (1. ${rep.startMonthDisp} Jahr 1): ${rep.anchorDisp}`,
           `Jahresanfang: ${rep.startMonthDisp} | Monatsnamen: ${rep.namingDisp}`,
           `Jahresära: ${rep.eraDisp} | Eingabekalender: ${rep.normalCalDisp}`,
@@ -4732,60 +6641,120 @@
         reader.onload = () => {
           try {
             const data = JSON.parse(String(reader.result));
-            if (!data || typeof data.overrides !== "object") {
+            const isCompact = Boolean(data && data.f === "fr6");
+            const isLegacy = Boolean(data && typeof data.overrides === "object" && data.overrides !== null);
+
+            if (!isCompact && !isLegacy) {
               showPontifexStatus("Ungültige JSON-Datei: Es wurde kein gültiges Kalender-Backup gefunden.", true);
               return;
             }
-            const src = data.settings && typeof data.settings === "object" ? data.settings : data;
 
-            if (src.anchor && typeof src.anchor.jdn === "number") {
-              state.anchor = src.anchor;
-            }
-            if (Number.isInteger(src.yearStartMonth) && src.yearStartMonth >= 0 && src.yearStartMonth <= 11) {
-              state.yearStartMonth = src.yearStartMonth;
-            }
-            if (src.monthNaming === "custom" || src.monthNaming === "traditional") {
-              state.monthNaming = src.monthNaming;
-            }
-            if (["auc", "consuls", "diocletian", "christian", "custom"].includes(src.eraKey)) {
-              state.eraKey = src.eraKey;
-            }
-            if (typeof src.customEraYear1Astro === "number" && Number.isFinite(src.customEraYear1Astro)) {
-              state.customEraYear1Astro = Math.trunc(src.customEraYear1Astro);
-            }
-            if (src.normalCal === "gregorian" || src.normalCal === "julian") {
-              state.normalCal = src.normalCal;
-            }
-            if (["auto", "mobile", "desktop"].includes(src.viewMode)) {
-              state.viewMode = src.viewMode;
-            }
-            if (typeof src.uiScale === "number" && src.uiScale >= 60 && src.uiScale <= 150) {
-              state.uiScale = Math.round(src.uiScale);
-            }
-            if (typeof src.activeJdn === "number" && Number.isFinite(src.activeJdn)) {
-              state.activeJdn = Math.trunc(src.activeJdn);
-            }
-            if (typeof src.viewedRepYear === "number" && Number.isFinite(src.viewedRepYear)) {
-              state.viewedRepYear = Math.trunc(src.viewedRepYear);
-            }
-            if (["all", "nundinae", "feasts", "markers", "legal"].includes(src.tabletFilter)) {
-              state.tabletFilter = src.tabletFilter;
-            }
+            const next = createDefaultState();
 
-            const cleanOverrides = {};
-            for (const [k, v] of Object.entries(data.overrides)) {
-              const yr = Number(k);
-              const len = Number(v);
-              if (Number.isInteger(yr) && yr >= 1 && (len === 355 || len === 377 || len === 378)) {
-                cleanOverrides[yr] = len;
+            if (isCompact) {
+              if (data.s === 1) next.calendarSystem = "julian";
+              if (data.i === 1) next.intercalaryMode = "fixed_27";
+              if (data.j === 1) next.julianBasis = "authentic_julian";
+              if (Array.isArray(data.k) && typeof data.k[0] === "number" && Number.isFinite(data.k[0])) {
+                const calType = data.k[1] === 1 ? "julian" : "gregorian";
+                next.anchor = buildAnchorFromJdn(Math.trunc(data.k[0]), calType);
+              }
+              if (Number.isInteger(data.m) && data.m >= 0 && data.m <= 11) {
+                next.yearStartMonth = data.m;
+              }
+              if (data.n === 1) next.monthNaming = "traditional";
+              if (Number.isInteger(data.e) && COMPACT_ERA_CODES[data.e]) {
+                next.eraKey = COMPACT_ERA_CODES[data.e];
+              }
+              if (typeof data.c === "number" && Number.isFinite(data.c)) {
+                next.customEraYear1Astro = Math.trunc(data.c);
+              }
+              if (data.g === 1) next.normalCal = "julian";
+              if (Number.isInteger(data.r) && COMPACT_VIEW_CODES[data.r]) {
+                next.viewMode = COMPACT_VIEW_CODES[data.r];
+              }
+              if (typeof data.z === "number" && data.z >= 60 && data.z <= 150) {
+                next.uiScale = Math.round(data.z);
+              }
+              if (Number.isInteger(data.t) && COMPACT_FILTER_CODES[data.t]) {
+                next.tabletFilter = COMPACT_FILTER_CODES[data.t];
+              }
+              if (typeof data.d === "number" && Number.isFinite(data.d)) {
+                next.activeJdn = Math.trunc(data.d);
+              }
+              if (typeof data.y === "number" && Number.isFinite(data.y)) {
+                next.viewedRepYear = Math.trunc(data.y);
+              }
+              if (typeof data.p === "number" && Number.isFinite(data.p)) {
+                next.pontifexWindowStart = Math.trunc(data.p);
+              }
+              if (Array.isArray(data.o)) {
+                for (let idx = 0; idx + 1 < data.o.length; idx += 2) {
+                  const yr = Number(data.o[idx]);
+                  const len = COMPACT_LEN_CODES[data.o[idx + 1]];
+                  if (Number.isInteger(yr) && yr >= 1 && len) {
+                    next.overrides[yr] = len;
+                  }
+                }
+              }
+            } else {
+              const src = data.settings && typeof data.settings === "object" ? data.settings : data;
+              if (src.calendarSystem === "republican" || src.calendarSystem === "julian") {
+                next.calendarSystem = src.calendarSystem;
+              }
+              if (src.intercalaryMode === "variable_27_28" || src.intercalaryMode === "fixed_27") {
+                next.intercalaryMode = src.intercalaryMode;
+              }
+              if (src.julianBasis === "gregorian_sync" || src.julianBasis === "authentic_julian") {
+                next.julianBasis = src.julianBasis;
+              }
+              if (src.anchor && typeof src.anchor.jdn === "number") {
+                next.anchor = src.anchor;
+              }
+              if (Number.isInteger(src.yearStartMonth) && src.yearStartMonth >= 0 && src.yearStartMonth <= 11) {
+                next.yearStartMonth = src.yearStartMonth;
+              }
+              if (src.monthNaming === "custom" || src.monthNaming === "traditional") {
+                next.monthNaming = src.monthNaming;
+              }
+              if (COMPACT_ERA_CODES.includes(src.eraKey)) {
+                next.eraKey = src.eraKey;
+              }
+              if (typeof src.customEraYear1Astro === "number" && Number.isFinite(src.customEraYear1Astro)) {
+                next.customEraYear1Astro = Math.trunc(src.customEraYear1Astro);
+              }
+              if (src.normalCal === "gregorian" || src.normalCal === "julian") {
+                next.normalCal = src.normalCal;
+              }
+              if (COMPACT_VIEW_CODES.includes(src.viewMode)) {
+                next.viewMode = src.viewMode;
+              }
+              if (typeof src.uiScale === "number" && src.uiScale >= 60 && src.uiScale <= 150) {
+                next.uiScale = Math.round(src.uiScale);
+              }
+              if (typeof src.activeJdn === "number" && Number.isFinite(src.activeJdn)) {
+                next.activeJdn = Math.trunc(src.activeJdn);
+              }
+              if (typeof src.viewedRepYear === "number" && Number.isFinite(src.viewedRepYear)) {
+                next.viewedRepYear = Math.trunc(src.viewedRepYear);
+              }
+              if (COMPACT_FILTER_CODES.includes(src.tabletFilter)) {
+                next.tabletFilter = src.tabletFilter;
+              }
+              for (const [k, v] of Object.entries(data.overrides)) {
+                const yr = Number(k);
+                const len = Number(v);
+                if (Number.isInteger(yr) && yr >= 1 && COMPACT_LEN_CODES.includes(len)) {
+                  next.overrides[yr] = len;
+                }
               }
             }
-            state.overrides = cleanOverrides;
-            state.pontifexWindowStart = 1;
+
+            state = next;
             syncConfigControlsFromState();
             syncInputsFromActiveJdn();
             refreshAllViews(state.viewedRepYear === null);
-            showPontifexStatus(`Import erfolgreich: Gesamte Kalenderkonfiguration und ${Object.keys(cleanOverrides).length} Schaltjahres-Anpassung(en) wiederhergestellt.`);
+            showPontifexStatus(`Import erfolgreich: Gesamte Kalenderkonfiguration und ${Object.keys(state.overrides).length} Schaltjahres-Anpassung(en) wiederhergestellt.`);
           } catch (err) {
             showPontifexStatus("Fehler beim Lesen der JSON-Datei.", true);
           }
@@ -4845,30 +6814,36 @@
       });
 
       document.getElementById("btnExportYearCsv").addEventListener("click", () => {
-        const repYear = state.viewedRepYear;
-        const months = getMonthsForRepYear(repYear);
-        let curJdn = getStartJdnOfRepYear(repYear);
-        const nomAstro = getNominalAstroYear(repYear);
-        const lines = ["MonatNr;Monat;Tag;Nundinae;Markttag;Charakter;CharakterKommentar;CapitalisMonumentalis;LateinVollform;LateinKurz;Festtag;Gregorianisch;Julianisch"];
+        const isJul = state.calendarSystem === "julian";
+        const targetYear = state.viewedRepYear;
+        const months = getMonthsForActiveYear(targetYear);
+        let curJdn = getStartJdnOfActiveYear(targetYear);
+        const nomAstro = isJul ? targetYear : getNominalAstroYear(targetYear);
+        const lines = [
+          "System;MonatNr;Monat;Tag;Nundinae;Markttag;Charakter;CharakterKommentar;DiesReligiosus;CapitalisMonumentalis;LateinVollform;LateinKurz;FesttagKurz;FesttagVoll;Gregorianisch;HistJulianisch"
+        ];
 
         months.forEach((m, idxInYear) => {
           const nextM = months[(m.yearPos + 1) % months.length];
           for (let d = 1; d <= m.length; d++) {
             const jdn = curJdn++;
             const nund = NUNDINAL_LETTERS[(((jdn - state.anchor.jdn) % 8) + 8) % 8];
-            const ch = m.chars[d - 1] || "C";
-            const feast = (m.feasts && m.feasts[d]) || "";
-            const latin = formatRomanDateGrammar(d, m, nextM);
-            const eras = computeEras(repYear, nomAstro, m.baseIndex);
+            const info = getDayDetailsForActiveSystem(m, d);
+            const ch = info.dayChar;
+            const feast = info.feast || "";
+            const detail = (info.detail || "").replace(/"/g, '""');
+            const latin = formatRomanDateGrammar(d, m, nextM, { isJulianLeapFeb: m.isJulianLeapFeb });
+            const eras = computeEras(isJul ? 1 : targetYear, nomAstro, m.baseIndex);
             const eraForms = buildLatinEraForms(eras);
             const greg = formatShortDate(jdnToGregorian(jdn));
             const jul = formatShortDate(jdnToJulian(jdn));
             lines.push(
-              `${idxInYear + 1};"${m.name}";${d};${nund};"${nund === "A" ? "Markttag (Nundinae)" : ""}";${ch};"${CHAR_SHORT_COMMENTS[ch] || ch}";"${latin.stone}·${eraForms.stone}";"${latin.full}, ${eraForms.full}";"${latin.abbr}, ${eraForms.abbr}";"${feast}";"${greg}";"${jul}"`
+              `"${isJul ? "Julianisch" : "Republikanisch"}";${idxInYear + 1};"${m.name}";${d};${nund};"${nund === "A" ? "Markttag (Nundinae)" : ""}";${ch};"${CHAR_SHORT_COMMENTS[ch] || ch}";"${info.isReligiosus ? "Dies religiosus / ater" : ""}";"${latin.stone}·${eraForms.stone}";"${latin.full}, ${eraForms.full}";"${latin.abbr}, ${eraForms.abbr}";"${feast.replace(/"/g, '""')}";"${detail}";"${greg}";"${jul}"`
             );
           }
         });
-        downloadFile(`fasti-jahr-${repYear}.csv`, "\uFEFF" + lines.join("\n"), "text/csv;charset=utf-8");
+        const prefix = isJul ? "fasti-julianisch" : "fasti-republikanisch";
+        downloadFile(`${prefix}-jahr-${targetYear}.csv`, "\uFEFF" + lines.join("\n"), "text/csv;charset=utf-8");
       });
 
       el.tabletFilterChips.addEventListener("click", (evt) => {
